@@ -1,0 +1,12 @@
+{
+    "name": "gene-sescon/qrxd",
+    "authors": [
+        {
+            "name": "Gene Sescon",
+            "email": "sescongene.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "stripe/stripe-php": "^7.70"
+    }
+}
