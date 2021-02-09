@@ -25,7 +25,6 @@ function initiate_order($order_id)
         $quantity = $item->get_quantity();
 
         if (isset($original_price)) {
-            $sales_to_source_dispensary = $sales_to_source_dispensary + ($quantity * $original_price);
 
             $source_site_id = get_post_meta($product_id, 'source_site_id', true);
 
@@ -37,15 +36,7 @@ function initiate_order($order_id)
                 "total" => $quantity * $original_price,
             );
         }
-
     }
-
-    $new_order_total = $order->get_total() - $sales_to_source_dispensary;
-
-    add_post_meta($order_id, 'sales_to_source_dispensary', $sales_to_source_dispensary, true);
-
-    $order->set_total($new_order_total);
-
     // $order->save();
 }
 
@@ -68,24 +59,14 @@ function payment_complete($order_id)
         return;
     }
 
-    $sales_to_source_dispensary = get_post_meta($order_id, 'sales_to_source_dispensary', true);
-
-    $stripe = new \Stripe\StripeClient(
-        'sk_test_51IHOEsGt2600zxIgroP7sf0roJx4XaOoQ4eJVAPMPqrCpEzcglIdGtQPqkE8xiZ9dGqsg3oEgWiYPR20mG9FfJz200jSVbP2QH'
-      );
-    $stripe->transfers->create([
-        'amount' => $sales_to_source_dispensary * 100,
-        'currency' => 'usd',
-        'destination' => 'acct_1IHPfSKhUsdmrRlw',
-        'transfer_group' => 'ORDER_95',
-    ]);
+    //TODO ADD SHIPPING
 
     create_orders_on_other_sites($order_id);
 }
 
 add_action('woocommerce_checkout_order_processed', 'initiate_order', 10, 1);
-add_action('woocommerce_payment_complete', 'payment_complete', 10, 1);
 
+add_action('woocommerce_payment_complete', 'payment_complete', 10, 1);
 
 function create_orders_on_other_sites($order_id)
 {
@@ -133,15 +114,36 @@ function create_orders_on_other_sites($order_id)
                 'quantity' => $item->get_quantity(),
             );
         }
-
     }
+
+    $site_information = array(
+        'order_id' => $order_id,
+        'site_id' => get_current_blog_id(),
+    );
+
+    $total = $order->get_total();
+
+    $amount_paid_to_other_site = 0;
 
     foreach ($site_orders as $key => $site_order) {
-        create_order_from_external($site_order, $key, $order_address);
+        $amount_paid_to_other_site += create_order_from_external($site_order, $key, $order_address, $site_information);
     }
+
+    $percentage_to_transfer = ($total - $amount_paid_to_other_site) * 0.10;
+
+    $amount_to_client_stripe = $total - $amount_paid_to_other_site - $percentage_to_transfer;
+
+    create_payments('acct_1IHPfSKhUsdmrRlw', $percentage_to_transfer, $site_information);
+
+    $stripe_account_id = get_option('stripe_account_id', '');
+
+    if (isset($stripe_account_id) && $stripe_account_id != '') {
+        create_payments($stripe_account_id, $amount_to_client_stripe, $site_information);
+    }
+
 }
 
-function create_order_from_external($items, $source_site_id, $order_address)
+function create_order_from_external($items, $source_site_id, $order_address, $site_information)
 {
     switch_to_blog($source_site_id);
 
@@ -158,12 +160,48 @@ function create_order_from_external($items, $source_site_id, $order_address)
     foreach ($items as $key => $item) {
         $product = wc_get_product($item['product_id']);
 
-        $order->add_product($product , $item['quantity']);
+        $order->add_product($product, $item['quantity']);
     }
 
-    $order->update_status('on-hold');
+    $order->add_order_note('Order created from : http://' . get_blog_details($site_information['site_id'])->domain);
+
+    $order->add_order_note('External Order ID : ' . $site_information['order_id']);
+
+    $order->calculate_taxes();
+
+    $order->calculate_totals();
+
+    $order->update_status('processing');
 
     $order->save();
 
+    $stripe_account_id = get_option('stripe_account_id', '');
+
+    if (isset($stripe_account_id) && $stripe_account_id != '') {
+        create_payments(
+            $stripe_account_id,
+            $order->get_total(),
+            $site_information
+        );
+    }
+
     restore_current_blog();
+
+    return $order->get_total();
 }
+
+function create_payments($account_id, $amount, $site_information)
+{
+    $stripe = new \Stripe\StripeClient(
+        'sk_test_51IHOEsGt2600zxIgroP7sf0roJx4XaOoQ4eJVAPMPqrCpEzcglIdGtQPqkE8xiZ9dGqsg3oEgWiYPR20mG9FfJz200jSVbP2QH'
+    );
+
+    $stripe->transfers->create([
+        'amount' => $amount * 100,
+        'currency' => 'usd',
+        'destination' => $account_id,
+        'transfer_group' => 'ORDER_ID_' . $site_information['site_id'] . '_' . $site_information['order_id'],
+        'description' => 'Payments for order ' . $site_information['order_id'] . ' - ' . get_blog_details($site_information['site_id'])->domain,
+    ]);
+}
+

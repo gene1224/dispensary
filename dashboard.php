@@ -72,68 +72,15 @@ function external_order_post_type_function()
 }
 add_action('init', 'external_order_post_type_function');
 
-/**
- * Function to create custom meta box on external order post type editor
- *
- * @return void
- */
-function external_order_add_custom_box()
+add_filter('admin_init', 'my_general_settings_register_fields');
+function my_general_settings_register_fields()
 {
-    add_meta_box(
-        'wporg_box_id',
-        'Order Details',
-        'external_order_custom_meta_box',
-        'external_orders'
-    );
+    register_setting('general', 'stripe_account_id', 'esc_attr');
+    add_settings_field('stripe_account_id', '<label for="stripe_account_id">' . __('Copyright Message', 'stripe_account_id') . '</label>', 'stripe_account_id_HTML', 'general');
 }
-add_action('add_meta_boxes', 'external_order_add_custom_box');
 
-/**
- * External order custom box html function used to display order details
- *
- * @param [type] $post
- * @return void
- */
-function external_order_custom_meta_box($post)
+function stripe_account_id_HTML()
 {
-    $billing_full_name = get_post_meta($post->ID, 'billing_full_name', true);
-
-    $billing_address = get_post_meta($post->ID, 'billing_address', true);
-
-    $shipping_full_name = get_post_meta($post->ID, 'shipping_full_name', true);
-
-    $shiiping_address = get_post_meta($post->ID, 'shiiping_address', true);
-
-    $date_paid = get_post_meta($post->ID, 'date_paid', true);
-
-    $date_to_display = date_format(date_create($date_paid->date), "F d Y @ H:i:s");
-
-    $date_paid = get_post_meta($post->ID, 'date_paid', true);
-
-    $items = get_post_meta($post->ID, 'items', true);
-
-    $itemHTML = "";
-
-    $total = 0;
-    foreach ($items as $key => $item) {
-        $product = wc_get_product($item['product_id']);
-        $subTotal = $product->get_price() * $item['quantity'];
-        $itemHTML .= '<p><a href="http://wpms.net/first/wp-admin/post.php?post=' . $item['product_id'] . '&action=edit">' . $product->get_name() . '</a> - ';
-        $itemHTML .= 'Price - $' . number_format($product->get_price(), 2, '.', ',') . ' * Quantity - ' . $item['quantity'] . ' = Subtotal - $' . number_format($subTotal, 2, '.', ',') . '</p>';
-        $total += $subTotal;
-    }
-
-    ?>
-    <p>Name: <?=$billing_full_name?></p>
-    <p>Total: $<?=number_format($total, 2, '.', ',')?></p>
-    <p>Date Paid: <?=$date_to_display?></p>
-    <p>
-    Items
-    </p>
-    <?=$itemHTML?>
-    <br>
-    <p>Billing Details: <?=strlen($billing_address) != 1 ? $billing_address : $shipping_full_name?></p>
-    <p>Shipping Details: <?=strlen($billing_address) != 1 ? $shiiping_address : $shipping_full_name?></p>
-
-    <?php
+    $copyright_message = get_option('stripe_account_id', '');
+    echo '<input id="copyright_message" style="width: 35%;" type="text" name="stripe_account_id" value="' . $copyright_message . '" />';
 }

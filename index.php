@@ -1,16 +1,22 @@
 <?php
-
 /**
- * add_original_price_field - Adds original price field to the products
- *
- * @return $fields
+ * @package QRXDispensary Payments
  */
+/*
+Plugin Name: QRXDispensary Payments
+Plugin URI: https://qrxdispensary.com/
+Description: Payment process of QRXDispensary
+Version: 1.0.0
+Author: Gene Sescon
+Author URI: https://example.com/
+License: GPLv2 or later
+Text Domain: QRXDispensary
+*/
+
+
 
 require_once 'vendor/autoload.php';
 
 require 'dashboard.php';
 
 require 'order.php';
-
-
-
