@@ -20,3 +20,5 @@ require_once 'vendor/autoload.php';
 require 'dashboard.php';
 
 require 'order.php';
+
+require 'product.php';
