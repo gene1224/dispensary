@@ -102,14 +102,22 @@ function create_orders_on_other_sites($order_id)
     );
 
     foreach ($order->get_items() as $item_id => $item) {
+
         $product_id = $item->get_product_id();
 
         $source_product_id = get_post_meta($product_id, 'source_product_id', true);
 
         $source_site_id = get_post_meta($product_id, 'source_site_id', true);
 
+        $source_site_url = get_post_meta($product_id, 'source_site_url', true);
+
         if ($source_product_id && $source_site_id) {
             $site_orders[$source_site_id][] = array(
+                'product_id' => $source_product_id,
+                'quantity' => $item->get_quantity(),
+            );
+        } else if ($source_site_url && $source_product_id) {
+            $site_orders[$source_site_url][] = array(
                 'product_id' => $source_product_id,
                 'quantity' => $item->get_quantity(),
             );
@@ -119,6 +127,7 @@ function create_orders_on_other_sites($order_id)
     $site_information = array(
         'order_id' => $order_id,
         'site_id' => get_current_blog_id(),
+        'site_url' => get_site_url(),
     );
 
     $total = $order->get_total();
@@ -126,7 +135,23 @@ function create_orders_on_other_sites($order_id)
     $amount_paid_to_other_site = 0;
 
     foreach ($site_orders as $key => $site_order) {
-        $amount_paid_to_other_site += create_order_from_external($site_order, $key, $order_address, $site_information);
+
+        if (strpos($key, 'http') !== false) {
+            $result = ajax(
+                $key . 'wp-admin/admin-ajax.php',
+                array(
+                    'action' => 'create_order_from_external_ajax',
+                    'items' => $site_order,
+                    'order_address' => $order_address,
+                    'site_information' => $site_information,
+                ),
+                'POST'
+            );
+            $amount_paid_to_other_site += isset($result['amount']) ? $result['amount'] : 0;
+        } else {
+            $amount_paid_to_other_site += create_order_from_external($site_order, $key, $order_address, $site_information);
+        }
+
     }
 
     $percentage_to_transfer = ($total - $amount_paid_to_other_site) * 0.10;
@@ -143,9 +168,25 @@ function create_orders_on_other_sites($order_id)
 
 }
 
-function create_order_from_external($items, $source_site_id, $order_address, $site_information)
+function create_order_from_external_ajax()
 {
-    switch_to_blog($source_site_id);
+    if ($_REQUEST['action'] == 'create_order_from_external_ajax') {
+        $data = json_decode(urldecode($_POST['data']), true);
+
+        $amount = create_order_from_external($data['items'], 0, $data['order_address'], $data['site_information'], true);
+
+        echo json_encode(array('amount' => $amount));
+    }
+    die();
+}
+add_action("wp_ajax_create_order_from_external_ajax", "create_order_from_external_ajax");
+add_action("wp_ajax_nopriv_create_order_from_external_ajax", "create_order_from_external_ajax");
+
+function create_order_from_external($items, $source_site_id, $order_address, $site_information, $external = false)
+{
+    if (!$external) {
+        switch_to_blog($source_site_id);
+    }
 
     $order = wc_create_order();
 
@@ -163,7 +204,7 @@ function create_order_from_external($items, $source_site_id, $order_address, $si
         $order->add_product($product, $item['quantity']);
     }
 
-    $order->add_order_note('Order created from : http://' . get_blog_details($site_information['site_id'])->domain);
+    $order->add_order_note('Order created from : ' . $site_information['site_url']);
 
     $order->add_order_note('External Order ID : ' . $site_information['order_id']);
 
@@ -184,14 +225,15 @@ function create_order_from_external($items, $source_site_id, $order_address, $si
             $site_information
         );
     }
-
-    restore_current_blog();
-
+    if (!$external) {
+        restore_current_blog();
+    }
     return $order->get_total();
 }
 
 function create_payments($account_id, $amount, $site_information)
 {
+    // TODO - ADD IT ON THE SETTINGS
     $stripe = new \Stripe\StripeClient(
         'sk_test_51IHOEsGt2600zxIgroP7sf0roJx4XaOoQ4eJVAPMPqrCpEzcglIdGtQPqkE8xiZ9dGqsg3oEgWiYPR20mG9FfJz200jSVbP2QH'
     );
@@ -204,4 +246,3 @@ function create_payments($account_id, $amount, $site_information)
         'description' => 'Payments for order ' . $site_information['order_id'] . ' - ' . get_blog_details($site_information['site_id'])->domain,
     ]);
 }
-

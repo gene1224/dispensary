@@ -3,17 +3,17 @@
 function ajax($url, $data = [], $method = 'GET')
 {
 
-    $final_url = $url;
-
     $ch = curl_init();
-    if ($method == 'POST') {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-    } else {
-        $final_url = $url . '?' . http_build_query($data);
-    }
+
+    $final_url = $method == 'GET' ? $url . '?' . http_build_query($data) : $url . '?action=' . $data['action'];
 
     curl_setopt($ch, CURLOPT_URL, $final_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    if ($method == 'POST') {
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('data' => urlencode(json_encode($data))));
+    }
 
     $response = curl_exec($ch);
 
@@ -24,6 +24,6 @@ function ajax($url, $data = [], $method = 'GET')
     if (json_last_error() === JSON_ERROR_NONE) {
         return $result;
     } else {
-        return $result;
+        return $response;
     }
 }
