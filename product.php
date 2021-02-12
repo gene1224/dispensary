@@ -26,7 +26,7 @@ function get_stocks_status($source_product_id, $source_site_id, $site_url = '')
 {
     if ($site_url != '') {
         $result = ajax(
-            'http://source.wpms.net/wp-admin/admin-ajax.php',
+            $site_url.'wp-admin/admin-ajax.php',
             array(
                 'action' => 'get_stocks_status_ajax',
                 'product_id' => $source_product_id,
