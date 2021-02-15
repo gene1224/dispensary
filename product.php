@@ -13,25 +13,32 @@ function filter_woocommerce_product_is_in_stock($instock_this_get_stock_status, 
     $source_product_id = get_post_meta($product_id, 'source_product_id', true);
 
     if ($source_site_url && $source_product_id) {
-        return get_stocks_status($source_product_id, 0, $source_site_url);
+        return get_stocks_status($source_product_id, $product_id, 0, $source_site_url);
     } else if ($source_site_id && $source_product_id) {
-        return get_stocks_status($source_product_id, $source_site_id);
+        return get_stocks_status($source_product_id, $product_id, $source_site_id);
     } else {
         return $instock_this_get_stock_status;
     }
 
 };
 
-function get_stocks_status($source_product_id, $source_site_id, $site_url = '')
+function get_stocks_status($source_product_id, $product_id, $source_site_id, $site_url = '' )
 {
     if ($site_url != '') {
         $result = ajax(
-            $site_url.'wp-admin/admin-ajax.php',
+            $site_url.'/wp-admin/admin-ajax.php',
             array(
                 'action' => 'get_stocks_status_ajax',
                 'product_id' => $source_product_id,
             )
         );
+        
+        $product = new WC_Product($product_id);
+
+        $product->set_stock_quantity($result['quantity']);
+
+        $product->save();
+        
         return $result['in_stock'];
     }
 
@@ -44,6 +51,12 @@ function get_stocks_status($source_product_id, $source_site_id, $site_url = '')
     $stock_status = 'outofstock' !== $product->get_stock_status();
 
     restore_current_blog();
+
+    $product = new WC_Product($product_id);
+
+    $product->set_stock_quantity($result['quantity']);
+
+    $product->save();
 
     return $stock_status;
 }
@@ -62,6 +75,7 @@ function get_stocks_status_ajax()
 
     $response = array(
         'in_stock' => $stock_status,
+        'quantity' => $product->get_stock_quantity()
     );
 
     echo json_encode($response, true);
