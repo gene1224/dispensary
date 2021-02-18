@@ -23,3 +23,7 @@ require 'product.php';
 
 require 'admin/index.php';
 
+require 'templates/index.php';
+
+require 'shortcodes/index.php';
+
