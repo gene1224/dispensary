@@ -21,6 +21,8 @@ require 'order.php';
 
 require 'product.php';
 
+require 'multisite.php';
+
 require 'admin/index.php';
 
 require 'templates/index.php';
