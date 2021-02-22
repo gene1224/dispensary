@@ -24,8 +24,3 @@ require 'product.php';
 require 'multisite.php';
 
 require 'admin/index.php';
-
-require 'templates/index.php';
-
-require 'shortcodes/index.php';
-
