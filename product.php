@@ -32,6 +32,15 @@ function get_stocks_status($source_product_id, $product_id, $source_site_id, $si
                 'product_id' => $source_product_id,
             )
         );
+        if(!isset($result['quantity'])) {
+            $product = new WC_Product($product_id);
+
+            $product->set_stock_quantity(0);
+
+            $product->save();
+
+            return false;
+        }
         
         $product = new WC_Product($product_id);
 

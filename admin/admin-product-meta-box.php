@@ -20,7 +20,7 @@ function product_external_data_meta_box()
         </a>
     </p>
     
-    <p>Source Product ID: <?=$product_id?>
+    <p>Source Product ID: <?=$original_product_id?>
 
     <p>Original Price : $<?=$original_price?> </p>
 
