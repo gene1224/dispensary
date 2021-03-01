@@ -94,4 +94,4 @@ function get_stocks_status_ajax()
 
 add_action("wp_ajax_get_stocks_status_ajax", "get_stocks_status_ajax");
 add_action("wp_ajax_nopriv_get_stocks_status_ajax", "get_stocks_status_ajax");
-add_filter('woocommerce_product_is_in_stock', 'filter_woocommerce_product_is_in_stock', 10, 2);
+// add_filter('woocommerce_product_is_in_stock', 'filter_woocommerce_product_is_in_stock', 10, 2);

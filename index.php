@@ -42,16 +42,19 @@ if (!isset($timber)) {
     $timber::$locations = $views;
 }
 
-function copy_products_function()
+function copy_products_function($imported_product_params = [], $site_id = 1)
 {
+    if ($site_id == 1) {
+        return;
+    }
+    switch_to_blog($site_id);
+
     $starttime = microtime(true);
-    if (!isset($_REQUEST['imported_products'])) {
+    if (!isset($_REQUEST['imported_products']) && count($imported_product_params) == 0) {
         die();
     }
 
-    $site_id = 1; //TODO SITE SWITCH
-
-    $imported_products = $_REQUEST['imported_products'];
+    $imported_products = count($imported_product_params) == 0 ? $_REQUEST['imported_products'] : $imported_product_params;
 
     // $site = 'http://client.wpms.net';
     // $client_key = 'ck_7dd30741273abf3998abd3b94db24c08e45dddc0';
@@ -66,21 +69,18 @@ function copy_products_function()
     $product_ids_to_import = [];
 
     foreach ($imported_products as $product) {
-        $product_ids_to_import[] = $product['product_id'];
+        $product_ids_to_import[] = $product['source_product_id'];
     }
 
     $products = $wc->get('products', array('include' => $product_ids_to_import));
 
     save_products($products, $imported_products, $site);
 
-    echo microseconds_to_seconds(microtime(true) - $starttime) . "s";
+    error_log(microseconds_to_seconds(microtime(true) - $starttime) . "s Products Added ".count($imported_product_params));
 
-    die();
+    restore_current_blog();
 
 }
-
-add_action('wp_ajax_copy_products', 'copy_products_function');
-add_action('wp_ajax_nopriv_copy_products', 'copy_products_function');
 
 function save_products($imported_products, $price_map, $site_url = '')
 {
@@ -88,7 +88,7 @@ function save_products($imported_products, $price_map, $site_url = '')
         $product_price = -1;
 
         foreach ($price_map as $price) {
-            if ($price['product_id'] == $imported_product->id) {
+            if ($price['source_product_id'] == $imported_product->id) {
                 $product_price = $price['listing_price'];
             }
         }

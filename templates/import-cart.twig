@@ -1,3 +1,21 @@
 <div class="product-import-container">
-    
+    <h1>Listing Cart</h1>
+	<div class="page-controls">
+        <a href="{{gird_url}}" class="view-products active">View Products</a>
+		<a href="?view=cart" class="view-products active">View Products Added (<span class="cart-count">{{cart_count}}</span>)</a>
+		<a href="?view=imported" class="view-products">View Imported Products (<span class="imported-count">{{imported_products_count}}</span>)</a>
+	</div>
+	<form id="productImportForm">
+		<div class="enlist-actions">
+			<button type="submit" id="importButton">Enlist Products</button>
+			<a href="{{gird_url}}">Add Products</a>
+		</div>
+		<div class="product-import-cart-list" id="importCartItems">
+        <div class="loader"></div></div>
+
+		<div id="cart-empty" style="display:none">
+			<h2>Your listing cart is currently empty. Please add products to import</h2>
+		</div>
+		
+	</form>
 </div>

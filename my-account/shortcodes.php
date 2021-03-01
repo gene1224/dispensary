@@ -24,6 +24,7 @@ function product_import_display()
     );
 
     $imported_products = [];
+    $imported_products_obj = [];
 
     foreach (get_blogs_of_user(get_current_user_id(), true) as $users_site) {
 
@@ -34,11 +35,26 @@ function product_import_display()
 
         ));
 
-        foreach ($products as $product) {
+        foreach ($products as $key => $product) {
+            $attachment_ids = $product->get_gallery_image_ids();
+            $first_image_url = 'https://dummyimage.com/180x180/fff/000.png&text=Product';
+            if (is_array($attachment_ids) && !empty($attachment_ids)) {
+                $first_image_url = wp_get_attachment_url($attachment_ids[0]);
+                
+            } 
+            
             $imported_products[] = array(
                 'source_product_id' => get_post_meta($product->id, 'source_product_id', true),
                 'source_site_id' => get_post_meta($product->id, 'source_site_id', true),
                 'source_site_url' => get_post_meta($product->id, 'source_site_url', true),
+                'original_price' => $product->get_meta('original_price'),
+                'categories' => $product->get_categories(', '),
+                'tags' => $product->get_tags(', '),
+                'index' => $key,
+                'sku' => $product->get_sku(),
+                'price' => $product->get_price(),
+                'name' => $product->get_name(),
+                'image' => $first_image_url,
             );
         }
 
@@ -48,19 +64,30 @@ function product_import_display()
     wp_enqueue_script('sweetalert');
     wp_enqueue_style('product_import_css');
 
+    $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true);
+
     $context = array(
         'sites' => $sites,
+        'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
+        'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
+        'cart_count' => count($listing_cart),
+        'imported_products_count' => count($imported_products),
+        'imported_products' => $imported_products,
     );
+
     $js_objects = array(
         'url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('ajax-nonce'),
         'default_site' => $sites[0]['url'],
         'default_api_key' => $sites[0]['api_key'],
         'imported_products' => $imported_products,
-        'listing_cart' => get_user_meta(get_current_user_id(), 'listing_cart', true),
+        'listing_cart' => $listing_cart,
     );
-    
-    if ($_REQUEST['view'] == 'cart') {
+    if ($_REQUEST['view'] == 'imported') {
+        wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
+        // wp_enqueue_script('product_import_cart_js');
+        echo $timber->compile('imported-products.twig', $context);
+    } else if ($_REQUEST['view'] == 'cart') {
         wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
         wp_enqueue_script('product_import_cart_js');
         echo $timber->compile('import-cart.twig', $context);
@@ -71,7 +98,6 @@ function product_import_display()
     }
 
 }
-
 add_shortcode('product_import_views', 'product_import_display');
 
 function handle_custom_query_var($query, $query_vars)
@@ -81,6 +107,13 @@ function handle_custom_query_var($query, $query_vars)
             'key' => 'source_product_id',
             'value' => '',
             'compare' => '!=',
+        );
+    }
+    if (!empty($query_vars['skus'])) {
+        $query['meta_query'][] = array(
+            'key' => '_sku',
+            'value' => $query_vars['skus'],
+            'compare' => 'IN',
         );
     }
 
@@ -161,3 +194,149 @@ function enlist_products()
 
 add_action('wp_ajax_enlist_products', 'enlist_products');
 add_action('wp_ajax_nopriv_enlist_products', 'enlist_products');
+
+function remove_product_in_cart()
+{
+    if (!isset($_POST['source_product_id']) || !isset($_POST['sku'])) {
+        die();
+    }
+
+    $user_id = get_current_user_id();
+
+    $listing_cart = get_user_meta($user_id, 'listing_cart', true) ?: array();
+
+    $listing_cart = array_filter($listing_cart, function ($item) {
+        return $item['source_product_id'] != $_POST['source_product_id'] || $item["sku"] != $_POST["sku"];
+    });
+
+    update_user_meta($user_id, 'listing_cart', $listing_cart);
+
+    echo json_encode(get_user_meta($user_id, 'listing_cart', true));
+
+    die();
+}
+
+add_action('wp_ajax_remove_product_in_cart', 'remove_product_in_cart');
+add_action('wp_ajax_nopriv_remove_product_in_cart', 'remove_product_in_cart');
+
+function start_import()
+{
+    $user_id = get_current_user_id();
+
+    $site_id = 0;
+    foreach (get_blogs_of_user($user_id, true) as $blog) {
+        if ($blog->userblog_id != 1) {
+            $site_id = $blog->userblog_id;
+            break;
+        }
+    }
+
+    update_user_meta($user_id, 'current_import', $_REQUEST['items']);
+
+    echo $site_id . "SITE";
+
+    wp_schedule_single_event(time(), 'product_import_batch', array($user_id, $site_id));
+
+    import_pulse();
+
+    die();
+}
+
+add_action('wp_ajax_start_import', 'start_import');
+add_action('wp_ajax_nopriv_start_import', 'start_import');
+
+function import_pulse()
+{
+
+    $user_id = get_current_user_id();
+
+    $import_data = check_imported_products($user_id);
+
+    $import_data['next'] = wp_next_scheduled('product_import_batch', array($user_id, 2));
+
+    if (count($import_data['remaining_skus']) == 0) {
+        update_user_meta($user_id, 'current_import', []);
+        update_user_meta($user_id, 'listing_cart', []);
+    }
+
+    echo json_encode($import_data);
+
+    die();
+}
+
+add_action('product_import_batch', 'import_batch', 1, 2);
+add_action('wp_ajax_import_pulse', 'import_pulse');
+add_action('wp_ajax_nopriv_import_pulse', 'import_pulse');
+
+function import_batch($user_id, $site_id)
+{
+    $per_batch = 2;
+
+    $import_data = check_imported_products(1);
+
+    $rem_skus = $import_data['remaining_skus'];
+
+    $remaining_products = array_filter($import_data['product_map'], function ($prd) use ($rem_skus) {
+
+        return in_array($prd['sku'], $rem_skus);
+
+    });
+
+    $batch = array_slice($remaining_products, 0, count($remaining_products) >= $per_batch ? $per_batch : count($remaining_products));
+
+    copy_products_function($batch, $site_id);
+
+    if ((count($rem_skus) - $per_batch) > 0) {
+        wp_schedule_single_event(time(), 'product_import_batch', array($user_id, $site_id));
+    }
+
+}
+
+add_action('wp_ajax_import_batch', 'import_batch');
+add_action('wp_ajax_nopriv_import_batch', 'import_batch');
+
+function check_imported_products($user_id)
+{
+    $site_id = 0;
+    foreach (get_blogs_of_user($user_id, true) as $blog) {
+        if ($blog->userblog_id != 1) {
+            $site_id = $blog->userblog_id;
+            break;
+        }
+    }
+
+    $current_import = get_user_meta($user_id, 'current_import', true) ?: [];
+
+    if (!is_array($current_import)) {
+        update_user_meta($user_id, 'listing_cart', []);
+        return;
+    }
+
+    $skus = array_map(function ($item) {
+        return $item['sku'];
+    }, $current_import);
+
+    switch_to_blog($site_id);
+
+    $products_imported_done = wc_get_products(array(
+        'skus' => $skus,
+    ));
+
+    $skus_done = [];
+    foreach ($products_imported_done as $product) {
+        if (in_array($product->get_sku(), $skus)) {
+            $skus_done[] = $product->get_sku();
+        }
+    }
+
+    $context = array(
+        'skus_done' => $skus_done,
+        'remaining_skus' => array_diff($skus, $skus_done),
+        'skus' => $skus,
+        'product_map' => $current_import,
+    );
+
+    restore_current_blog();
+
+    return $context;
+}

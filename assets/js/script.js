@@ -1,8 +1,12 @@
 const productEndpoint = "/wp-json/wc/v3/products";
 const categoryEndpoint = "/wp-json/wc/v3/products/categories";
 const tagEndpoint = "/wp-json/wc/v3/products/tags";
+const gridLoaderHTML = `<div class="loader"></div>`;
 
 const storageSave = (name, data, is_object = true) => {
+  if(name == 'listing_cart') {
+    jQuery('.cart-count').html(data.length);
+  }
   const finalData = is_object ? JSON.stringify(data) : data;
   localStorage.setItem(name, finalData);
 };
@@ -42,11 +46,12 @@ const tagsHTML = (tags) => {
 
 const productItemButton = (product, disable = false, cart = false) => {
   const className = disable ? "remove" : "add";
-  const buttonName = disable ? "Product Enlisted" : "Enlist Product";
+  const buttonName = disable ? "Product Imported" : "Enlist Product";
+  const disabled = disable ? "disabled" : "";
   if (!cart) {
-    return `<button class="action ${className}" onclick="addToCart(${product.id}, '${product.sku}')" data-product-id="${product.id}">${buttonName}</button>`;
+    return `<button ${disabled} class="action ${className}" onclick="addToCart(this, ${product.id}, '${product.sku}')" data-product-id="${product.id}">${buttonName}</button>`;
   }
-  return `<button class="action on-cart" data-product-id="${product.id}">Added to Cart</button>`;
+  return `<button class="action on-cart" data-product-id="${product.id}" onclick="addToCart(this, ${product.id}, '${product.sku}, true')">Added to Cart</button>`;
 };
 
 const productItemHTML = (product, importedProducts = []) => {
@@ -95,7 +100,7 @@ const selectOptionsHTML = (categories) => {
 };
 
 jQuery(document).ready(function ($) {
-    console.log(wp_ajax);
+  console.log(wp_ajax);
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);
   }
@@ -131,13 +136,25 @@ jQuery(document).ready(function ($) {
   getTaxonomies("categories");
 
   const default_query_string = {
-    per_page: 9,
+    per_page: 10,
     stock_status: "instock",
   };
 
   let productFilter = default_query_string;
 
   let current_page = 1;
+
+  $("#gridNext").click(function () {
+    $("#product-importer-grid").html(gridLoaderHTML);
+    current_page += 1;
+    loadProducts(serializeObject(productFilter));
+  });
+  $("#gridPrev").click(function () {
+    if (current_page == 1) return;
+    $("#product-importer-grid").html(gridLoaderHTML);
+    current_page -= 1;
+    loadProducts(serializeObject(productFilter));
+  });
 
   const loadProducts = (queryString, site = "https://allstuff420.com") => {
     const selected_ids = wp_ajax.imported_products
@@ -146,7 +163,6 @@ jQuery(document).ready(function ($) {
       })
       .map((product) => product.source_product_id);
 
-    console.log(selected_ids);
     $.ajax({
       url: `${site}${productEndpoint}?page=${current_page}&${queryString}`,
       beforeSend: function (xhr) {
@@ -158,6 +174,9 @@ jQuery(document).ready(function ($) {
       type: "GET",
       contentType: "application/json",
       success: function (products) {
+        if(products.length == 0) {
+          $("#product-importer-grid").html('<h2>No Products Found</h2>');
+        }
         const productHTMLs = products
           .map((product) => {
             return productItemHTML(product, selected_ids);
@@ -213,27 +232,44 @@ jQuery(document).ready(function ($) {
   }
 });
 
-function addToCart(id, sku, remove = false, del = false) {
+function addToCart(btn, id, sku, remove = false) {
   let cart_items = storageGet("listing_cart") || [];
 
-  const cart_exist = cart_items.find((item) => item.source_product_id == id);
+  btn.setAttribute(
+    "onclick",
+    `addToCart(this, ${id}, '${sku}', ${remove ? "false" : "true"})`
+  );
 
-  if (cart_exist) {
+  btn.classList.remove(remove ? "on-cart" : "add");
+
+  btn.classList.add(remove ? "add" : "on-cart");
+
+  btn.innerHTML = 'Added to Cart';
+
+  const item_exist = cart_items.find((item) => item.source_product_id == id);
+
+  if (item_exist && !remove) {
     return;
+  } else if (item_exist && remove) {
+    const filter_cart_items = cart_items.filter(
+      (item) => item.source_product_id == id
+    );
+    cart_items = filter_cart_items;
   }
-  data = {
+
+  let data = {
     source_product_id: id,
     source_site_url: "https://allstuff420.com",
     sku: sku,
+    remove: remove,
   };
-
-  cart_items.push(data);
+  if (!remove) {
+    cart_items.push(data);
+  }
 
   action = "add_to_cart_list";
   if (remove) {
     action = "remove_product_in_cart";
-  } else if (del) {
-    action = "delete_product_on_listing";
   }
   jQuery.ajax({
     type: "POST",
