@@ -14,7 +14,7 @@ function redirect_non_admin_user(){
 	}
 }
 
-add_action( 'admin_init', 'redirect_non_admin_user' );
+// add_action( 'admin_init', 'redirect_non_admin_user' );
 
 add_action( 'wp_head', 'multisite_style' );
 add_action( 'wp_footer', 'multisite_js', 100);

@@ -64,14 +64,14 @@ function product_import_display()
     wp_enqueue_script('sweetalert');
     wp_enqueue_style('product_import_css');
 
-    $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true);
+    $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
     $context = array(
         'sites' => $sites,
         'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
         'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
-        'cart_count' => count($listing_cart),
-        'imported_products_count' => count($imported_products),
+        'cart_count' => count($listing_cart) ?: 0,
+        'imported_products_count' => count($imported_products) ?: 0,
         'imported_products' => $imported_products,
     );
 
@@ -81,7 +81,7 @@ function product_import_display()
         'default_site' => $sites[0]['url'],
         'default_api_key' => $sites[0]['api_key'],
         'imported_products' => $imported_products,
-        'listing_cart' => $listing_cart,
+        'listing_cart' => $listing_cart ?: [],
     );
     if ($_REQUEST['view'] == 'imported') {
         wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
@@ -272,7 +272,7 @@ function import_batch($user_id, $site_id)
 {
     $per_batch = 2;
 
-    $import_data = check_imported_products(1);
+    $import_data = check_imported_products($user_id);
 
     $rem_skus = $import_data['remaining_skus'];
 

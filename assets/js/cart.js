@@ -217,7 +217,7 @@ jQuery(document).ready(function ($) {
             "Products successfully added to your dispensary. Click Okay to finish",
             "success"
           ).then((result) => {
-            window.location = "https://wpms.net/import-test/?view=imported";
+            window.location = "https://qrxdispensary.com/import-test/?view=imported";
           });
         }
       },
