@@ -30,7 +30,7 @@ function product_import_display()
 
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
-    $max_product = 6;
+    $max_product = apply_filters('max_products_to_import', 10);
 
     $context = array(
         'sites' => $sites,
@@ -40,7 +40,7 @@ function product_import_display()
         'imported_products_count' => count($imported_products) ?: 0,
         'imported_products' => $imported_products,
         'max_products' => $max_product,
-        'view' => $_REQUEST['view'] ?: 'home'
+        'view' => $_REQUEST['view'] ?: 'home',
     );
 
     $js_objects = array(
@@ -230,6 +230,17 @@ function import_pulse()
     if (count($import_data['remaining_skus']) == 0) {
         update_user_meta($user_id, 'current_import', []);
         update_user_meta($user_id, 'listing_cart', []);
+
+        switch_to_blog($import_data['site_id']);
+
+        $products_imported_done = wc_get_products(array(
+            'skus' => $import_data['skus'],
+        ));
+
+        do_action('product_import_finished', $products_imported_done);
+
+        restore_current_blog();
+
     }
 
     echo json_encode($import_data);
@@ -250,9 +261,7 @@ function import_batch($user_id, $site_id)
     $rem_skus = $import_data['remaining_skus'];
 
     $remaining_products = array_filter($import_data['product_map'], function ($prd) use ($rem_skus) {
-
         return in_array($prd['sku'], $rem_skus);
-
     });
 
     $batch = array_slice($remaining_products, 0, count($remaining_products) >= $per_batch ? $per_batch : count($remaining_products));
@@ -307,6 +316,7 @@ function check_imported_products($user_id)
         'remaining_skus' => array_diff($skus, $skus_done),
         'skus' => $skus,
         'product_map' => $current_import,
+        'site_id' => $site_id,
     );
 
     restore_current_blog();
