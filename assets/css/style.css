@@ -381,7 +381,7 @@
   font-size: inherit;
 }
 
-.loader {
+..spin-loader {
   border: 10px solid #f3f3f3; /* Light grey */
   border-top: 10px solid green; /* Blue */
   border-radius: 50%;
@@ -390,7 +390,7 @@
   margin: 100px auto;
   animation: spin 2s linear infinite;
 }
-.loader.mini {
+..spin-loader.mini {
   border: 2px solid #f3f3f3; /* Light grey */
   border-top: 2px solid green; /* Blue */
   width: 20px;
@@ -521,8 +521,8 @@
   display: flex !important;
   justify-content: center;
 }
-#applyFilter .loader,
-.product-actions button .loader {
+#applyFilter ..spin-loader,
+.product-actions button ..spin-loader {
   margin: 0 0 0 8px;
   width: 16px;
   height: 16px;

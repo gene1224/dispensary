@@ -1,7 +1,7 @@
 const productEndpoint = "/wp-json/wc/v3/products";
 const categoryEndpoint = "/wp-json/wc/v3/products/categories";
 const tagEndpoint = "/wp-json/wc/v3/products/tags";
-const gridLoaderHTML = `<div class="loader"></div>`;
+const gridLoaderHTML = `<div class="spin-loader"></div>`;
 
 const ratingStarsHTML = (average_rating) => {
   let ratingHtml = "";
@@ -238,7 +238,7 @@ function addToCart(btn, id, sku, remove = false) {
 
   btn.innerHTML = `${
     remove ? "Removing" : "Adding"
-  } to cart.. <div class="loader mini"></div>`;
+  } to cart.. <div class="spin-loader mini"></div>`;
 
   btn.disabled = true;
 
