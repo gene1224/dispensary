@@ -2,28 +2,6 @@ const productEndpoint = "/wp-json/wc/v3/products";
 const categoryEndpoint = "/wp-json/wc/v3/products/categories";
 const tagEndpoint = "/wp-json/wc/v3/products/tags";
 
-const storageSave = (name, data, is_object = true) => {
-  const finalData = is_object ? JSON.stringify(data) : data;
-  localStorage.setItem(name, finalData);
-};
-
-const storageGet = (name, is_object = true) => {
-  const raw_data = localStorage.getItem(name);
-  if (raw_data === null) {
-    return false;
-  }
-  return is_object ? JSON.parse(raw_data) : raw_data;
-};
-
-const serializeObject = function (obj) {
-  let str = [];
-  for (let p in obj)
-    if (obj.hasOwnProperty(p) && encodeURIComponent(obj[p])) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-    }
-  return str.join("&");
-};
-
 const ratingStarsHTML = (average_rating) => {
   let ratingHtml = "";
   for (let x = 0; x < 5; x++) {
@@ -33,19 +11,6 @@ const ratingStarsHTML = (average_rating) => {
   return ratingHtml;
 };
 
-const price_round = (num) => {
-  cents = (num * 100) % 100;
-  if (cents >= 25 && cents < 75) {
-    //round x.25 to x.74 -> x.49
-    return Math.floor(num) + 0.49;
-  }
-  if (cents < 25) {
-    //round x.00 to x.24 -> [x - 1].99
-    return Math.floor(num) - 0.01;
-  }
-  //round x.75 to x.99 -> x.99
-  return Math.floor(num) + 0.99;
-};
 const productItemHTML = (product, index) => {
   const categories = product.categories.map((category) => category.name).join();
   const tags = product.tags.map((tag) => tag.name).join();
@@ -81,21 +46,40 @@ const productItemHTML = (product, index) => {
         <div class="new-listing-price">
         <label>New Listing Price</label>
         <p class="srp">SRP: $ ${srp.toFixed(2)}</p>
-            <input type="number" value="${srp.toFixed(
-              2
-            )}" name="items[${index}][listing_price]">
-            <input type="hidden" name="items[${index}][original_price]"  value="${
-    product.price
-  }">
-            <input type="hidden" name="items[${index}][sku]"  value="${
-    product.sku
-  }">
-            <input type="hidden" value="${
-              product.id
-            }" name="items[${index}][source_product_id]">
-            <p class="estimated-profit">Estimated Profit $ <span class="estimated-profit-${
-              product.id
-            }">${estimatedProfit.toFixed(2)}</span></p>
+            <input 
+              type="number"
+              class="price-input-main"
+              onchange="price_change(this)"
+              data-original-price="${product.price}"
+              data-srp="${srp.toFixed(2)}"
+              data-sku="${product.sku}"
+              value="${srp.toFixed(2)}"
+              name="items[${index}][listing_price]"
+            >
+            <input 
+              type="hidden"
+              name="items[${index}][original_price]"
+              value="${product.price}"
+            >
+            <input
+              type="hidden"
+              name="items[${index}][sku]" 
+              value="${product.sku}"
+            >
+
+            <input 
+              type="hidden"
+              value="${product.id}"
+              name="items[${index}][source_product_id]"
+            >
+            <p class="estimated-profit">
+              Estimated Profit $ 
+              <span 
+                id="estimated-profit-${product.sku}"
+              >
+                  ${estimatedProfit.toFixed(2)}
+              </span>
+            </p>
         </div>
         <div class="listing-action">
             <button type="button" class="remove-product" onclick="removeItem('${
@@ -106,6 +90,43 @@ const productItemHTML = (product, index) => {
 </div>`;
 };
 
+function roundOffPrices() {
+  const priceInputs = document.getElementsByClassName("price-input-main");
+  for (var i = 0; i < priceInputs.length; i++) {
+    const original_price = Number(priceInputs[i].value);
+    priceInputs[i].value = price_round(original_price);
+  }
+}
+function price_change(el) {
+  const original_price = el.getAttribute("data-original-price");
+  const srp = el.getAttribute("data-srp");
+  const sku = el.getAttribute("data-sku");
+  const price = el.value;
+  const estimatedProfit = (Number(price) - Number(original_price)) * 0.9;
+  if (Number(price) > Number(srp)) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: `Price exceeds the SRP, price should be lower or equal to ${srp}`,
+    }).then(function () {
+      el.value = Number(srp).toFixed(2);
+    });
+    return;
+  } else if (Number(price) < Number(original_price)) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: `Price is below the original price. Price higher than the original price ${original_price}`,
+    }).then(function () {
+      el.value = Number(srp).toFixed(2);
+    });
+    return;
+  }
+
+  jQuery(`#estimated-profit-${sku}`).text(estimatedProfit.toFixed(2));
+
+  el.value = Number(price).toFixed(2);
+}
 function removeItem(sku, product_id) {
   let data = {
     source_product_id: product_id,
@@ -180,11 +201,19 @@ jQuery(document).ready(function ($) {
   var pulser;
   var perBatch = 2;
 
+  console.log(wp_ajax);
+  if (wp_ajax.import_status != 0) {
+    get_status();
+    pulser = setInterval(get_status, 5000);
+  }
+
   $("#productImportForm").submit(function (e) {
     e.preventDefault();
     $("#importButton").addClass("loading");
     $("#importButton").html("Importing Products");
 
+    jQuery(".remove-product").fadeOut();
+    jQuery(".price-input-main").attr("disabled", "disabled");
     $.ajax({
       url: `${wp_ajax.url}?action=start_import`,
       data: new FormData(this),
@@ -217,7 +246,8 @@ jQuery(document).ready(function ($) {
             "Products successfully added to your dispensary. Click Okay to finish",
             "success"
           ).then((result) => {
-            window.location = "https://qrxdispensary.com/import-test/?view=imported";
+            window.location =
+              "https://qrxdispensary.com/import-test/?view=imported";
           });
         }
       },

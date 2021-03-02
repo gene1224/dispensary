@@ -1,10 +1,10 @@
 <div class="product-import-container">
 	<h1>Enlisted Products</h1>
-	
-		{% include 'template-parts/plan-details.twig' %}
+
+	{% include 'template-parts/plan-details.twig' %}
 	{% include 'template-parts/page-controls.twig' %}
-	
-	
+
+
 	<form id="productImportForm">
 		<div class="enlist-actions">
 			<a href="{{gird_url}}">Add Products</a>
@@ -45,7 +45,7 @@
 					</div>
 					<div class="product-cart-item-action">
 						<div class="listing-action">
-							<button type="button" class="remove-product">Delete Listing</button>
+							<button type="button" class="remove-product" onclick="removeFromStore(this, '{{ product.sku }}')">Delete Listing</button>
 						</div>
 					</div>
 				</div>

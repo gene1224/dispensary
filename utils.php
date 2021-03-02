@@ -156,3 +156,16 @@ function get_users_imported_products()
     }
     return $imported_products;
 }
+
+function get_first_dispensary($user_id)
+{
+    $site_id = 0;
+    foreach (get_blogs_of_user($user_id, true) as $blog) {
+        if ($blog->userblog_id != 1) {
+            $site_id = $blog->userblog_id;
+            break;
+        }
+    }
+
+    return $site_id;
+}

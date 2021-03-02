@@ -3,31 +3,6 @@ const categoryEndpoint = "/wp-json/wc/v3/products/categories";
 const tagEndpoint = "/wp-json/wc/v3/products/tags";
 const gridLoaderHTML = `<div class="loader"></div>`;
 
-const storageSave = (name, data, is_object = true) => {
-  if (name == "listing_cart") {
-    jQuery(".cart-count").html(data.length);
-  }
-  const finalData = is_object ? JSON.stringify(data) : data;
-  localStorage.setItem(name, finalData);
-};
-
-const storageGet = (name, is_object = true) => {
-  const raw_data = localStorage.getItem(name);
-  if (raw_data === null) {
-    return false;
-  }
-  return is_object ? JSON.parse(raw_data) : raw_data;
-};
-
-const serializeObject = function (obj) {
-  let str = [];
-  for (let p in obj)
-    if (obj.hasOwnProperty(p) && encodeURIComponent(obj[p])) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-    }
-  return str.join("&");
-};
-
 const ratingStarsHTML = (average_rating) => {
   let ratingHtml = "";
   for (let x = 0; x < 5; x++) {

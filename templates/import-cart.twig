@@ -8,7 +8,7 @@
 	<form id="productImportForm">
 		<div class="enlist-actions">
 			<button type="submit" id="importButton">Enlist Products</button>
-			<a href="{{gird_url}}">Add Products</a>
+			<a href="{{gird_url}}">Add More Products</a>
 		</div>
 		<div class="product-import-cart-list" id="importCartItems">
 			<div class="loader"></div>
@@ -17,6 +17,8 @@
 		<div id="cart-empty" style="display:none">
 			<h2>Your listing cart is currently empty. Please add products to import</h2>
 		</div>
-
 	</form>
+	<div class="price-controls">
+		<button class="price-round" onclick="roundOffPrices()">Round prices to nearest ¢.59 or ¢.99</button>
+	</div>
 </div>
