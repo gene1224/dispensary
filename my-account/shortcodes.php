@@ -4,10 +4,16 @@ function product_import_shortcode_scripts()
 {
     wp_register_script('sweetalert', '//cdn.jsdelivr.net/npm/sweetalert2@10', array('jquery'), 3.3);
     wp_register_script('product_import_utils', plugins_url('../assets/js/utils.js', __FILE__), array('jquery', 'sweetalert'), '2.5.1');
-    wp_register_script('product_import_js', plugins_url('../assets/js/script.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils'), '2.5.1');
+
+    wp_register_script('lightbox_js_qrx', 'https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js', array('jquery'), '2.5.1');
+    wp_register_script('product_import_js', plugins_url('../assets/js/script.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx'), '2.5.1');
+
     wp_register_script('product_import_done_js', plugins_url('../assets/js/product.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils'), '2.5.1');
     wp_register_script('product_import_cart_js', plugins_url('../assets/js/cart.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils'), '2.5.1');
-    wp_enqueue_style('product_import_css', plugins_url('../assets/css/style.css', __FILE__), [], '1.0.0', 'all');
+
+    wp_register_style('lightbox_css_qrx', 'https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.css', [], '1.0.0', 'all');
+
+    wp_register_style('product_import_css', plugins_url('../assets/css/style.css', __FILE__), [], '1.0.0', 'all');
 }
 add_action('wp_enqueue_scripts', 'product_import_shortcode_scripts');
 
@@ -42,6 +48,12 @@ function product_import_display()
         'view' => $_REQUEST['view'] ?: 'home',
     );
 
+    try {
+        $listing_cart = array_values($listing_cart);
+    } catch (\Throwable $th) {
+        $listing_cart = [];
+    }
+
     $js_objects = array(
         'url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('ajax-nonce'),
@@ -63,7 +75,7 @@ function product_import_display()
         case 'cart':
             $batch = check_imported_products(get_current_user_id());
             $js_objects["import_status"] = count($batch["remaining_skus"]);
-            
+
             wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
             wp_enqueue_script('product_import_cart_js');
             echo $timber->compile('import-cart.twig', $context);
@@ -71,6 +83,7 @@ function product_import_display()
         default:
             wp_localize_script('product_import_js', 'wp_ajax', $js_objects);
             wp_enqueue_script('product_import_js');
+            wp_enqueue_style('lightbox_css_qrx');
             echo $timber->compile('product-import.twig', $context);
             break;
     }
@@ -142,7 +155,7 @@ add_action('wp_ajax_nopriv_add_to_cart_list', 'add_to_cart_list');
 
 function empty_cart_list()
 {
-    $user_id = get_current_user_id();
+    $user_id = isset($_REQUEST["uid"]) ? $_REQUEST["uid"] : get_current_user_id();
 
     update_user_meta($user_id, 'listing_cart', array());
 
@@ -258,7 +271,7 @@ add_action('wp_ajax_import_pulse', 'import_pulse');
 add_action('wp_ajax_nopriv_import_pulse', 'import_pulse');
 function import_batch($user_id, $site_id)
 {
-    $per_batch = 2;
+    $per_batch = 5;
 
     $import_data = check_imported_products($user_id);
 
@@ -354,3 +367,31 @@ function remove_product_from_store()
 
 add_action('wp_ajax_remove_product_in_site', 'remove_product_from_store');
 add_action('wp_ajax_nopriv_remove_product_in_site', 'remove_product_from_store');
+
+function import_email_function($products)
+{
+    global $timber;
+
+    if (count($products) <= 0) {
+        return;
+    }
+
+    $get_current_user = wp_get_current_user();
+    $context = array(
+        'products' => $products,
+        'user' => wp_get_current_user(),
+        'blogname' => get_bloginfo('name'),
+        'blogurl' => get_bloginfo('url'),
+    );
+
+    $client_email = $timber->compile('emails/customer-report.twig', $context);
+
+    $source_email = $timber->compile('emails/source-notice.twig', $context);
+
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+    wp_mail($get_current_user->user_email, $email_subject, $client_email, $headers);
+
+    wp_mail('allstuff420@yopmail.com', $email_subject, $source_email, $headers);
+}
+add_action('product_import_finished', 'import_email_function');

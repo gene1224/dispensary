@@ -1,7 +1,7 @@
 const productEndpoint = "/wp-json/wc/v3/products";
 const categoryEndpoint = "/wp-json/wc/v3/products/categories";
 const tagEndpoint = "/wp-json/wc/v3/products/tags";
-const gridLoaderHTML = `<div class="spin-loader"></div>`;
+const gridLoaderHTML = `<div class="custom-spin-loader"></div>`;
 
 const ratingStarsHTML = (average_rating) => {
   let ratingHtml = "";
@@ -38,9 +38,17 @@ const productItemHTML = (product, importedProducts = []) => {
 
   return `<div class="product-item">
 	<div class="product-image">
+      <a 
+        href="${
+          product.images[0]?.src || "https://dummyimage.com/160x160/fff/000000"
+        }"
+        data-lightbox="product-${product.sku} "
+        data-title="${product.name}"
+      >
         <img src="${
           product.images[0]?.src || "https://dummyimage.com/160x160/fff/000000"
         }">
+      </a>
         ${tagsHTML(product.tags)}
 	</div>
 	<div class="product-descriptions">
@@ -166,7 +174,7 @@ jQuery(document).ready(function ($) {
         $("#product-importer-grid").html(productHTMLs);
         if (fromFilter) {
           $("#applyFilter").removeAttr("disabled");
-          $("#applyFilter").find(".spin-loader").fadeIn();
+          $("#applyFilter").find(".custom-spin-loader").fadeOut();
         }
       },
     });
@@ -205,8 +213,8 @@ jQuery(document).ready(function ($) {
     }
     current_page = 1;
     productFilter = query;
-    $(this).find(".spin-loader").fadeIn();
-    loadProducts(serializeObject(query));
+    $(this).find(".custom-spin-loader").fadeIn();
+    loadProducts(serializeObject(query), true);
   });
 });
 
@@ -226,8 +234,11 @@ function addToCart(btn, id, sku, remove = false) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text:
-        "You've reach maximum product on your Dispensary. You can upgrade your plan to add more products.",
+      html: `<p>
+          You've reach maximum product on your Dispensary. You can upgrade your plan to add more products.
+          <a href="https://qrxdispensary.com/checkout/?add-to-cart=2850">Pro Plan</a> or 
+          <a href="https://qrxdispensary.com/checkout/?add-to-cart=2851">Premium Plan</a> 
+        </p>`,
     });
     return;
   }
@@ -238,7 +249,7 @@ function addToCart(btn, id, sku, remove = false) {
 
   btn.innerHTML = `${
     remove ? "Removing" : "Adding"
-  } to cart.. <div class="spin-loader mini"></div>`;
+  } to cart.. <div class="custom-spin-loader mini"></div>`;
 
   btn.disabled = true;
 

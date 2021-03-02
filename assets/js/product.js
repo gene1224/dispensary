@@ -1,13 +1,14 @@
 jQuery(document).ready(function ($) {});
 
 function removeFromStore(el, sku) {
-  el.setAttribute("disabled", "disabled");
   Swal.fire({
     title: "Remove Product From Store?",
     showCancelButton: true,
     confirmButtonText: `Remove`,
   }).then((result) => {
     if (result.isConfirmed) {
+      el.setAttribute("disabled", "disabled");
+      el.innerHTML = `Deleting Product.. <div class="custom-spin-loader"></div>`;
       jQuery.ajax({
         type: "POST",
         url: `${wp_ajax.url}?action=remove_product_in_site`,
@@ -31,5 +32,4 @@ function removeFromStore(el, sku) {
       });
     }
   });
-  return;
 }

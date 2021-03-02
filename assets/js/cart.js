@@ -247,7 +247,7 @@ jQuery(document).ready(function ($) {
             "success"
           ).then((result) => {
             window.location =
-              "https://qrxdispensary.com/import-test/?view=imported";
+              "https://qrxdispensary.com/my-account/?view=imported";
           });
         }
       },

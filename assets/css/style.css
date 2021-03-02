@@ -1,19 +1,16 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
-
 .product-import-container {
   margin: 40px auto !important;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 .product-importer-grid {
   margin: 0 !important;
   max-width: none !important;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .product-importer-grid {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
   line-height: 1;
 }
@@ -24,13 +21,15 @@
   -webkit-transform: all 0.3s ease-in-out;
   -ms-transform: all 0.3s ease-in-out;
   transform: all 0.3s ease-in-out;
-  margin-bottom: 20px;
+  margin: 0 15px 15px;
 }
 .product-importer-grid > .product-item .product-image {
   position: relative;
   width: 100%;
   height: 160px;
+  overflow:hidden;
 }
+
 .product-importer-grid > .product-item .product-image > .tags {
   position: absolute;
   font-size: 10px;
@@ -65,11 +64,11 @@
   align-items: center;
 }
 .product-importer-grid > .product-item .product-sku--rating .product-sku {
-  font-size: 10px;
-  color: #aaa;
+  font-size: 13px;
+  color: #999;
 }
 .product-importer-grid > .product-item .product-sku--rating .product-rating {
-  font-size: 13px;
+  font-size: 14px;
   color: gold;
 }
 .product-importer-grid
@@ -158,7 +157,6 @@
   margin-left: 5px;
 }
 
-@charset "UTF-8";
 .product-import-container
   .product-import-cart-list
   .product-cart-item
@@ -368,7 +366,7 @@
 .srp,
 .estimated-profit {
   font-size: 10px !important;
-  margin: 0;
+  margin: 0 !important;
   color: #999;
   text-align: center;
   text-transform: Uppercase;
@@ -381,7 +379,7 @@
   font-size: inherit;
 }
 
-..spin-loader {
+.custom-spin-loader {
   border: 10px solid #f3f3f3; /* Light grey */
   border-top: 10px solid green; /* Blue */
   border-radius: 50%;
@@ -390,9 +388,9 @@
   margin: 100px auto;
   animation: spin 2s linear infinite;
 }
-..spin-loader.mini {
-  border: 2px solid #f3f3f3; /* Light grey */
-  border-top: 2px solid green; /* Blue */
+.custom-spin-loader.mini {
+  border: 2px solid #f3f3f3 !important; /* Light grey */
+  border-top: 2px solid green !important; /* Blue */
   width: 20px;
   height: 20px;
   margin: 0 20px;
@@ -404,7 +402,7 @@
     border-width: 10px;
   }
   50% {
-    border-width: 10px;
+    border-width: 20px;
   }
   100% {
     border-width: 10px;
@@ -423,6 +421,7 @@
 .page-controls a {
   text-transform: uppercase;
   text-decoration: none !important;
+  border:1px solid #555;
   background: #ccc;
   padding: 3px 18px;
   border-radius: 20px;
@@ -430,6 +429,7 @@
   font-size: 13px;
   color: #000;
 }
+.page-controls a:hover,
 .page-controls a.active {
   background: #0073aa;
   color: #fff;
@@ -521,8 +521,8 @@
   display: flex !important;
   justify-content: center;
 }
-#applyFilter ..spin-loader,
-.product-actions button ..spin-loader {
+#applyFilter .custom-spin-loader,
+.product-actions button .custom-spin-loader {
   margin: 0 0 0 8px;
   width: 16px;
   height: 16px;
@@ -534,4 +534,42 @@
 #gridPrev:active {
   background: #4caf50;
   color: #fff;
+}
+
+.product-import-container {
+  max-width: 900px !important;
+}
+
+.account-plan-details {
+  display: flex;
+  flex-wrap: wrap;
+}
+.account-plan-details > div:first-child {
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.product-counts {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.product-counts > div {
+  flex: 0 1 auto;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #000;
+  margin: 0 20px 0 0;
+}
+.product-counts > div span {
+  color: red;
+}
+.price-controls {
+  margin-top: 20px;
+}
+.price-controls .price-round {
+  font-size: 15px;
+  font-weight: normal;
+  padding: 8px;
+  background: #229d44;
 }
