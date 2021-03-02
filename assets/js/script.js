@@ -166,7 +166,7 @@ jQuery(document).ready(function ($) {
         $("#product-importer-grid").html(productHTMLs);
         if (fromFilter) {
           $("#applyFilter").removeAttr("disabled");
-          $("#applyFilter").find(".loader").fadeIn();
+          $("#applyFilter").find(".spin-loader").fadeIn();
         }
       },
     });
@@ -205,7 +205,7 @@ jQuery(document).ready(function ($) {
     }
     current_page = 1;
     productFilter = query;
-    $(this).find(".loader").fadeIn();
+    $(this).find(".spin-loader").fadeIn();
     loadProducts(serializeObject(query));
   });
 });
