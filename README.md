@@ -1,3 +1,6 @@
+```
+composer install
+```
 ```php
 <?php
 //Add on functions.php or your plugin
