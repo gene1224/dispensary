@@ -23,48 +23,14 @@ function product_import_display()
         ),
     );
 
-    $imported_products = [];
-    $imported_products_obj = [];
-
-    foreach (get_blogs_of_user(get_current_user_id(), true) as $users_site) {
-
-        switch_to_blog($users_site->userblog_id);
-
-        $products = wc_get_products(array(
-            'source_product_id' => true,
-
-        ));
-
-        foreach ($products as $key => $product) {
-            $attachment_ids = $product->get_gallery_image_ids();
-            $first_image_url = 'https://dummyimage.com/180x180/fff/000.png&text=Product';
-            if (is_array($attachment_ids) && !empty($attachment_ids)) {
-                $first_image_url = wp_get_attachment_url($attachment_ids[0]);
-                
-            } 
-            
-            $imported_products[] = array(
-                'source_product_id' => get_post_meta($product->id, 'source_product_id', true),
-                'source_site_id' => get_post_meta($product->id, 'source_site_id', true),
-                'source_site_url' => get_post_meta($product->id, 'source_site_url', true),
-                'original_price' => $product->get_meta('original_price'),
-                'categories' => $product->get_categories(', '),
-                'tags' => $product->get_tags(', '),
-                'index' => $key,
-                'sku' => $product->get_sku(),
-                'price' => $product->get_price(),
-                'name' => $product->get_name(),
-                'image' => $first_image_url,
-            );
-        }
-
-        restore_current_blog();
-    }
+    $imported_products = get_users_imported_products();
 
     wp_enqueue_script('sweetalert');
     wp_enqueue_style('product_import_css');
 
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
+
+    $max_product = 6;
 
     $context = array(
         'sites' => $sites,
@@ -73,6 +39,8 @@ function product_import_display()
         'cart_count' => count($listing_cart) ?: 0,
         'imported_products_count' => count($imported_products) ?: 0,
         'imported_products' => $imported_products,
+        'max_products' => $max_product,
+        'view' => $_REQUEST['view'] ?: 'home'
     );
 
     $js_objects = array(
@@ -81,22 +49,27 @@ function product_import_display()
         'default_site' => $sites[0]['url'],
         'default_api_key' => $sites[0]['api_key'],
         'imported_products' => $imported_products,
+        'max_products' => $max_product,
         'listing_cart' => $listing_cart ?: [],
     );
-    if ($_REQUEST['view'] == 'imported') {
-        wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
-        // wp_enqueue_script('product_import_cart_js');
-        echo $timber->compile('imported-products.twig', $context);
-    } else if ($_REQUEST['view'] == 'cart') {
-        wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
-        wp_enqueue_script('product_import_cart_js');
-        echo $timber->compile('import-cart.twig', $context);
-    } else {
-        wp_localize_script('product_import_js', 'wp_ajax', $js_objects);
-        wp_enqueue_script('product_import_js');
-        echo $timber->compile('product-import.twig', $context);
-    }
 
+    switch ($_REQUEST['view']) {
+        case 'imported':
+            wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
+            // wp_enqueue_script('product_import_cart_js');
+            echo $timber->compile('imported-products.twig', $context);
+            break;
+        case 'cart':
+            wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
+            wp_enqueue_script('product_import_cart_js');
+            echo $timber->compile('import-cart.twig', $context);
+            break;
+        default:
+            wp_localize_script('product_import_js', 'wp_ajax', $js_objects);
+            wp_enqueue_script('product_import_js');
+            echo $timber->compile('product-import.twig', $context);
+            break;
+    }
 }
 add_shortcode('product_import_views', 'product_import_display');
 

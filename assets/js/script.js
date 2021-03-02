@@ -57,7 +57,6 @@ const productItemButton = (product, disable = false, cart = false) => {
 const productItemHTML = (product, importedProducts = []) => {
   const productExist = importedProducts.includes(product.id.toString());
   let cart_items = storageGet("listing_cart") || [];
-  console.log(cart_items);
   const productOnCart = cart_items.find(
     (item) => item.source_product_id == product.id
   );
@@ -101,7 +100,6 @@ const selectOptionsHTML = (categories) => {
 };
 
 jQuery(document).ready(function ($) {
-  console.log(wp_ajax);
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);
   }
@@ -235,16 +233,6 @@ jQuery(document).ready(function ($) {
     $(this).find(".loader").fadeIn();
     loadProducts(serializeObject(query));
   });
-
-  function nextPage() {
-    current_page += 1;
-    loadProducts(serializeObject(productFilter));
-  }
-
-  function prevPage() {
-    current_page -= 1;
-    loadProducts(serializeObject(productFilter));
-  }
 });
 
 function addToCart(btn, id, sku, remove = false) {
@@ -253,19 +241,26 @@ function addToCart(btn, id, sku, remove = false) {
   const item_exist = cart_items.find((item) => item.source_product_id == id);
 
   if (item_exist && !remove) {
-    debugger;
     return;
-  } else if (item_exist && remove) {
-    const filter_cart_items = cart_items.filter(
-      (item) => item.source_product_id == id
-    );
-    cart_items = filter_cart_items;
   }
 
+  const remaining_products =
+    wp_ajax.max_products - wp_ajax.imported_products.length - cart_items.length;
+
+  if (remaining_products <= 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text:
+        "You've reach maximum product on your Dispensary. You can upgrade your plan to add more products.",
+    });
+    return;
+  }
   btn.setAttribute(
     "onclick",
     `addToCart(this, ${id}, '${sku}', ${remove ? "false" : "true"})`
   );
+
   btn.innerHTML = `${
     remove ? "Removing" : "Adding"
   } to cart.. <div class="loader mini"></div>`;
@@ -278,25 +273,21 @@ function addToCart(btn, id, sku, remove = false) {
     sku: sku,
     remove: remove,
   };
-  if (!remove) {
-    cart_items.push(data);
-  }
 
-  action = "add_to_cart_list";
-  if (remove) {
-    action = "remove_product_in_cart";
-  }
+  action = remove ? "remove_product_in_cart" : "add_to_cart_list";
+
   jQuery.ajax({
     type: "POST",
     url: `${wp_ajax.url}?action=${action}`,
     data: data,
-
     success: function (response) {
       btn.innerHTML = remove ? "Enlist Product" : "Added to Cart";
       btn.classList.remove(remove ? "on-cart" : "add");
       btn.classList.add(remove ? "add" : "on-cart");
       btn.disabled = false;
-      storageSave("listing_cart", cart_items);
+      try {
+        storageSave("listing_cart", JSON.parse(response));
+      } catch (error) {}
     },
   });
 }

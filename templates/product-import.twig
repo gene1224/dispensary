@@ -1,10 +1,7 @@
 <div class="product-import-container">
 	<h1>Available Products</h1>
-	<div class="page-controls">
-		<a href="{{gird_url}}" class="view-products active">View Products</a>
-		<a href="?view=cart" class="view-products">View Products Added (<span class="cart-count">{{cart_count}}</span>)</a>
-		<a href="?view=imported" class="view-products">View Imported Products (<span class="imported-count">{{imported_products_count}}</span>)</a>
-	</div>
+	{% include 'template-parts/plan-details.twig' %}
+	{% include 'template-parts/page-controls.twig' %}
 	{% include 'template-parts/grid-controls.twig' %}
 	<div class="product-importer-grid" id="product-importer-grid">
 		<div class="loader"></div>

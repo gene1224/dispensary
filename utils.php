@@ -116,3 +116,43 @@ function microseconds_to_seconds($duration)
 
     return (int) $duration - $hours * 60 * 60 - $minutes * 60;
 }
+
+function get_users_imported_products()
+{
+    $imported_products = [];
+
+    foreach (get_blogs_of_user(get_current_user_id(), true) as $users_site) {
+
+        switch_to_blog($users_site->userblog_id);
+
+        $products = wc_get_products(array(
+            'source_product_id' => true,
+
+        ));
+
+        foreach ($products as $key => $product) {
+            $attachment_ids = $product->get_gallery_image_ids();
+            $first_image_url = 'https://dummyimage.com/180x180/fff/000.png&text=Product';
+            if (is_array($attachment_ids) && !empty($attachment_ids)) {
+                $first_image_url = wp_get_attachment_url($attachment_ids[0]);
+            }
+
+            $imported_products[] = array(
+                'source_product_id' => get_post_meta($product->id, 'source_product_id', true),
+                'source_site_id' => get_post_meta($product->id, 'source_site_id', true),
+                'source_site_url' => get_post_meta($product->id, 'source_site_url', true),
+                'original_price' => $product->get_meta('original_price'),
+                'categories' => $product->get_categories(', '),
+                'tags' => $product->get_tags(', '),
+                'index' => $key,
+                'sku' => $product->get_sku(),
+                'price' => $product->get_price(),
+                'name' => $product->get_name(),
+                'image' => $first_image_url,
+            );
+        }
+
+        restore_current_blog();
+    }
+    return $imported_products;
+}

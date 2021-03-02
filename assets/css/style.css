@@ -29,7 +29,7 @@
 .product-importer-grid > .product-item .product-image {
   position: relative;
   width: 100%;
-  min-height: 160px;
+  height: 160px;
 }
 .product-importer-grid > .product-item .product-image > .tags {
   position: absolute;
@@ -405,7 +405,7 @@
   }
   50% {
     border-width: 10px;
-  } 
+  }
   100% {
     border-width: 10px;
     transform: rotate(360deg);
@@ -414,8 +414,8 @@
 
 .page-controls {
   display: flex;
-  padding: 10px 0;
-  margin: 20px 0;
+  padding: 0 0 10px;
+  margin: 0px 0 20px;
 }
 .page-controls:first-child {
   border-bottom: 1px solid #ccc;
@@ -526,4 +526,12 @@
   margin: 0 0 0 8px;
   width: 16px;
   height: 16px;
+}
+
+#gridNext:hover,
+#gridPrev:hover,
+#gridNext:active,
+#gridPrev:active {
+  background: #4caf50;
+  color: #fff;
 }
