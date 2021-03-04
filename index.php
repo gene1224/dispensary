@@ -18,11 +18,14 @@ require_once ABSPATH . 'wp-admin/includes/media.php';
 require_once ABSPATH . 'wp-admin/includes/file.php';
 require_once ABSPATH . 'wp-admin/includes/image.php';
 
-require 'order.php';
-require 'product.php';
-require 'multisite.php';
 require 'admin/index.php';
-require 'my-account/index.php';
+if ($_SERVER['HTTP_HOST'] == 'qrxdispensary.com' || $_SERVER['HTTP_HOST'] == 'wpms.net' || $_SERVER['HTTP_HOST'] == 'localhost') {
+    require 'my-account/index.php';
+    require 'multisite.php';
+} else {
+    require 'order.php';
+    require 'product.php';
+}
 require 'utils.php';
 
 use Automattic\WooCommerce\Client;

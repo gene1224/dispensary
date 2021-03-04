@@ -1,0 +1,5 @@
+.wc_payment_methods.payment_methods,
+#woocommerce-info,
+#order_review_heading {
+  display: none;
+}
