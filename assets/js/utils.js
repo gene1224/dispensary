@@ -5,7 +5,7 @@ const storageSave = (name, data, is_object = true) => {
       wp_ajax.imported_products.length + data.length
     );
     jQuery("#remaining_products_count").text(
-        wp_ajax.max_products - wp_ajax.imported_products.length - data.length
+      wp_ajax.max_products - wp_ajax.imported_products.length - data.length
     );
   }
   const finalData = is_object ? JSON.stringify(data) : data;
@@ -38,4 +38,24 @@ const price_round = (num) => {
     return Math.floor(num) - 0.01;
   }
   return Math.floor(num) + 0.99;
+};
+
+function changePlan() {
+  const planHTML = () => `
+        <a href="https://qrxdispensary.com/checkout/?add-to-cart=2850">QRX Pro Plan</a> or 
+        <a href="https://qrxdispensary.com/checkout/?add-to-cart=2851">QRX Premium Plan</a>
+    `;
+  Swal.fire({
+    title: "Change Plan?",
+    icon: "info",
+    html: planHTML(),
+    showCloseButton: true,
+
+    focusConfirm: false,
+    confirmButtonText: "No thanks",
+  });
+}
+
+const objectToArray = (object) => {
+  return Object.keys(object).map((i) => object[i]);
 };

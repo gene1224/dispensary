@@ -8,7 +8,7 @@ function removeFromStore(el, sku) {
   }).then((result) => {
     if (result.isConfirmed) {
       el.setAttribute("disabled", "disabled");
-      el.innerHTML = `Deleting Product.. <div class="custom-spin-loader"></div>`;
+      el.innerHTML = `Deleting Product.. <div class="custom-spin-loader mini"></div>`;
       jQuery.ajax({
         type: "POST",
         url: `${wp_ajax.url}?action=remove_product_in_site`,

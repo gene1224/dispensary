@@ -76,7 +76,7 @@ function copy_products_function($imported_product_params = [], $site_id = 1)
 
     save_products($products, $imported_products, $site);
 
-    error_log(microseconds_to_seconds(microtime(true) - $starttime) . "s Products Added ".count($imported_product_params));
+    error_log(microseconds_to_seconds(microtime(true) - $starttime) . "s Products Added " . count($imported_product_params));
 
     restore_current_blog();
 

@@ -35,7 +35,19 @@ function product_import_display()
 
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
-    $max_product = apply_filters('max_products_to_import', 10);
+    $max_product = 5;
+
+    if (current_user_can('administrator')) {
+        $max_product = 1000;
+    } elseif (current_user_can('qrxds_basic')) {
+        $max_product = 20;
+    } elseif (current_user_can('qrxds_pro')) {
+        $max_product = 50;
+    } elseif (current_user_can('qrxds_premium')) {
+        $max_product = 100;
+    }
+
+    $max_product = apply_filters('max_products_to_import', $max_product);
 
     $context = array(
         'sites' => $sites,

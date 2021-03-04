@@ -32,6 +32,10 @@ const productItemButton = (product, disable = false, cart = false) => {
 const productItemHTML = (product, importedProducts = []) => {
   const productExist = importedProducts.includes(product.id.toString());
   let cart_items = storageGet("listing_cart") || [];
+
+  cart_items =
+    typeof cart_items === "object" ? objectToArray(cart_items) : cart_items;
+    
   const productOnCart = cart_items.find(
     (item) => item.source_product_id == product.id
   );
@@ -42,7 +46,7 @@ const productItemHTML = (product, importedProducts = []) => {
         href="${
           product.images[0]?.src || "https://dummyimage.com/160x160/fff/000000"
         }"
-        data-lightbox="product-${product.sku} "
+        data-lightbox="Product-${product.sku}"
         data-title="${product.name}"
       >
         <img src="${
@@ -118,7 +122,7 @@ jQuery(document).ready(function ($) {
   getTaxonomies("categories");
 
   const default_query_string = {
-    per_page: 10,
+    per_page: 12,
     stock_status: "instock",
   };
 
@@ -221,6 +225,9 @@ jQuery(document).ready(function ($) {
 function addToCart(btn, id, sku, remove = false) {
   let cart_items = storageGet("listing_cart") || [];
 
+  cart_items =
+    typeof cart_items === "object" ? objectToArray(cart_items) : cart_items;
+
   const item_exist = cart_items.find((item) => item.source_product_id == id);
 
   if (item_exist && !remove) {
@@ -230,7 +237,7 @@ function addToCart(btn, id, sku, remove = false) {
   const remaining_products =
     wp_ajax.max_products - wp_ajax.imported_products.length - cart_items.length;
 
-  if (remaining_products <= 0) {
+  if (remaining_products <= 0 && !remove) {
     Swal.fire({
       icon: "error",
       title: "Oops...",
