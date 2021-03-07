@@ -32,6 +32,13 @@ function custom_checkout_fields()
             'placeholder' => "mydispensary." . $_SERVER['HTTP_HOST'],
             'required' => true,
         ),
+        'template_selection_id' => array(
+            'type' => 'hidden',
+        ),
+        'file_attachment_url' => array(
+            'type' => 'hidden',
+        ),
+
     );
 }
 
@@ -60,16 +67,15 @@ function remove_order_notes($fields)
     foreach (WC()->cart->get_cart() as $item_key => $values) {
         $product = $values['data'];
 
-        if ($product->id == 59 || $product->id == 57) {
+        if ($product->id == 2851 || $product->id == 2850) {
             unset($fields['account']['subdomain']);
+        } else if ($product->id == 2848) {
+            unset($fields['account']['domain']);
         } else {
             unset($fields['account']['domain']);
+            unset($fields['account']['subdomain']);
         }
     }
-
-    $fields['account']['file_attachment_url'] = array(
-        'type' => 'hidden',
-    );
 
     return $fields;
 }
@@ -94,7 +100,20 @@ add_filter('woocommerce_create_account_default_checked', function ($checked) {
     return true;
 });
 
-add_action('woocommerce_thankyou', 'duplicate_site', 10, 1);
+add_action('woocommerce_thankyou', 'schedule_site_duplication', 10, 1);
+
+function schedule_site_duplication($args)
+{
+    if (!get_current_user_id()) {
+        return;
+    }
+
+    if (get_user_meta(get_current_user_id(), 'site_created', true) || get_user_meta(get_current_user_id(), 'site_clone_started', true)) {
+        return;
+    }
+
+    wp_schedule_single_event(time(), 'duplicate_site', array(get_current_user_id()));
+}
 
 function business_document_form($checkout)
 {
@@ -229,10 +248,58 @@ function product_category_filter_changes()
 }
 add_action('template_redirect', 'product_category_filter_changes');
 
+//COMMENT OUT WHEN PAYMENT IS AVAILABLE
 add_filter('woocommerce_cart_needs_payment', 'filter_cart_needs_payment_callback', 100, 2);
 function filter_cart_needs_payment_callback($needs_payment, $cart)
 {
+    $payment_required = false; //$cart->subtotal > 0 ? $needs_payment : false
+    // if($payment_required) {
     wp_register_style('checkout_custom_css', plugins_url('../assets/css/checkout.css', __FILE__), [], '1.0.0', 'all');
     wp_enqueue_style('checkout_custom_css');
-    return $cart->subtotal > 0 ? $needs_payment : false;
+    // }
+
+    return $payment_required;
+}
+
+add_action('wp_ajax_create_site', 'create_site_function');
+
+function create_site_function()
+{
+    if (!isset($_REQUEST['user_id'])) {
+        die();
+    }
+
+    wp_schedule_single_event(time(), 'duplicate_site', array($_REQUEST['user_id']));
+    echo "STARTING to create site for " . $_REQUEST['user_id'];
+    die();
+}
+
+add_action('site_duplicate_finihsed', 'send_site_confirmation_emails', 1, 2);
+function send_site_confirmation_emails($user_id, $site_creatation_data)
+{
+
+    global $timber;
+
+    $blog_id = 0;
+    foreach (get_sites() as $site) {
+        if ($site->domain == $site_creatation_data['newdomain']) {
+            $blog_id = $site->blog_id;
+            break;
+        }
+    }
+    add_user_to_blog($blog_id, $user_id, 'administrator');
+
+    $user = get_userdata($user_id);
+
+    $context = array(
+        "user" => $user,
+        "domain" => $site_creatation_data['newdomain'],
+    );
+
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+    $email_message = $timber->compile('emails/site-created.twig', $context);
+
+    wp_mail($user->user_email, "Site creation complete", $email_message, $headers);
+
 }

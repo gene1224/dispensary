@@ -1,5 +1,27 @@
 jQuery(document).ready(function ($) {
   console.log(wp_ajax);
+
+  const templateSelector = $(`select[name="template_id_selected"]`);
+
+  //LOCALIZE THIS SOON
+  const templatesAvailable = [
+    {
+      id: 109,
+      preview:
+        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/1.-Marketplace-03-WCFM-Thumbnail.png",
+    },
+  ];
+  templateSelector.change(function () {
+    const selecteTemplate = templatesAvailable.find(
+      (template) => template.id == templateSelector.val()
+    );
+    $("#templatePreview").attr(
+      "src",
+      selecteTemplate ||
+        "https://dummyimage.com/300x300/ddd/000.png&text=Preview"
+    );
+  });
+
   const submitButton = $("#place_order");
   $("#business_information").change(function (e) {
     e.preventDefault();
@@ -8,7 +30,6 @@ jQuery(document).ready(function ($) {
     let formData = new FormData();
     formData.append("business_information", fileEl.files[0]);
 
-    
     submitButton.attr("disabled", "disabled");
     $.ajax({
       url: `${wp_ajax.url}?nonce=${wp_ajax.nonce}&action=checkout_document_upload`,

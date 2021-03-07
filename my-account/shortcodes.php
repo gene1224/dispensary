@@ -29,6 +29,11 @@ function product_import_display()
     wp_enqueue_script('sweetalert');
     wp_enqueue_style('product_import_css');
 
+    if(!get_user_meta(get_current_user_id(), 'site_create', true)) {
+        echo $timber->compile('no-site.twig', $context);
+        return;
+    }
+
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
     $max_product = 5;
@@ -83,7 +88,6 @@ function product_import_display()
         case 'cart':
             $batch = check_imported_products(get_current_user_id());
             $js_objects["import_status"] = count($batch["remaining_skus"]);
-
             wp_localize_script('product_import_cart_js', 'wp_ajax', $js_objects);
             wp_enqueue_script('product_import_cart_js');
             echo $timber->compile('import-cart.twig', $context);
@@ -398,8 +402,8 @@ function import_email_function($products)
 
     $headers = ['Content-Type: text/html; charset=UTF-8'];
 
-    wp_mail($get_current_user->user_email, $email_subject, $client_email, $headers);
+    wp_mail($get_current_user->user_email, "Product Import Complete", $client_email, $headers);
 
-    wp_mail('allstuff420@yopmail.com', $email_subject, $source_email, $headers);
+    wp_mail('allstuff420@yopmail.com', "Product Import Report", $source_email, $headers);
 }
 add_action('product_import_finished', 'import_email_function');
