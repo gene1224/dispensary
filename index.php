@@ -20,7 +20,7 @@ require_once ABSPATH . 'wp-admin/includes/image.php';
 
 require 'admin/index.php';
 if ($_SERVER['HTTP_HOST'] == 'qrxdispensary.com' || $_SERVER['HTTP_HOST'] == 'wpms.net' || $_SERVER['HTTP_HOST'] == 'localhost') {
-    require 'my-account/index.php';
+    require 'my-account/my-account.php';
     require 'multisite.php';
 } else {
     require 'order.php';

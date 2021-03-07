@@ -3,3 +3,40 @@
 #order_review_heading {
   display: none;
 }
+
+.file-upload {
+  float: right;
+  border: 2px solid #ebebeb;
+  margin-bottom: 20px;
+  padding: 1.5em 1.5em 1em;
+  width: 40%;
+}
+
+.file-upload > label {
+  display: block;
+  font-size: 1.2rem;
+  padding: 20px 0 14px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+select[name="template_id_selected"] {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin: 0 auto;
+}
+
+.template-image {
+  margin: 0 auto 20px;
+
+  max-width: 300px;
+}
+
+.template-selection {
+  padding: 10px;
+}
+
+.template-selection-heading {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
