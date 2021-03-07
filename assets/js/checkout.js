@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
   console.log(wp_ajax);
 
-  const templateSelector = $(`select[name="template_id_selected"]`);
+  const templateSelector = $(`select[name="_wc_memberships_profile_field_template_selected"]`);
 
   //LOCALIZE THIS SOON
   const templatesAvailable = [
@@ -22,33 +22,9 @@ jQuery(document).ready(function ($) {
     );
   });
 
-  const submitButton = $("#place_order");
-  $("#business_information").change(function (e) {
-    e.preventDefault();
-
-    const fileEl = document.getElementById("business_information");
-    let formData = new FormData();
-    formData.append("business_information", fileEl.files[0]);
-
-    submitButton.attr("disabled", "disabled");
-    $.ajax({
-      url: `${wp_ajax.url}?nonce=${wp_ajax.nonce}&action=checkout_document_upload`,
-      type: "POST",
-      processData: false, // important
-      contentType: false, // important
-      dataType: "json",
-      data: formData,
-      success: (response) => {
-        if (response.url) {
-          $(`input[name="file_attachment_url"]`).val(response.url);
-        }
-      },
-    }).always(() => {
-      check_addtional_fields();
-    });
-  });
-
-  const subdomainInput = $("#subdomain");
+  const subdomainInput = $(
+    `input[name="_wc_memberships_profile_field_subdomain_name"]`
+  );
   subdomainInput.change(function (e) {
     const subdomainNAme = subdomainInput
       .val()
@@ -84,7 +60,9 @@ jQuery(document).ready(function ($) {
     });
   });
 
-  const domainInput = $("#domain");
+  const domainInput = $(
+    `input[name="_wc_memberships_profile_field_domain_name"]`
+  );
   domainInput.change(function (e) {
     const domain = domainInput.val();
     $.ajax({
@@ -123,10 +101,6 @@ jQuery(document).ready(function ($) {
         return;
       }
     }
-    if (!$(`input[name="file_attachment_url"]`).val()) {
-      return;
-    }
-
     submitButton.removeAttr("disabled");
   }
 });

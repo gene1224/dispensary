@@ -1,0 +1,16 @@
+{% if has_subscription %}
+	<p>You are currently changing your plan from
+		<strong>{{ user_plan_names }}</strong>
+		to
+		<strong>{{ product_name }}</strong>
+		you will be charged
+		<strong>{{ product_price | number_format(2, '.', ',') }}</strong>
+		per month.
+	</p>
+{% else %}
+	<p>You are currently subscribing to 	to
+		<strong>{{ product_name }}</strong>
+		you will be charged
+		<strong>{{ product_price | number_format(2, '.', ',') }}</strong>
+		per month. Click <a href="#" class="popmake-6211">here</a> to change the plan you select</p>
+{% endif %}

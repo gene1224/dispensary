@@ -59,9 +59,7 @@ function add_to_cart_list()
 
     die();
 };
-
 add_action('wp_ajax_add_to_cart_list', 'add_to_cart_list');
-add_action('wp_ajax_nopriv_add_to_cart_list', 'add_to_cart_list');
 
 function empty_cart_list()
 {
@@ -75,7 +73,6 @@ function empty_cart_list()
 };
 
 add_action('wp_ajax_empty_cart_list', 'empty_cart_list');
-add_action('wp_ajax_nopriv_empty_cart_list', 'empty_cart_list');
 //FUTURE ADD SITE ID SELECTION
 function enlist_products()
 {
@@ -93,7 +90,6 @@ function enlist_products()
 };
 
 add_action('wp_ajax_enlist_products', 'enlist_products');
-add_action('wp_ajax_nopriv_enlist_products', 'enlist_products');
 
 //FUTURE ADD SITE ID SELECTION
 function remove_product_in_cart()
@@ -118,7 +114,6 @@ function remove_product_in_cart()
 }
 
 add_action('wp_ajax_remove_product_in_cart', 'remove_product_in_cart');
-add_action('wp_ajax_nopriv_remove_product_in_cart', 'remove_product_in_cart');
 
 //FUTURE ADD SITE ID SELECTION
 function start_import()
@@ -145,7 +140,6 @@ function start_import()
 }
 
 add_action('wp_ajax_start_import', 'start_import');
-add_action('wp_ajax_nopriv_start_import', 'start_import');
 function import_pulse()
 {
 
@@ -178,7 +172,6 @@ function import_pulse()
 
 add_action('product_import_batch', 'import_batch', 1, 2);
 add_action('wp_ajax_import_pulse', 'import_pulse');
-add_action('wp_ajax_nopriv_import_pulse', 'import_pulse');
 function import_batch($user_id, $site_id)
 {
     $per_batch = 5;
@@ -202,7 +195,6 @@ function import_batch($user_id, $site_id)
 }
 
 add_action('wp_ajax_import_batch', 'import_batch');
-add_action('wp_ajax_nopriv_import_batch', 'import_batch');
 
 //FUTURE ADD SITE ID SELECTION
 function check_imported_products($user_id)
@@ -276,7 +268,6 @@ function remove_product_from_store()
 }
 
 add_action('wp_ajax_remove_product_in_site', 'remove_product_from_store');
-add_action('wp_ajax_nopriv_remove_product_in_site', 'remove_product_from_store');
 
 function import_email_function($products)
 {

@@ -1,47 +1,4 @@
 <?php
-function custom_checkout_fields()
-{
-    return array(
-        'account_username' => array(
-            'type' => 'text',
-            'label' => __('Account username', 'woocommerce'),
-            'placeholder' => _x('Username', 'placeholder', 'woocommerce'),
-            'required' => true,
-        ),
-        'account_password' => array(
-            'type' => 'password',
-            'label' => __('Account password', 'woocommerce'),
-            'placeholder' => _x('Password', 'placeholder', 'woocommerce'),
-            'required' => true,
-        ),
-        'site_name' => array(
-            'type' => 'text',
-            'label' => "Dispensary Name",
-            'placeholder' => "Website Name",
-            'required' => true,
-        ),
-        'domain' => array(
-            'type' => 'text',
-            'label' => "Domain Name",
-            'placeholder' => "Domain Name",
-            'required' => true,
-        ),
-        'subdomain' => array(
-            'type' => 'text',
-            'label' => "Subdomain Name",
-            'placeholder' => "mydispensary." . $_SERVER['HTTP_HOST'],
-            'required' => true,
-        ),
-        'template_selection_id' => array(
-            'type' => 'hidden',
-        ),
-        'file_attachment_url' => array(
-            'type' => 'hidden',
-        ),
-
-    );
-}
-
 add_filter('add_to_cart_redirect', 'redirect_always_to_cheeckout');
 function redirect_always_to_cheeckout()
 {
@@ -54,47 +11,8 @@ add_filter('woocommerce_product_single_add_to_cart_text', 'select_plan_button');
 add_filter('woocommerce_product_add_to_cart_text', 'select_plan_button');
 function select_plan_button()
 {
-    return __('Select Plan', 'woocommerce');
+    return wcs_user_has_subscription() ? "Signup and Subscribe" : "Update Plan";
 }
-
-add_filter('woocommerce_enable_order_notes_field', '__return_false', 9999);
-add_filter('woocommerce_checkout_fields', 'remove_order_notes');
-
-function remove_order_notes($fields)
-{
-    $fields['account'] = custom_checkout_fields();
-
-    foreach (WC()->cart->get_cart() as $item_key => $values) {
-        $product = $values['data'];
-
-        if ($product->id == 2851 || $product->id == 2850) {
-            unset($fields['account']['subdomain']);
-        } else if ($product->id == 2848) {
-            unset($fields['account']['domain']);
-        } else {
-            unset($fields['account']['domain']);
-            unset($fields['account']['subdomain']);
-        }
-    }
-
-    return $fields;
-}
-
-function custom_fields_saving($customer_id, $posted)
-{
-    $user_info = get_userdata(get_current_user_id());
-
-    foreach (custom_checkout_fields() as $key => $custom_fields) {
-        if ($key == 'account_password' || $key == 'account_username') {
-            continue;
-        }
-        if (isset($posted[$key]) && $posted[$key] != '') {
-            $data = sanitize_text_field($posted[$key]);
-            update_user_meta($customer_id, $key, $data);
-        }
-    }
-}
-add_action('woocommerce_checkout_update_user_meta', 'custom_fields_saving', 10, 2);
 
 add_filter('woocommerce_create_account_default_checked', function ($checked) {
     return true;
@@ -115,12 +33,6 @@ function schedule_site_duplication($args)
     wp_schedule_single_event(time(), 'duplicate_site', array(get_current_user_id()));
 }
 
-function business_document_form($checkout)
-{
-    global $timber;
-    echo $timber->compile('checkout/file-input.twig', []);
-}
-add_action('woocommerce_checkout_after_customer_details', 'business_document_form', 11);
 
 function checkout_custom_script()
 {
@@ -154,7 +66,6 @@ function checkout_document_upload()
     die();
 }
 add_action('wp_ajax_checkout_document_upload', 'checkout_document_upload');
-add_action('wp_ajax_nopriv_checkout_document_upload', 'checkout_document_upload');
 
 add_filter('woocommerce_add_to_cart_validation', 'bbloomer_only_one_in_cart', 99, 2);
 function bbloomer_only_one_in_cart($passed, $added_product_id)
@@ -199,7 +110,6 @@ function check_input_domain()
 
 }
 add_action('wp_ajax_check_input_domain', 'check_input_domain');
-add_action('wp_ajax_nopriv_check_input_domain', 'check_input_domain');
 
 function check_subdomain_function()
 {
@@ -228,7 +138,6 @@ function check_subdomain_function()
 }
 
 add_action('wp_ajax_check_subdomain', 'check_subdomain_function');
-add_action('wp_ajax_nopriv_check_subdomain', 'check_subdomain_function');
 
 function product_category_filter_changes()
 {
@@ -262,7 +171,6 @@ function filter_cart_needs_payment_callback($needs_payment, $cart)
 }
 
 add_action('wp_ajax_create_site', 'create_site_function');
-
 function create_site_function()
 {
     if (!isset($_REQUEST['user_id'])) {
@@ -302,4 +210,37 @@ function send_site_confirmation_emails($user_id, $site_creatation_data)
 
     wp_mail($user->user_email, "Site creation complete", $email_message, $headers);
 
+}
+
+add_filter('wc_add_to_cart_message_html', '__return_false');
+
+add_action('woocommerce_before_checkout_form', 'pre_checkout_information');
+function pre_checkout_information()
+{
+    global $timber;
+
+    $product = false;
+    $subscription = false;
+
+    foreach (WC()->cart->get_cart() as $cart_item) {
+        $product = wc_get_product($cart_item['product_id']);
+        $subscription = $cart_item["data"];
+    }
+
+    $has_subscription = wcs_user_has_subscription();
+
+    $user_plans = $has_subscription ?  wc_memberships_get_user_memberships() : [];
+    
+    $user_plan_names = array_map(function ($plan) {
+        return $plan->plan->name;
+    }, $user_plans);
+    
+    $context = array(
+        'product_name' => $product->get_name(),
+        'product_price' => $product->get_price(),
+        'has_subscription' => $has_subscription,
+        'user_plan_names' => join(', ', $user_plan_names),
+        
+    );
+    $timber->render('template-parts/pre-checkout.twig', $context);
 }
