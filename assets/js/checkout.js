@@ -1,11 +1,24 @@
 jQuery(document).ready(function ($) {
-  console.log(wp_ajax);
-
-  const templateSelector = $(`select[name="_wc_memberships_profile_field_template_selected"]`);
+  $("#_wc_memberships_profile_field_template_selected_field").prepend(`
+  <div class="template-preivew=container">
+      <p><strong>Template Preview</strong></p>
+      <img id="templatePreview" src="https://dummyimage.com/300x300/ddd/000.png&text=Preview">
+  </div>
+`);
+  const templateSelector = $(
+    `#_wc_memberships_profile_field_template_selected`
+  );
 
   //LOCALIZE THIS SOON
   const templatesAvailable = [
     {
+      key: "Template 07",
+      id: 109,
+      preview:
+        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/1.-Marketplace-03-WCFM-Thumbnail.png",
+    },
+    {
+      key: "Template 08",
       id: 109,
       preview:
         "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/1.-Marketplace-03-WCFM-Thumbnail.png",
@@ -13,11 +26,11 @@ jQuery(document).ready(function ($) {
   ];
   templateSelector.change(function () {
     const selecteTemplate = templatesAvailable.find(
-      (template) => template.id == templateSelector.val()
+      (template) => template.key == templateSelector.val()
     );
     $("#templatePreview").attr(
       "src",
-      selecteTemplate ||
+      selecteTemplate.preview ||
         "https://dummyimage.com/300x300/ddd/000.png&text=Preview"
     );
   });
@@ -55,9 +68,7 @@ jQuery(document).ready(function ($) {
           }
         } catch (error) {}
       },
-    }).always(() => {
-      check_addtional_fields();
-    });
+    }).always(() => {});
   });
 
   const domainInput = $(
@@ -86,21 +97,6 @@ jQuery(document).ready(function ($) {
           }
         } catch (error) {}
       },
-    }).always(() => {
-      check_addtional_fields();
-    });
+    }).always(() => {});
   });
-
-  function check_addtional_fields() {
-    if (domainInput.length) {
-      if (!domainInput.val()) {
-        return;
-      }
-    } else if (subdomainInput.length) {
-      if (!subdomainInput.val()) {
-        return;
-      }
-    }
-    submitButton.removeAttr("disabled");
-  }
 });

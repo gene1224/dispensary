@@ -30,8 +30,7 @@ require 'utils.php';
 
 use Automattic\WooCommerce\Client;
 
-define('DISPENSARY_TEMPLATES', WP_PLUGIN_DIR . '/dispensary-template-customizer');
-define('DISPENSARY_PAYMENTS', WP_PLUGIN_DIR . '/dispensary-payments');
+
 if (!isset($timber)) {
     $timber = new \Timber\Timber();
     if (is_array($timber::$locations)) {
@@ -39,8 +38,16 @@ if (!isset($timber)) {
     } else {
         $views = array($timber::$locations);
     }
-    $views[] = DISPENSARY_PAYMENTS . "/templates";
-    $views[] = DISPENSARY_TEMPLATES . "/templates";
+    if (defined('DISPENSARY_TEMPLATES')) {
+        define('DISPENSARY_TEMPLATES', WP_PLUGIN_DIR . '/dispensary-template-customizer');
+        $views[] = DISPENSARY_PAYMENTS . "/templates";
+    }
+    if (defined('DISPENSARY_PAYMENTS')) {
+        define('DISPENSARY_PAYMENTS', WP_PLUGIN_DIR . '/dispensary-payments');
+        $views[] = DISPENSARY_TEMPLATES . "/templates";
+    }
+    
+    
 
     $timber::$locations = $views;
 }

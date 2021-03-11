@@ -29,25 +29,30 @@ function product_import_display()
     wp_enqueue_script('sweetalert');
     wp_enqueue_style('product_import_css');
 
-    if(!get_user_meta(get_current_user_id(), 'site_create', true)) {
+    if(!get_user_meta(get_current_user_id(), 'site_created', true)) {
         echo $timber->compile('no-site.twig', $context);
         return;
     }
 
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
-    $max_product = 5;
-
+    $max_product = 20;
+    $user_value;
+    $memberships = wc_memberships_get_user_memberships(get_current_user_id());
+    $membership_plan = trim(preg_replace('/\s+/', ' ', $memberships[0]->plan->name));
+    
     if (current_user_can('administrator')) {
         $max_product = 1000;
-    } elseif (current_user_can('qrxds_basic')) {
-        $max_product = 20;
-    } elseif (current_user_can('qrxds_pro')) {
-        $max_product = 50;
-    } elseif (current_user_can('qrxds_premium')) {
+    } elseif ($membership_plan == 'QRx Dispensary Premium Plan') {
         $max_product = 100;
+    } elseif ($membership_plan == 'QRX Dispensary Pro Plan') {
+        $max_product = 50;
     }
-
+    
+    if(isset($_GET["debug"])) {
+        print_r($membership_plan);
+    }
+    
     $max_product = apply_filters('max_products_to_import', $max_product);
 
     $context = array(
@@ -59,6 +64,8 @@ function product_import_display()
         'imported_products' => $imported_products,
         'max_products' => $max_product,
         'view' => $_REQUEST['view'] ?: 'home',
+        'membership' => $membership_plan, //Added
+        'user_value' => $user_value, //Added
     );
 
     try {

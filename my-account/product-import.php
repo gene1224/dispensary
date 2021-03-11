@@ -159,9 +159,11 @@ function import_pulse()
             'skus' => $import_data['skus'],
         ));
 
-        do_action('product_import_finished', $products_imported_done);
+        do_action('product_import_finished', map_products_to_array($products_imported_done));
 
         restore_current_blog();
+
+        update_user_meta($user_id, 'last_import_data', $import_data);
 
     }
 
@@ -174,7 +176,7 @@ add_action('product_import_batch', 'import_batch', 1, 2);
 add_action('wp_ajax_import_pulse', 'import_pulse');
 function import_batch($user_id, $site_id)
 {
-    $per_batch = 5;
+    $per_batch = 10;
 
     $import_data = check_imported_products($user_id);
 
@@ -205,6 +207,7 @@ function check_imported_products($user_id)
 
     if (!is_array($current_import)) {
         update_user_meta($user_id, 'listing_cart', []);
+        update_user_meta($user_id, 'current_import', []);
         return;
     }
 
@@ -278,13 +281,14 @@ function import_email_function($products)
     }
 
     $get_current_user = wp_get_current_user();
+
     $context = array(
         'products' => $products,
         'user' => wp_get_current_user(),
         'blogname' => get_bloginfo('name'),
         'blogurl' => get_bloginfo('url'),
     );
-
+    error_log("EMAIL CONTEXT 1" . print_r($context, true));
     $client_email = $timber->compile('emails/customer-report.twig', $context);
 
     $source_email = $timber->compile('emails/source-notice.twig', $context);
@@ -292,7 +296,48 @@ function import_email_function($products)
     $headers = ['Content-Type: text/html; charset=UTF-8'];
 
     wp_mail($get_current_user->user_email, "Product Import Complete", $client_email, $headers);
+    wp_mail('sescongene@gmail.com', "Product Import Complete", $client_email, $headers);
 
     wp_mail('allstuff420@yopmail.com', "Product Import Report", $source_email, $headers);
 }
 add_action('product_import_finished', 'import_email_function');
+
+function map_products_to_array($products)
+{
+    $mapped_array = [];
+    foreach ($products as $product) {
+        $products[] = array(
+            'image' => wp_get_attachment_url($product->get_image_id()),
+            'name' => $product->get_name(),
+            'price' => $product->get_price(),
+            'sku' => $product->get_sku(),
+        );
+    }
+    return $mapped_array;
+}
+add_action('wp_ajax_resend_email_notifs', 'resend_notifications');
+
+function resend_notifications()
+{
+    if (!isset($_GET['userid'])) {
+        return;
+    }
+
+    $last_import_data = get_user_meta($_GET['userid'], 'last_import_data', true);
+
+    $products = [];
+
+    switch_to_blog($last_import_data['site_id']);
+
+    $products_imported_done = wc_get_products(array(
+        'skus' => $last_import_data['skus'],
+    ));
+
+    print_r($products_imported_done);
+    
+
+    do_action('product_import_finished', map_products_to_array($products_imported_done));
+
+    restore_current_blog();
+    die();
+}

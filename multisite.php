@@ -87,7 +87,7 @@ function multisite_style(){
 
 function multisite_js(){
     $blog_id = get_current_blog_id();
-    $blog_list = get_blog_list( 0, 'all' );
+    $blog_list = wp_get_sites();
     $array = json_encode($blog_list);
     $website_link = "";
     foreach($blog_list as $blog){

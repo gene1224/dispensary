@@ -3,29 +3,6 @@
 #order_review_heading {
   display: none;
 }
-
-.file-upload {
-  float: right;
-  border: 2px solid #ebebeb;
-  margin-bottom: 20px;
-  padding: 1.5em 1.5em 1em;
-  width: 40%;
-}
-
-.file-upload > label {
-  display: block;
-  font-size: 1.2rem;
-  padding: 20px 0 14px;
-  border-bottom: 1px solid #ebebeb;
-}
-
-select[name="template_id_selected"] {
-  width: 100%;
-  max-width: 300px;
-  display: block;
-  margin: 0 auto;
-}
-
 .template-image {
   margin: 0 auto 20px;
 
@@ -39,4 +16,48 @@ select[name="template_id_selected"] {
 .template-selection-heading {
   font-size: 16px;
   margin-bottom: 10px;
+}
+
+.template-image {
+  margin: 0 auto 20px;
+  max-width: 300px;
+}
+
+.post-5785 .entry-header {
+  margin-top: 40px;
+}
+.post-5785 .entry-header h1 {
+  font-size: 40px;
+}
+
+#templatePreview {
+  max-width: 300px;
+}
+
+.woocommerce-billing-fields > h3 {
+  font-size: 30px !important;
+  font-weight: bold;
+}
+
+label[for="account_username"]:before {
+  content: "Account Information";
+  display: block;
+  font-weight: normal;
+  margin: 0 0 30px;
+  font-size: 24px;
+  border-bottom: 2px solid #aaa;
+}
+
+#_wc_memberships_profile_field_business_document_field:after {
+  display: block;
+  content: "Billing Information";
+  display: block;
+  font-weight: normal;
+  margin: 50px 0 0px;
+  font-size: 24px;
+  border-bottom: 2px solid #aaa;
+}
+
+#order_review {
+  border: 1px solid #ebebeb !important;
 }

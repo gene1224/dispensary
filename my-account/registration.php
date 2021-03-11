@@ -1,10 +1,8 @@
 <?php
-add_filter('add_to_cart_redirect', 'redirect_always_to_cheeckout');
+add_filter('woocommerce_add_to_cart_redirect', 'redirect_always_to_cheeckout');
 function redirect_always_to_cheeckout()
 {
-    global $woocommerce;
-    $cw_redirect_url_checkout = $woocommerce->cart->get_checkout_url();
-    return $cw_redirect_url_checkout;
+    return wc_get_checkout_url();
 }
 
 add_filter('woocommerce_product_single_add_to_cart_text', 'select_plan_button');
@@ -32,7 +30,6 @@ function schedule_site_duplication($args)
 
     wp_schedule_single_event(time(), 'duplicate_site', array(get_current_user_id()));
 }
-
 
 function checkout_custom_script()
 {
@@ -110,6 +107,7 @@ function check_input_domain()
 
 }
 add_action('wp_ajax_check_input_domain', 'check_input_domain');
+add_action('wp_ajax_nopriv_check_input_domain', 'check_input_domain');
 
 function check_subdomain_function()
 {
@@ -123,10 +121,10 @@ function check_subdomain_function()
 
     $response = array('exist' => false);
 
-    $sites = wp_get_sites();
+    $sites = get_sites();
 
     foreach ($sites as $site) {
-        if ($site['domain'] == $_REQUEST['subdomain']) {
+        if ($site->domain == $_REQUEST['subdomain']) {
             $response['exist'] = true;
             break;
         }
@@ -138,6 +136,7 @@ function check_subdomain_function()
 }
 
 add_action('wp_ajax_check_subdomain', 'check_subdomain_function');
+add_action('wp_ajax_nopriv_check_subdomain', 'check_subdomain_function');
 
 function product_category_filter_changes()
 {
@@ -182,26 +181,45 @@ function create_site_function()
     die();
 }
 
-add_action('site_duplicate_finihsed', 'send_site_confirmation_emails', 1, 2);
-function send_site_confirmation_emails($user_id, $site_creatation_data)
+add_action('site_duplicate_finihsed', 'send_site_confirmation_emails', 1, 1);
+function send_site_confirmation_emails($blog_id)
 {
 
     global $timber;
 
-    $blog_id = 0;
-    foreach (get_sites() as $site) {
-        if ($site->domain == $site_creatation_data['newdomain']) {
-            $blog_id = $site->blog_id;
-            break;
+    $user_id = 0;
+
+    $blog_details = get_blog_details($blog_id);
+
+    $args = array(
+        'meta_query' => array(
+            array(
+                'key' => '_wc_memberships_profile_field_subdomain_name',
+                'value' => $blog_details->domain,
+                'compare' => '=',
+            ),
+        ),
+    );
+
+    $users = get_users($args);
+
+    if ($users) {
+        foreach ($users as $user) {
+            $user_id = $user->ID;
         }
     }
-    add_user_to_blog($blog_id, $user_id, 'administrator');
+    if ($user_id == 0) {
+        return;
+    }
+
+    add_user_to_blog($blog_id, $user_id, 'store_manager');
+    update_user_option($user_id, 'show_admin_bar_front', 'false');
 
     $user = get_userdata($user_id);
 
     $context = array(
         "user" => $user,
-        "domain" => $site_creatation_data['newdomain'],
+        "domain" => $blog_details->domain,
     );
 
     $headers = ['Content-Type: text/html; charset=UTF-8'];
@@ -209,6 +227,11 @@ function send_site_confirmation_emails($user_id, $site_creatation_data)
     $email_message = $timber->compile('emails/site-created.twig', $context);
 
     wp_mail($user->user_email, "Site creation complete", $email_message, $headers);
+
+    error_log("EMAIL SENT TO CUSTOMER : " . $user->user_email);
+    error_log("EMAIL SENT TO CUSTOMER MSG : " . $email_message);
+
+    update_user_meta($user_id, 'site_created', true);
 
 }
 
@@ -229,18 +252,43 @@ function pre_checkout_information()
 
     $has_subscription = wcs_user_has_subscription();
 
-    $user_plans = $has_subscription ?  wc_memberships_get_user_memberships() : [];
-    
+    $user_plans = $has_subscription ? wc_memberships_get_user_memberships() : [];
+
     $user_plan_names = array_map(function ($plan) {
         return $plan->plan->name;
     }, $user_plans);
-    
+
     $context = array(
         'product_name' => $product->get_name(),
         'product_price' => $product->get_price(),
         'has_subscription' => $has_subscription,
         'user_plan_names' => join(', ', $user_plan_names),
-        
+
     );
     $timber->render('template-parts/pre-checkout.twig', $context);
 }
+
+function reschedule_duplication()
+{
+    if (isset($_GET['user_id_manual'])) {
+        $user_id = $_GET['user_id_manual'];
+        update_user_meta($_GET['user_id_manual'], 'site_created', false);
+        update_user_meta($_GET['user_id_manual'], 'site_clone_started', false);
+        error_log("MANUAL RESET SITE COPY DONE");
+        //wp_schedule_single_event(time(), 'duplicate_site', array($_GET['user_id_manual']));
+    }
+
+}
+add_action('wp_cli_copy_site', 'wp_cli_copy_site');
+add_action('wp_ajax_copy_site', 'reschedule_duplication');
+
+function wc_billing_field_strings($translated_text, $text, $domain)
+{
+    switch ($translated_text) {
+        case 'Billing details':
+            $translated_text = __('Dispensary Information', 'woocommerce');
+            break;
+    }
+    return $translated_text;
+}
+add_filter('gettext', 'wc_billing_field_strings', 20, 3);
