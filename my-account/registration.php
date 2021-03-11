@@ -212,8 +212,8 @@ function send_site_confirmation_emails($blog_id)
         return;
     }
 
-    add_user_to_blog($blog_id, $user_id, 'store_manager');
-    update_user_option($user_id, 'show_admin_bar_front', 'false');
+    add_user_to_blog($blog_id, $user_id, 'administrator');
+    
 
     $user = get_userdata($user_id);
 
@@ -227,10 +227,10 @@ function send_site_confirmation_emails($blog_id)
     $email_message = $timber->compile('emails/site-created.twig', $context);
 
     wp_mail($user->user_email, "Site creation complete", $email_message, $headers);
-
-    error_log("EMAIL SENT TO CUSTOMER : " . $user->user_email);
-    error_log("EMAIL SENT TO CUSTOMER MSG : " . $email_message);
-
+    error_log("EMAIL SENT to ".$user_id);
+    switch_to_blog($blog_id);
+    update_user_option( $user_id, 'show_admin_bar_front', 'false');
+    restore_current_blog();
     update_user_meta($user_id, 'site_created', true);
 
 }

@@ -13,15 +13,15 @@ jQuery(document).ready(function ($) {
   const templatesAvailable = [
     {
       key: "Template 07",
-      id: 109,
+      id: 121,
       preview:
-        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/1.-Marketplace-03-WCFM-Thumbnail.png",
+        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/7.-Fashion-02-Thumbnail-min-1.png",
     },
     {
       key: "Template 08",
-      id: 109,
+      id: 123,
       preview:
-        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/1.-Marketplace-03-WCFM-Thumbnail.png",
+        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/8.-Fashion-03-Thumbnail-min-1.png",
     },
   ];
   templateSelector.change(function () {

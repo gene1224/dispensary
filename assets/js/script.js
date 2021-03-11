@@ -35,7 +35,7 @@ const productItemHTML = (product, importedProducts = []) => {
 
   cart_items =
     typeof cart_items === "object" ? objectToArray(cart_items) : cart_items;
-    
+
   const productOnCart = cart_items.find(
     (item) => item.source_product_id == product.id
   );
@@ -56,8 +56,6 @@ const productItemHTML = (product, importedProducts = []) => {
         ${tagsHTML(product.tags)}
 	</div>
 	<div class="product-descriptions">
-		<div class="product-name">${product.name}</div>
-		<div class="product-price">$ ${Number(product.price).toFixed(2)}</div>
 		<div class="product-sku--rating">
 			<div class="product-sku">
 				<span>SKU:</span>
@@ -67,14 +65,16 @@ const productItemHTML = (product, importedProducts = []) => {
 				${ratingStarsHTML(product.average_rating)}
 			</div>
 		</div>
+		<div class="product-name">${product.name}</div>
+		<div class="product-price">$ ${Number(product.price).toFixed(2)}</div>
 	</div>
 	<div class="product-actions">
         ${productItemButton(product, productExist, productOnCart)}
 	</div>
-	<div class="product-source">
+	<!-- <div class="product-source">
 		Source :
 		<a href="https://allstuff420.com">All Stuff 420</a>
-	</div>
+	</div> -->
 </div>`;
 };
 
@@ -87,6 +87,16 @@ const selectOptionsHTML = (categories) => {
 };
 
 jQuery(document).ready(function ($) {
+  //added
+  if (wp_ajax.max_products == 100) {
+  } else if (wp_ajax.max_products == 50) {
+    $("#membership_pro").hide();
+    $("span.or_span").hide();
+  } else if (wp_ajax.max_products == 20) {
+  } else {
+  }
+  //end added
+
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);
   }
@@ -196,12 +206,12 @@ jQuery(document).ready(function ($) {
     const order = $("#orderSelect").val();
     const perPage = $("#perPage").val();
     const query = {
-      search: name_seach,
+      search: "",
       order: order,
       category: selected_category,
       tag: selected_tag,
-      min_price: min_price,
-      max_price: max_price,
+      min_price: "",
+      max_price: "",
       per_page: perPage,
       stock_status: "instock",
     };

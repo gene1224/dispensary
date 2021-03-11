@@ -14,6 +14,13 @@ function redirect_non_admin_user(){
 	}
 }
 
+function change_currency( $currency ) {
+  $currency = 'USD';
+
+  return $currency;
+}
+add_filter( 'woocommerce_currency', 'change_currency', 200 );
+
 // add_action( 'admin_init', 'redirect_non_admin_user' );
 
 add_action( 'wp_head', 'multisite_style' );

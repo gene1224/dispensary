@@ -25,21 +25,21 @@ const productItemHTML = (product, index) => {
             <img src="${productImageSrc}">
         </div>
         <div class="product-cart-desc">
-            <div class="name">${product.name}</div>
-            <div class="price">Original Price : $ ${Number(
-              product.price
-            ).toFixed(2)}</div>
-            <div class="categories">Categories: ${categories}</div>
-            <div class="tags">Tags: ${tags}</div>
             <div class="sku--rating">
                 <div class="sku">SKU: ${product.sku}</div>
                 <div class="rating">
                     ${ratingStarsHTML(product.average_rating)}
                 </div>
             </div>
-            <div class="source-site">
+            <div class="name">${product.name}</div>
+            <div class="price">Original Price : $ ${Number(
+              product.price
+            ).toFixed(2)}</div>
+            <div class="categories">Categories: ${categories}</div>
+            <div class="tags">Tags: ${tags}</div>
+            <!--<div class="source-site">
                 Source: <a href="https://allstuff420.com">All Stuff 420</a>
-            </div>
+            </div>-->
         </div>
     </div>
     <div class="product-cart-item-action">
@@ -84,7 +84,7 @@ const productItemHTML = (product, index) => {
         <div class="listing-action">
             <button type="button" class="remove-product" onclick="removeItem('${
               product.sku
-            }', ${product.id})">Remove from cart</button>
+            }', ${product.id})">Remove From Cart</button>
         </div>
     </div>
 </div>`;
@@ -213,10 +213,11 @@ jQuery(document).ready(function ($) {
     $("#importButton").html("Importing Products");
 
     jQuery(".remove-product").fadeOut();
+    const form_product_data = new FormData(this);
     jQuery(".price-input-main").attr("disabled", "disabled");
     $.ajax({
       url: `${wp_ajax.url}?action=start_import`,
-      data: new FormData(this),
+      data: form_product_data,
       processData: false,
       contentType: false,
       type: "post",

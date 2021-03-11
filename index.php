@@ -38,17 +38,8 @@ if (!isset($timber)) {
     } else {
         $views = array($timber::$locations);
     }
-    if (defined('DISPENSARY_TEMPLATES')) {
-        define('DISPENSARY_TEMPLATES', WP_PLUGIN_DIR . '/dispensary-template-customizer');
-        $views[] = DISPENSARY_PAYMENTS . "/templates";
-    }
-    if (defined('DISPENSARY_PAYMENTS')) {
-        define('DISPENSARY_PAYMENTS', WP_PLUGIN_DIR . '/dispensary-payments');
-        $views[] = DISPENSARY_TEMPLATES . "/templates";
-    }
-    
-    
-
+    $views[] = WP_PLUGIN_DIR . '/dispensary-template-customizer/templates';
+    $views[] = WP_PLUGIN_DIR . '/dispensary-payments/templates';
     $timber::$locations = $views;
 }
 

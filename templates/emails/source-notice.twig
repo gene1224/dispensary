@@ -6,7 +6,7 @@
 		Dispensary Product Import Notice
 	</div>
 	<div style="font-family:sans-serif; font-size:16px; padding:20px 30px; line-height:25px;">
-		Hi AllStuff420<br>
+		Hi AllStuff420,<br>
 		<br>
 		<a href="{{ blogurl }}" style="text-transform:capitalize;">{{user.display_name}} ({{blogname}})</a>
 		imported imported
@@ -19,7 +19,7 @@
 	<div>
 		{% for product in products %}
 			<div style="display:inline; padding:20px 20px;">
-				<img src="{{ function('wp_get_attachment_url', product.get_image_id()) }} " height="50px">
+				<img src="{{ product.image }} " height="50px">
 				<div style="display:inline-block; vertical-align:top; font-family:sans-serif; font-size:15px;">
 					Product Name :
 					{{ product.name }}<br>

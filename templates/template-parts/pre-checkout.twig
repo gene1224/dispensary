@@ -4,7 +4,7 @@
 		to
 		<strong>{{ product_name }}</strong>
 		you will be charged
-		<strong>{{ product_price | number_format(2, '.', ',') }}</strong>
+		<strong>$ {{ product_price | number_format(2, '.', ',') }}</strong>
 		per month.
 	</p>
 {% else %}

@@ -36,17 +36,20 @@ function product_import_display()
 
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
-    $max_product = 20;
-    $user_value;
+    $max_product;
     $memberships = wc_memberships_get_user_memberships(get_current_user_id());
     $membership_plan = trim(preg_replace('/\s+/', ' ', $memberships[0]->plan->name));
+    $testing = $membership_plan;
+    $value_output;
     
-    if (current_user_can('administrator')) {
-        $max_product = 1000;
-    } elseif ($membership_plan == 'QRx Dispensary Premium Plan') {
-        $max_product = 100;
-    } elseif ($membership_plan == 'QRX Dispensary Pro Plan') {
+    if ($testing == "QRX Dispensary Basic Plan") {
+        $max_product = 20;
+    } elseif ($testing == 'QRX Dispensary Pro Plan') {
         $max_product = 50;
+    } elseif ($testing == 'QRX Dispensary Premium Plan') {
+        $max_product = 100;
+    } else {
+        $max_product = 0;
     }
     
     if(isset($_GET["debug"])) {
@@ -65,7 +68,8 @@ function product_import_display()
         'max_products' => $max_product,
         'view' => $_REQUEST['view'] ?: 'home',
         'membership' => $membership_plan, //Added
-        'user_value' => $user_value, //Added
+        'testing' => $testing, //Added
+        'value_output' => $value_output, //Added
     );
 
     try {

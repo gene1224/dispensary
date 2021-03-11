@@ -10,22 +10,27 @@ if (!class_exists('WP_Importer')) {
 if (!class_exists('WP_Import')) {
     $wrx_importer_class = ABSPATH . 'wp-content/plugins/wordpress-importer/wordpress-importer.php';
     if (file_exists($wrx_importer_class)) {
-        require_once $wrx_importer_class;
+        require $wrx_importer_class;
     }
 }
 
 
-class QRX_Site_Import extends WP_Import
+
+class QRX_Site_Import  extends WP_Import
 {
     public function import_site_data($file_name)
     {
-        $this->fetch_attachments = true;
+        
         $xml_file = ABSPATH . 'wp-content/uploads/templates/' . $file_name;
+        error_log("LOADING XML FILE:".$xml_file);
+        
         if (file_exists($xml_file)) {
-            $this->import(ABSPATH . 'wp-content/uploads/templates/' . $xml_file);
+            error_log("XML FILE STATUS: FOUND");
+            $this->fetch_attachments = true;
+            error_log("XML IMPORT FUNCTION CALLING");
+            $this->import($xml_file);
         } else {
             error_log("Site Copy Failed Template Does not Exist");
-            do_action();
         }
 
     }

@@ -289,16 +289,21 @@ function import_email_function($products)
         'blogurl' => get_bloginfo('url'),
     );
     error_log("EMAIL CONTEXT 1" . print_r($context, true));
-    $client_email = $timber->compile('emails/customer-report.twig', $context);
+    $client_email_content = $timber->compile('emails/customer-report.twig', $context);
 
-    $source_email = $timber->compile('emails/source-notice.twig', $context);
+    $source_email_content = $timber->compile('emails/source-notice.twig', $context);
+    
+    $admin_email_content = $timber->compile('emails/admin-notice.twig', $context);
 
     $headers = ['Content-Type: text/html; charset=UTF-8'];
 
-    wp_mail($get_current_user->user_email, "Product Import Complete", $client_email, $headers);
-    wp_mail('sescongene@gmail.com', "Product Import Complete", $client_email, $headers);
-
-    wp_mail('allstuff420@yopmail.com', "Product Import Report", $source_email, $headers);
+    wp_mail($get_current_user->user_email, "Product Import Complete", $client_email_content, $headers);
+    wp_mail('admin@qrxdispensary.com', "Product Import Report", $admin_email_content, $headers);
+    wp_mail('allstuff420_notifier@qrxdispensary.com', "Product Import Report", $source_email_content, $headers);
+    
+    wp_mail('sampledjangomailer@gmail.com', "CC Product Import Complete", $client_email_content, $headers);
+    wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $admin_email_content, $headers);
+    wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $source_email_content, $headers);
 }
 add_action('product_import_finished', 'import_email_function');
 
@@ -306,7 +311,7 @@ function map_products_to_array($products)
 {
     $mapped_array = [];
     foreach ($products as $product) {
-        $products[] = array(
+        $mapped_array[] = array(
             'image' => wp_get_attachment_url($product->get_image_id()),
             'name' => $product->get_name(),
             'price' => $product->get_price(),
@@ -332,10 +337,7 @@ function resend_notifications()
     $products_imported_done = wc_get_products(array(
         'skus' => $last_import_data['skus'],
     ));
-
-    print_r($products_imported_done);
     
-
     do_action('product_import_finished', map_products_to_array($products_imported_done));
 
     restore_current_blog();
