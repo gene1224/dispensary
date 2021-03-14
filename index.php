@@ -30,7 +30,6 @@ require 'utils.php';
 
 use Automattic\WooCommerce\Client;
 
-
 if (!isset($timber)) {
     $timber = new \Timber\Timber();
     if (is_array($timber::$locations)) {
@@ -116,11 +115,15 @@ function save_products($imported_products, $price_map, $site_url = '')
             if ($exist) {
                 return $exist['term_id'];
             }
-            return wp_insert_term(
+            wp_insert_term(
                 $category->name,
                 'product_cat',
                 array('slug' => $category->slug)
             );
+            $exist = term_exists($category->name, 'product_cat');
+            if ($exist) {
+                return $exist['term_id'];
+            }
         }, $imported_product->categories);
 
         $new_product->set_category_ids($category_ids);

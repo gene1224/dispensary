@@ -52,10 +52,7 @@ function product_import_display()
         $max_product = 0;
     }
     
-    if(isset($_GET["debug"])) {
-        print_r($membership_plan);
-    }
-    
+
     $max_product = apply_filters('max_products_to_import', $max_product);
 
     $context = array(

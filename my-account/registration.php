@@ -239,7 +239,7 @@ add_filter('wc_add_to_cart_message_html', '__return_false');
 
 add_action('woocommerce_before_checkout_form', 'pre_checkout_information');
 function pre_checkout_information()
-{
+{ //AIzaSyCGwe6E48xndUFPWRzKs_jXIfv5kfCanCM
     global $timber;
 
     $product = false;

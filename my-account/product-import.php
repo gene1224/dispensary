@@ -71,25 +71,8 @@ function empty_cart_list()
 
     die();
 };
-
 add_action('wp_ajax_empty_cart_list', 'empty_cart_list');
-//FUTURE ADD SITE ID SELECTION
-function enlist_products()
-{
-    if (!isset($_REQUEST['products'])) {
-        die();
-    }
 
-    $user_id = get_current_user_id();
-
-    $enlisted_products = get_user_meta($user_id, 'product_enlisted', true) ?: [];
-
-    echo json_encode(get_user_meta($user_id, 'listing_cart', true));
-
-    die();
-};
-
-add_action('wp_ajax_enlist_products', 'enlist_products');
 
 //FUTURE ADD SITE ID SELECTION
 function remove_product_in_cart()
@@ -292,7 +275,7 @@ function import_email_function($products)
     $client_email_content = $timber->compile('emails/customer-report.twig', $context);
 
     $source_email_content = $timber->compile('emails/source-notice.twig', $context);
-    
+
     $admin_email_content = $timber->compile('emails/admin-notice.twig', $context);
 
     $headers = ['Content-Type: text/html; charset=UTF-8'];
@@ -300,7 +283,7 @@ function import_email_function($products)
     wp_mail($get_current_user->user_email, "Product Import Complete", $client_email_content, $headers);
     wp_mail('admin@qrxdispensary.com', "Product Import Report", $admin_email_content, $headers);
     wp_mail('allstuff420_notifier@qrxdispensary.com', "Product Import Report", $source_email_content, $headers);
-    
+
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Complete", $client_email_content, $headers);
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $admin_email_content, $headers);
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $source_email_content, $headers);
@@ -337,7 +320,7 @@ function resend_notifications()
     $products_imported_done = wc_get_products(array(
         'skus' => $last_import_data['skus'],
     ));
-    
+
     do_action('product_import_finished', map_products_to_array($products_imported_done));
 
     restore_current_blog();

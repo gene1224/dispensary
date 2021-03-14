@@ -173,7 +173,11 @@ jQuery(document).ready(function ($) {
       },
       type: "GET",
       contentType: "application/json",
-      success: function (products) {
+      success: function (products, textStatus, request) {
+
+        const total_products = request.getResponseHeader('x-wp-total');
+        const total_pages = request.getResponseHeader('x-wp-totalpages');
+        
         if (products.length == 0) {
           $("#product-importer-grid").html("<h2>No Products Found</h2>");
         }
