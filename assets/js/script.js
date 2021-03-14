@@ -87,7 +87,7 @@ const selectOptionsHTML = (categories) => {
 };
 
 jQuery(document).ready(function ($) {
-  //added
+  //REFRACTOR ON TWIG
   if (wp_ajax.max_products == 100) {
   } else if (wp_ajax.max_products == 50) {
     $("#membership_pro").hide();
@@ -95,7 +95,7 @@ jQuery(document).ready(function ($) {
   } else if (wp_ajax.max_products == 20) {
   } else {
   }
-  //end added
+  
 
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);
@@ -132,6 +132,8 @@ jQuery(document).ready(function ($) {
   getTaxonomies("categories");
 
   const default_query_string = {
+    orderby: "menu_order",
+    order: "asc",
     per_page: 12,
     stock_status: "instock",
   };
@@ -174,10 +176,9 @@ jQuery(document).ready(function ($) {
       type: "GET",
       contentType: "application/json",
       success: function (products, textStatus, request) {
+        const total_products = request.getResponseHeader("x-wp-total");
+        const total_page = request.getResponseHeader("x-wp-totalpages");
 
-        const total_products = request.getResponseHeader('x-wp-total');
-        const total_pages = request.getResponseHeader('x-wp-totalpages');
-        
         if (products.length == 0) {
           $("#product-importer-grid").html("<h2>No Products Found</h2>");
         }
@@ -188,8 +189,23 @@ jQuery(document).ready(function ($) {
             return productItemHTML(product, selected_ids);
           })
           .join("");
-
-        $("#product-importer-grid").html(productHTMLs);
+        // Added
+        if (productHTMLs == null || productHTMLs == "") {
+          $("#product-importer-grid").html(
+            "<h2 style='margin: 0; padding: 25px;'>No Products Found</h2>"
+          );
+          $(".grid-pagination").hide(); // Added
+        } else {
+          $("#product-importer-grid").html(productHTMLs);
+          // Added
+          if (total_page > 1) {
+            $(".grid-pagination").show();
+          } else {
+            $(".grid-pagination").hide();
+          }
+          // End Added
+        }
+        // End Added
         if (fromFilter) {
           $("#applyFilter").removeAttr("disabled");
           $("#applyFilter").find(".custom-spin-loader").fadeOut();

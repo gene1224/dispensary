@@ -275,7 +275,7 @@ function import_email_function($products)
     $client_email_content = $timber->compile('emails/customer-report.twig', $context);
 
     $source_email_content = $timber->compile('emails/source-notice.twig', $context);
-
+    
     $admin_email_content = $timber->compile('emails/admin-notice.twig', $context);
 
     $headers = ['Content-Type: text/html; charset=UTF-8'];
@@ -283,7 +283,7 @@ function import_email_function($products)
     wp_mail($get_current_user->user_email, "Product Import Complete", $client_email_content, $headers);
     wp_mail('admin@qrxdispensary.com', "Product Import Report", $admin_email_content, $headers);
     wp_mail('allstuff420_notifier@qrxdispensary.com', "Product Import Report", $source_email_content, $headers);
-
+    
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Complete", $client_email_content, $headers);
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $admin_email_content, $headers);
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $source_email_content, $headers);
@@ -320,7 +320,7 @@ function resend_notifications()
     $products_imported_done = wc_get_products(array(
         'skus' => $last_import_data['skus'],
     ));
-
+    
     do_action('product_import_finished', map_products_to_array($products_imported_done));
 
     restore_current_blog();

@@ -61,3 +61,9 @@ label[for="account_username"]:before {
 #order_review {
   border: 1px solid #ebebeb !important;
 }
+
+/*ADDED*/
+#formCheckoutSubmitFormBottom .woocommerce-privacy-policy-text{
+    display: none;
+}
+/*END ADDED*/

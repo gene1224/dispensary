@@ -1,41 +1,47 @@
-<div style="background:#fff; max-width:720px; margin:0 auto;">
-	<div style="background:#2F73BA;padding:25px 0; color:#fff; text-align:center;">
-		<img src="https://qrxdispensary.com/wp-content/uploads/2020/11/logo.png" height="80px">
-	</div>
-	<div style="text-align:center; font-family:sans-serif; font-size:22px; padding:20px;">
-		Dispensary Product Import Notice
+<div style="background:#fff; max-width: 720px; margin:0 auto;">
+    <div style="background: url('https://qrxdispensary.com/wp-content/uploads/2021/03/Headlines.png'); height: 245px; background-size: cover;">
+
+    </div>
+	<div style="text-align:center; font-family:sans-serif; font-size:22px; padding:20px; margin-top: 25px;">
+		DISPENSARY PRODUCT IMPORT UPDATE
 	</div>
 	<div style="font-family:sans-serif; font-size:16px; padding:20px 30px; line-height:25px;">
 		Hi QRXDispensary Admin,<br>
 		<br>
-		<a href="{{ blogurl }}" style="text-transform:capitalize;">{{user.display_name}} ({{blogname}})</a>
-		imported imported
-		{{ products|length }}
-		to his dispensary
-		<a href="{{blogurl}}">{{blogname}}</a> from Allstuff420.
-
+		{{user.display_name}} has imported  ({{ products|length }}) to his/her dispensary. Kindly verify the following:
 	</div>
-
 	<div>
 		{% for product in products %}
-			<div style="display:inline; padding:20px 20px;">
-				<img src="{{ product.image }} " height="50px">
-				<div style="display:inline-block; vertical-align:top; font-family:sans-serif; font-size:15px;">
-					Product Name :
-					{{ product.name }}<br>
-					Listing Price: $
-					{{ product.price }}
-					| SKU :
-					{{ product.sku }}<br>
-					From:
-					<a href="https://allstuff420.com"><img src="https://allstuff420.com/wp-content/uploads/2021/01/Logo-updated-100x98.png" height="16px" style="vertical-align:bottom; margin-right:5px;">AllStuff420</a>
-				</div>
-			</div>
+		    <div style="display: inline-flex; align-items: center; margin: 10px 20px;">
+                <div style="width: 25%; text-align: center;">
+                    <img src="{{ product.image }}" style="width: 65%; height: auto;">
+                </div>
+                <div style="font-family:sans-serif;width: 80%; font-weight: 700; font-size: 14px;">
+                    Product name: {{ product.name }}<br/>
+                    Listing price: $ {{ product.price }}<br/>
+                    SKU: {{ product.sku }}<br/>
+                </div>
+            </div>
 		{% endfor %}
-
 	</div>
-	<div style="background:#2F73BA;padding:25px 0; color:#fff; text-align:center; margin-top:50px; font-family:sans-serif; ">
-		2021© Copyright | Powered By
+	<div style="font-family:sans-serif; font-size:16px; padding:20px 30px; line-height:25px; margin-bottom: 25px">
+		Once verified or should there be any issues, please inform the client immediately. 
+	</div>
+	<div style="background: url('https://qrxdispensary.com/wp-content/uploads/2021/03/bg-footer-email.png'); height: auto; background-size: cover; padding: 60px 25px; display: flex; justify-content: space-around;">
+        <div style="">
+            <div style="font-size: 20px; font-weight: 600; color: #ffffff; text-align: center; margin-bottom: 10px; text-transform: uppercase;">
+                Follow Us For More Updates
+            </div>
+            <div style="display: inline-block; text-align: center;">
+                <a href="#"><img src="https://qrxdispensary.com/wp-content/uploads/2021/03/icon-4.png" style="height: auto; width: 5%; margin: 0 15px;"></a>
+                <a href="#"><img src="https://qrxdispensary.com/wp-content/uploads/2021/03/icon-3.png" style="height: auto; width: 5%; margin: 0 15px;"></a>
+                <a href="#"><img src="https://qrxdispensary.com/wp-content/uploads/2021/03/icon-2.png" style="height: auto; width: 5%; margin: 0 15px;"></a>
+                <a href="#"><img src="https://qrxdispensary.com/wp-content/uploads/2021/03/icon-1.png" style="height: auto; width: 5%; margin: 0 15px;"></a>
+            </div>
+        </div>
+    </div>
+	<div style="background:#2F73BA; padding:10px 0; color:#fff; font-size: 12px; text-align:center; font-family:sans-serif; font-weight: 400;">
+		2021 © Copyright | Powered By
 		<a href="http://www.qrxdigital.com" style="color:#fff;">QRx Digital Sales and Marketing Services</a>
 		| All Rights Reserved
 	</div>

@@ -42,6 +42,7 @@ function product_import_display()
     $testing = $membership_plan;
     $value_output;
     
+    // REFRACTOR CODE
     if ($testing == "QRX Dispensary Basic Plan") {
         $max_product = 20;
     } elseif ($testing == 'QRX Dispensary Pro Plan') {
@@ -51,8 +52,8 @@ function product_import_display()
     } else {
         $max_product = 0;
     }
-    
 
+    
     $max_product = apply_filters('max_products_to_import', $max_product);
 
     $context = array(
@@ -109,3 +110,28 @@ function product_import_display()
     }
 }
 add_shortcode('product_import_views', 'product_import_display');
+
+
+//ADDED
+function email_template_display(){
+    global $timber;
+    //Site Creation
+    echo "SITE CREATION";
+    $context = array(
+        "user" => 'Ghermeister',
+        "domain" => 'ghermeister.ghermeister.com',
+    );
+    echo $timber->compile('emails/site-created.twig', $context);
+    //Customer Report
+    echo "Customer Report";
+    echo $timber->compile('emails/customer-report.twig', $context);
+    //Source Notice
+    echo "Source Notice";
+    echo $timber->compile('emails/source-notice.twig', $context);
+    //Admin Notice
+    echo "Admin Notice";
+    echo $timber->compile('emails/admin-notice.twig', $context);
+    
+}
+add_shortcode('email_template_view', 'email_template_display');
+//END ADDED

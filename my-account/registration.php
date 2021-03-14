@@ -239,7 +239,7 @@ add_filter('wc_add_to_cart_message_html', '__return_false');
 
 add_action('woocommerce_before_checkout_form', 'pre_checkout_information');
 function pre_checkout_information()
-{ //AIzaSyCGwe6E48xndUFPWRzKs_jXIfv5kfCanCM
+{
     global $timber;
 
     $product = false;
@@ -292,3 +292,13 @@ function wc_billing_field_strings($translated_text, $text, $domain)
     return $translated_text;
 }
 add_filter('gettext', 'wc_billing_field_strings', 20, 3);
+
+
+//ADDED
+function submit_form_checkout(){
+    echo "<div id='formCheckoutSubmitFormBottom' class='formCheckoutSubmitFormBottom'>";
+    do_action('woocommerce_checkout_order_review');
+    echo "</div>";
+}
+add_filter('woocommerce_after_checkout_billing_form', 'submit_form_checkout', 99, 99);
+//END ADDED
