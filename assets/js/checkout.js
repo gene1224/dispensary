@@ -5,32 +5,25 @@ jQuery(document).ready(function ($) {
       <img id="templatePreview" src="https://dummyimage.com/300x300/ddd/000.png&text=Preview">
   </div>
 `);
-  const templateSelector = $(
-    `#_wc_memberships_profile_field_template_selected`
-  );
 
+  jQuery(`#_wc_memberships_profile_field_template_selected`).replaceWith(
+    `<select name="_wc_memberships_profile_field_template_selected" id="_wc_memberships_profile_field_template_selected">
+    ${wp_ajax.templatesAvailable
+      .map(
+        (template) =>
+          `<option value=${template.blog_id}>${template.name}</option>`
+      )
+      .join("")}</select>`
+  );
   //LOCALIZE THIS SOON
-  const templatesAvailable = [
-    {
-      key: "Template 07",
-      id: 121,
-      preview:
-        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/7.-Fashion-02-Thumbnail-min-1.png",
-    },
-    {
-      key: "Template 08",
-      id: 123,
-      preview:
-        "https://templates.qrxdispensary.com/wp-content/uploads/2021/01/8.-Fashion-03-Thumbnail-min-1.png",
-    },
-  ];
-  templateSelector.change(function () {
+  const templatesAvailable = wp_ajax.templatesAvailable;
+  $(`#_wc_memberships_profile_field_template_selected`).change(function () {
     const selecteTemplate = templatesAvailable.find(
-      (template) => template.key == templateSelector.val()
+      (template) => template.blog_id == $(this).val()
     );
     $("#templatePreview").attr(
       "src",
-      selecteTemplate.preview ||
+      selecteTemplate.thumbnail ||
         "https://dummyimage.com/300x300/ddd/000.png&text=Preview"
     );
   });

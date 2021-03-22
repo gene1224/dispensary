@@ -29,31 +29,26 @@ function product_import_display()
     wp_enqueue_script('sweetalert');
     wp_enqueue_style('product_import_css');
 
-    if(!get_user_meta(get_current_user_id(), 'site_created', true)) {
+    if (!get_user_meta(get_current_user_id(), 'site_created', true)) {
         echo $timber->compile('no-site.twig', $context);
         return;
     }
 
     $listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
 
-    $max_product;
     $memberships = wc_memberships_get_user_memberships(get_current_user_id());
-    $membership_plan = trim(preg_replace('/\s+/', ' ', $memberships[0]->plan->name));
-    $testing = $membership_plan;
-    $value_output;
-    
-    // REFRACTOR CODE
-    if ($testing == "QRX Dispensary Basic Plan") {
-        $max_product = 20;
-    } elseif ($testing == 'QRX Dispensary Pro Plan') {
-        $max_product = 50;
-    } elseif ($testing == 'QRX Dispensary Premium Plan') {
-        $max_product = 100;
-    } else {
-        $max_product = 0;
+
+    $max_product = 10;
+    $membership_plan_name = '';
+    foreach ($memberships as $membership) {
+        $product_limit = get_post_meta($membership->plan_id, 'dispensary_product_limit', true) ?: 0;
+        if ($max_product < $product_limit) {
+            $max_product = $product_limit;
+            $membership_plan_name = $membership->plan->name;
+        }
+
     }
 
-    
     $max_product = apply_filters('max_products_to_import', $max_product);
 
     $context = array(
@@ -65,9 +60,7 @@ function product_import_display()
         'imported_products' => $imported_products,
         'max_products' => $max_product,
         'view' => $_REQUEST['view'] ?: 'home',
-        'membership' => $membership_plan, //Added
-        'testing' => $testing, //Added
-        'value_output' => $value_output, //Added
+        'membership' => $membership_plan_name,
     );
 
     try {
@@ -111,9 +104,8 @@ function product_import_display()
 }
 add_shortcode('product_import_views', 'product_import_display');
 
-
-//ADDED
-function email_template_display(){
+function email_template_display()
+{
     global $timber;
     //Site Creation
     echo "SITE CREATION";
@@ -131,7 +123,6 @@ function email_template_display(){
     //Admin Notice
     echo "Admin Notice";
     echo $timber->compile('emails/admin-notice.twig', $context);
-    
+
 }
 add_shortcode('email_template_view', 'email_template_display');
-//END ADDED

@@ -1,0 +1,37 @@
+<div class="dispensary-user-manager">
+	<div class="custom-users">
+		<h2>Users</h2>
+		<div class="add-user">
+			<a href="?add=1">Add New Store Manager</a>
+		</div>
+		<div class="user-list">
+			<table>
+				<thead>
+					<tr>
+						<td>Username</td>
+						<td>Name</td>
+						<td>Email</td>
+						<td>Actions</td>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in user_list %}
+						<tr>
+							<td>{{ user.user_login }}
+							</td>
+							<td>{{ user.first_name }}
+								{{ user.last_name }}
+							</td>
+							<td>{{ user.user_email }}</td>
+
+							<td>
+								<a href="http://wpms.net/7861-2/?delete={{ user.id }}" class="delete" user-id="{{ user.id }}">Delete</a>
+								<a href="http://wpms.net/7861-2/?edit={{ user.id }}" class="delete" user-id="{{ user.id }}">Edit</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,10 @@
+<div class="qrx-admin-input-group">
+	<label>Site Template</label>
+	<select name="template_site_id">
+		{% for site in site_template_map %}
+			<option value="{{site.blog_id}}">{{ site.domain }}</option>
+		{% endfor %}
+
+
+	</select>
+</div>

@@ -1,0 +1,41 @@
+<div class="dispensary-user-manager">
+	<div class="new-user-form">
+		<h2>{{ user_id ? 'Edit' : 'Create New' }}
+			User</h2>
+		<form id="newUser">
+			<input type="hidden" name="action" value="{{ actions.create }}">
+			<input type="hidden" name="nonce" value="{{ nonce }}">
+			{% if user_id %}
+				<input type="hidden" name="user_id" value="{{ user_id }}">
+			{% endif %}
+
+			<div class="user-form-group">
+				<label>First Name</label>
+				<input type="text" name="first_name" value="{{ first_name }}" reqiured>
+			</div>
+			<div class="user-form-group">
+				<label>Last Name</label>
+				<input type="text" name="last_name" value="{{ last_name }}" reqiured>
+			</div>
+			<div class="user-form-group">
+				<label>Email</label>
+				<input type="email" name="email" value="{{ user_email }}" reqiured>
+			</div>
+			<div class="user-form-group">
+				<label>Username</label>
+				<input type="text" name="username" value="{{ user_login }}" {{ user_id ? 'disabled' : 'reqiured'}}>
+			</div>
+			<div class="user-form-group">
+				<label>Password</label>
+				<input type="password" name="password" reqiured>
+			</div>
+			<div class="user-form-group">
+				<label>Confirm Password</label>
+				<input type="password" name="confirm_password" reqiured>
+			</div>
+			<div class="user-form-group">
+				<button type="submit" class="submit-user">Create</button>
+			</div>
+		</form>
+	</div>
+</div>

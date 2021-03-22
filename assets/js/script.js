@@ -95,7 +95,6 @@ jQuery(document).ready(function ($) {
   } else if (wp_ajax.max_products == 20) {
   } else {
   }
-  
 
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);

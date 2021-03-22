@@ -177,7 +177,7 @@ function qrx_custom_order_meta_box_HTML()
 add_action("wp_ajax_testing_1", "testing_1");
 add_action("wp_ajax_nopriv_testing_1", "testing_1");
 
-function testing_1()
+function _1()
 {
     qrx_create_custom_order(20);
 }

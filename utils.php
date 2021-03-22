@@ -169,3 +169,16 @@ function get_first_dispensary($user_id)
 
     return $site_id;
 }
+
+function get_customers_store_managers()
+{
+    $user_id = get_current_user_id();
+
+    $user_blog_id = get_user_meta($user_id, 'dispensary_blog_id', true);
+
+    return get_users(array(
+        'blog_id' => $user_blog_id,
+        'meta_key' => 'created_on_my_account',
+        'meta_value' => true,
+    ));
+}
