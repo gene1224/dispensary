@@ -66,7 +66,6 @@ function qrx_custom_order_meta_box_HTML()
     $order_id = get_post_meta($post_id, 'order_id', true);
 
     $sales_siteurl = get_post_meta($post_id, 'sales_siteurl', true);
-    
 
     $total = get_post_meta($post_id, 'total', true);
 
@@ -75,16 +74,16 @@ function qrx_custom_order_meta_box_HTML()
     $date_paid = get_post_meta($post_id, 'date_paid', true);
 
     $sales_siteurl = get_post_meta($post_id, 'sales_siteurl', true);
-    
+
     echo "</pre>";
     ?>
         <div class="order-details">
             <div class="order-info">
-                <p>Order created from <a href="<?= $sales_siteurl ?>"><?= $sales_siteurl ?></a> with Order ID: <?= $order_id ?></p>
-                <p>Date Paid: <?= date_format($date_paid, 'F, d Y @ h:i:sA') ?> </p>
-                <p>Date Created: <?= date_format($date_created, 'F, d Y @ h:i:sA') ?> </p>
-                <p><a target="_blank" href="<?= $sales_siteurl."/wp-admin/post.php?post=".$order_id."&action=edit" ?>">View Actual Order</a></p>
-                
+                <p>Order created from <a href="<?=$sales_siteurl?>"><?=$sales_siteurl?></a> with Order ID: <?=$order_id?></p>
+                <p>Date Paid: <?=date_format($date_paid, 'F, d Y @ h:i:sA')?> </p>
+                <p>Date Created: <?=date_format($date_created, 'F, d Y @ h:i:sA')?> </p>
+                <p><a target="_blank" href="<?=$sales_siteurl . "/wp-admin/post.php?post=" . $order_id . "&action=edit"?>">View Actual Order</a></p>
+
 
             </div>
             <p><strong>Items</strong></p>
@@ -104,13 +103,13 @@ function qrx_custom_order_meta_box_HTML()
             </thead>
             <tbody>
                 <?php foreach ($items as $item) {
-                    $total_line_sales = $item['price'] * $item['quantity'];
-                    $total_original_price_sales = $item['original_price'] * $item['quantity'];
-                    $sales_to_seller = $total_line_sales - $total_original_price_sales;
-                    $listing_fee = $sales_to_seller * 0.10;
-                    $net_sales_to_seller = $sales_to_seller - $listing_fee;
-                 ?>
-       
+        $total_line_sales = $item['price'] * $item['quantity'];
+        $total_original_price_sales = $item['original_price'] * $item['quantity'];
+        $sales_to_seller = $total_line_sales - $total_original_price_sales;
+        $listing_fee = $sales_to_seller * 0.10;
+        $net_sales_to_seller = $sales_to_seller - $listing_fee;
+        ?>
+
                       <tr class="item">
                         <td class="item-image">
                            <img src=<?=$item['image_url']?> width="50px;">
@@ -147,37 +146,37 @@ function qrx_custom_order_meta_box_HTML()
 
                     </tr>
                 <?php }?>
-                
+
                 </tbody>
             </table>
             <p><strong>Totals</strong></p>
             <table class="totals" cellspacing="0">
                 <tr>
                     <td>Sub Total</td>
-                    <td>$<?= number_format($subtotal, 2, '.', ',') ?></td>
+                    <td>$<?=number_format($subtotal, 2, '.', ',')?></td>
                 </tr>
                 <tr>
                     <td>Shipping Total</td>
-                    <td>$<?= number_format($shipping_total, 2, '.', ',') ?></td>
+                    <td>$<?=number_format($shipping_total, 2, '.', ',')?></td>
                 </tr>
                 <tr>
                     <td>Tax</td>
-                    <td>$<?= number_format($total_tax, 2, '.', ',') ?></td>
+                    <td>$<?=number_format($total_tax, 2, '.', ',')?></td>
                 </tr>
                 <tr>
                     <td>Total</td>
-                    <td>$<?= number_format($total, 2, '.', ',') ?></td>
+                    <td>$<?=number_format($total, 2, '.', ',')?></td>
                 </tr>
             </table>
         </div>
     <?php
-    
+
 }
 
 add_action("wp_ajax_testing_1", "testing_1");
 add_action("wp_ajax_nopriv_testing_1", "testing_1");
 
-function _1()
+function testing_1()
 {
     qrx_create_custom_order(20);
 }

@@ -1,32 +1,35 @@
 <?php
 
-function redirect_non_admin_user(){
-    if(current_user_can('administrator')){
-		
-	}elseif(current_user_can('qrxds_new_basic')){
-		wp_redirect( site_url() . "/frontend-manager" );  exit;
-	}elseif(current_user_can('qrxds_pro')){
-		wp_redirect( site_url() . "/frontend-manager" );  exit;
-	}elseif(current_user_can('qrxds_premium')){
-		wp_redirect( site_url() . "/frontend-manager" );  exit;
-	}else{
-		wp_redirect( site_url() );  exit;
-	}
+function redirect_non_admin_user()
+{
+    if (current_user_can('administrator')) {
+
+    } elseif (current_user_can('qrxds_new_basic')) {
+        wp_redirect(site_url() . "/frontend-manager");exit;
+    } elseif (current_user_can('qrxds_pro')) {
+        wp_redirect(site_url() . "/frontend-manager");exit;
+    } elseif (current_user_can('qrxds_premium')) {
+        wp_redirect(site_url() . "/frontend-manager");exit;
+    } else {
+        wp_redirect(site_url());exit;
+    }
 }
 
-function change_currency( $currency ) {
-  $currency = 'USD';
+function change_currency($currency)
+{
+    $currency = 'USD';
 
-  return $currency;
+    return $currency;
 }
-add_filter( 'woocommerce_currency', 'change_currency', 200 );
+add_filter('woocommerce_currency', 'change_currency', 200);
 
 // add_action( 'admin_init', 'redirect_non_admin_user' );
 
-add_action( 'wp_head', 'multisite_style' );
-add_action( 'wp_footer', 'multisite_js', 100);
-function multisite_style(){
-?>
+add_action('wp_head', 'multisite_style');
+add_action('wp_footer', 'multisite_js', 100);
+function multisite_style()
+{
+    ?>
     <style>
         #yith_wcfm-header{
             background: #2f73ba;
@@ -92,17 +95,18 @@ function multisite_style(){
 <?php
 }
 
-function multisite_js(){
+function multisite_js()
+{
     $blog_id = get_current_blog_id();
     $blog_list = wp_get_sites();
     $array = json_encode($blog_list);
     $website_link = "";
-    foreach($blog_list as $blog){
-        if($blog['blog_id'] == $blog_id){
+    foreach ($blog_list as $blog) {
+        if ($blog['blog_id'] == $blog_id) {
             $website_link = $blog['domain'];
         }
     }
-?>
+    ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
         jQuery(document).ready(function($){

@@ -121,7 +121,9 @@ function get_users_imported_products()
 {
     $imported_products = [];
 
-    foreach (get_blogs_of_user(get_current_user_id(), true) as $users_site) {
+    $user_id = get_user_meta(get_current_user_id(), '$parent_id', true) ?: get_current_user_id();
+
+    foreach (get_blogs_of_user($user_id, true) as $users_site) {
 
         switch_to_blog($users_site->userblog_id);
 
@@ -149,6 +151,7 @@ function get_users_imported_products()
                 'price' => $product->get_price(),
                 'name' => $product->get_name(),
                 'image' => $first_image_url,
+                'stock_quantity' => $product->get_stock_quantity(), //Added
             );
         }
 
@@ -169,6 +172,53 @@ function get_first_dispensary($user_id)
 
     return $site_id;
 }
+
+//Added
+function get_users_ordered_products()
+{
+    $ordered_products = [];
+    $sites = get_blogs_of_user(get_current_user_id(), true);
+    $site_id = 0;
+    $site_url = '';
+    $orders;
+
+    foreach ($sites as $site) {
+        if ($site->userblog_id != 1) {
+            $site_id = $site->userblog_id;
+            $site_url = $site->siteurl;
+            break;
+        }
+    }
+
+    if (isset($site_id)) {
+        switch_to_blog($site_id);
+        $query = new WC_Order_Query(array(
+            'limit' => -1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'return' => 'ids',
+        ));
+        $orders = $query->get_orders();
+        foreach ($orders as $order_id) {
+            $order = wc_get_order($order_id);
+            foreach ($order->get_items() as $item_id => $item) {
+                $product_id = $item->get_product_id();
+                $product = $item->get_product();
+            }
+            $ordered_products[] = array(
+                $order_id => $order->get_data(),
+                //$product_id = $product,
+            );
+        }
+        restore_current_blog();
+    } else {
+        $ordered_products[] = array();
+    }
+
+    return $ordered_products;
+}
+
+//End Added
 
 function get_customers_store_managers()
 {

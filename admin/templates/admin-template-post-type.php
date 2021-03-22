@@ -85,7 +85,6 @@ class DispensaryTemplates
             );
         }, $available_sites);
 
-        print_r(get_templates());
         $context = array(
             'site_template_map' => $site_template_map,
         );

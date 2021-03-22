@@ -32,6 +32,7 @@
 
 #templatePreview {
   max-width: 300px;
+  padding-bottom: 25px;
 }
 
 .woocommerce-billing-fields > h3 {

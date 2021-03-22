@@ -49,7 +49,7 @@ function add_to_cart_list()
     $listing_cart[] = array(
         'source_site_url' => 'https://allstuff420.com',
         'source_product_id' => $_POST['source_product_id'],
-        'listing_price' => $_POST['listing_price'] ?: 0,
+        'listing_price' => isset($_POST['listing_price']) ? $_POST['listing_price'] : 0,
         'sku' => $_POST['sku'],
     );
 
@@ -160,7 +160,7 @@ add_action('wp_ajax_import_pulse', 'import_pulse');
 function import_batch($user_id, $site_id)
 {
     $per_batch = 10;
-
+    error_log("IMPORT BATCH RUNNING USER:".$user_id." SITE:".$site_id);
     $import_data = check_imported_products($user_id);
 
     $rem_skus = $import_data['remaining_skus'];

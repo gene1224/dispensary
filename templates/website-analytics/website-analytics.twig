@@ -1,0 +1,42 @@
+<h2>
+	<strong>Your Website Dispensary Analytics</strong>
+</h2>
+<div class="view_section_prop" style="display: flex; justify-content: space-between; margin-bottom: 25px;">
+	<div class="view_by_section" style="font-weight: 700;">
+		View By: &nbsp;&nbsp;
+		<select class="viewBySelect" style="padding: 5px;">
+			<option value="today">Today</option>
+			<option value="yesterday">Yesterday</option>
+			<option value="week">This Week</option>
+			<option value="month">This Month</option>
+			<option value="year">This Year</option>
+			<option value="custom_date">Custom Date</option>
+		</select>
+		<div class="custom_date_range" style="margin-top: 25px; display: none;">
+			Date From:
+			<input type="text" id="custom_date_from">
+			&nbsp;&nbsp;
+			            Date To:
+			<input type="text" id="custom_date_to">
+			&nbsp;&nbsp;
+			<button id="custom_date_filter">
+				<i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw fa-notif"></i>
+				Date Filter</button>
+		</div>
+		<div class="notif_container">
+			<span class="custom_date_range_notif"></span>
+		</div>
+	</div>
+	<div class="refresh_view_sectoin">
+		<a href="#" style="font-weight: 700;">
+			<i class="fa fa-refresh" aria-hidden="true"></i>
+			Refresh Data</a>
+	</div>
+</div>
+<div class="wa-viewby-container">
+	<div class="view-loading">
+		<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+	</div>
+	<div class="view-container"></div>
+</div>
+{% include 'website-analytics/product-report.twig' %}

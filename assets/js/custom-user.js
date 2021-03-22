@@ -1,4 +1,4 @@
-$(document).ready(function ($) {
+jQuery(document).ready(function ($) {
   const emitErrors = (errors) => {
     const usernameError = errors.username
       ? errors.username == "exist"

@@ -78,12 +78,13 @@ class DispensaryCustomUser
 
     public function create_user()
     {
+        
         if (isset($_REQUEST['user_id'])) {
             return $this->update_user($_REQUEST['user_id']);
         }
 
         $user_id = get_current_user_id();
-
+        
         $user_blog_id = get_user_meta($user_id, 'dispensary_blog_id', true);
 
         if (!$user_blog_id) {
@@ -136,6 +137,9 @@ class DispensaryCustomUser
             if ($new_user_id) {
                 add_user_to_blog($user_blog_id, $new_user_id, 'shop_manager');
                 update_user_meta($new_user_id, 'created_on_my_account', true);
+                update_user_meta($new_user_id, 'created_by_user_id', $user_id);
+                
+                
             }
 
         } else {
@@ -205,9 +209,3 @@ class DispensaryCustomUser
 }
 
 $DispensaryCustomUser = new DispensaryCustomUser();
-
-try {
-    //code...
-} catch (\Throwable $th) {
-    //throw $th;
-}

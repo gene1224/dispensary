@@ -214,7 +214,7 @@ jQuery(document).ready(function ($) {
 
     jQuery(".remove-product").fadeOut();
     const form_product_data = new FormData(this);
-    jQuery(".price-input-main").attr("disabled", "disabled");
+
     $.ajax({
       url: `${wp_ajax.url}?action=start_import`,
       data: form_product_data,

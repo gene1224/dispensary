@@ -6,20 +6,28 @@ jQuery(document).ready(function ($) {
   </div>
 `);
 
-  jQuery(`#_wc_memberships_profile_field_template_selected`).replaceWith(
-    `<select name="_wc_memberships_profile_field_template_selected" id="_wc_memberships_profile_field_template_selected">
+  jQuery(`#_wc_memberships_profile_field_template_selected`)
+    .parent()
+    .append(
+      `<select name="template_selector" id="template_selector">
+    <option selected="selected" disabled>Select Template</option>
     ${wp_ajax.templatesAvailable
       .map(
         (template) =>
           `<option value=${template.blog_id}>${template.name}</option>`
       )
       .join("")}</select>`
-  );
+    );
+  jQuery(`#_wc_memberships_profile_field_template_selected`).hide();
   //LOCALIZE THIS SOON
   const templatesAvailable = wp_ajax.templatesAvailable;
-  $(`#_wc_memberships_profile_field_template_selected`).change(function () {
+  $(`#template_selector`).change(function () {
     const selecteTemplate = templatesAvailable.find(
       (template) => template.blog_id == $(this).val()
+    );
+    $("#_wc_memberships_profile_field_template_selected").attr(
+      "value",
+      $(this).val()
     );
     $("#templatePreview").attr(
       "src",
