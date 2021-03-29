@@ -35,10 +35,17 @@ jQuery(document).ready(function ($) {
     //console.log(index);
     //console.log(value);
   });
+  //console.log(wp_ajax.ordered_products);
   $(".tabsingle").click(function () {
     $(".targetdiv").hide();
     $("#div-" + $(this).attr("target")).show();
     $(".tabsingle").removeClass("tab-active");
     $(this).addClass("tab-active");
+  });
+  $("button#stock-email-notif").each(function (index, value) {
+    $(this).on("click", function () {
+      const product_sku = $(this).data("sku");
+      console.log(product_sku);
+    });
   });
 });

@@ -4,12 +4,19 @@
 		to
 		<strong>{{ product_name }}</strong>
 		you will be charged
-		<strong>$ {{ product_price | number_format(2, '.', ',') }}</strong>
+		<strong>$
+			{{ product_price | number_format(2, '.', ',') }}</strong>
 		per month.
 	</p>
 {% else %}
 	<p>You are currently subscribing to our
-		<strong>FREE {{ product_name }}</strong>.
-		 Click <a href="#" class="popmake-6211">here</a> to change the plan you select</p>
-		 {#you will be charged <strong>{{ product_price | number_format(2, '.', ',') }}</strong> per month.#}
+		{% if product_name == "QRx Dispensary Basic Plan" %}
+			<strong>FREE
+				{{ product_name }}</strong>.
+		{% else %}
+			<strong>{{ product_name }}</strong>.
+		{% endif %}
+		Click
+		<a href="#" class="popmake-6211">here</a>
+		to change the plan you select.</p>
 {% endif %}

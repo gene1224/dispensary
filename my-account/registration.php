@@ -153,11 +153,10 @@ function product_category_filter_changes()
             || !stripos(strtolower($product->get_name()), 'premium')
         ) {
             if (!WC()->cart->subtotal > 0) {
-                remove_action('woocommerce_checkout_order_review', 'woocommerce_order_review', 10);
+                //remove_action('woocommerce_checkout_order_review', 'woocommerce_order_review', 10);
             }
         }
     }
-
 }
 add_action('template_redirect', 'product_category_filter_changes');
 
@@ -328,9 +327,57 @@ function custom_checkout_field_update_order_meta( $order_id ) {
     }
 }
 
+//Added
 function submit_form_checkout(){
     echo "<div id='formCheckoutSubmitFormBottom' class='formCheckoutSubmitFormBottom'>";
+    echo '<label>Subscription Overview</label>';
     do_action('woocommerce_checkout_order_review');
     echo "</div>";
 }
 add_filter('woocommerce_after_checkout_billing_form', 'submit_form_checkout', 99, 99);
+
+function add_recurring_postage_fees( $cart ) {
+    if ( ! empty( $cart->recurring_cart_key ) ) {
+        remove_action( 'woocommerce_cart_totals_after_order_total', array( 'WC_Subscriptions_Cart', 'display_recurring_totals' ), 10 );
+        remove_action( 'woocommerce_review_order_after_order_total', array( 'WC_Subscriptions_Cart', 'display_recurring_totals' ), 10 );
+    }
+}
+add_filter( 'woocommerce_cart_calculate_fees', 'add_recurring_postage_fees', 10, 1 );
+
+add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
+function wc_renaming_checkout_total($translated) {
+
+    if( is_checkout ) {
+        $text = array(
+            'Your order' => 'Subscription Overview',
+            'Product' => 'Plan',
+        );
+        $translated = str_ireplace(  array_keys($text),  $text,  $translated );
+    }
+    return $translated;
+}
+
+add_filter( 'woocommerce_order_button_html', 'change_checkout_button_text' );
+ 
+function change_checkout_button_text( $button_text ) {
+    $product = false;
+    $subscription = false;
+
+    foreach (WC()->cart->get_cart() as $cart_item) {
+        $product = wc_get_product($cart_item['product_id']);
+        $subscription = $cart_item["data"];
+    }
+    $product_name = $product->get_name();
+    
+    if($product_name == "QRx Dispensary Basic Plan"){
+        return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select FREE Plan</button>';
+    }elseif($product_name == "QRx Dispensary Pro Plan"){
+        return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select PRO Plan</button>';
+    }elseif($product_name == "QRx Dispensary Premium Plan"){
+        return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select PREMIUM Plan</button>';
+    }else{
+        return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select Plan</button>';
+    }
+   
+}
+//End Added

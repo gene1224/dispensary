@@ -67,12 +67,10 @@ function viewRevenueInfo() {
         When a customer orders an item to your dispensary and pays that product, our system will automatically deduct the dispensary price under your retail price and will remove the 10% for the Transaction fee. 
         So the remaining will be your revenue for that product.
         <br/><br/>
-        For Example:<br/>
-        $10.99 is the Dispensary Price<br/>
-        $15.99 is your Retail Price<br/>
-        When a customer orders an item and pays, the $10.99 will be deducted to $15.99 for the Enlisting Payment.<br/>
-        It will now appear as $5 in your balance, and then it will deduct 10% as a transaction fee.<br/><br/>
-        The revenue of the item to your account will be $4.5.</div>
+        For example, the Dispensary Price is $10.99, and the Retail Price is $15.99. 
+        <br/><br/>
+        When a customer orders an item and pays, the Dispensary Price will be deducted from the Retail Price as Enlisting Payment. Now, your remaining balance will be $5, and there will be a 10% deduction as a transaction fee. The revenue of the item on your account will now be $4.5. 
+       </div>
     `;
   Swal.fire({
     title: "Product Revenue Information",

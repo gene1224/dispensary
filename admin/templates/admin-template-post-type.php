@@ -63,7 +63,8 @@ class DispensaryTemplates
 
         $post_id = get_the_ID();
 
-        $sites = get_sites(array('archived' => 1));
+        // $sites = get_sites(array('archived' => 1));
+        $sites = get_sites();
 
         $template_site_id = get_post_meta($post_id, 'template_site_id', true);
 
@@ -83,10 +84,11 @@ class DispensaryTemplates
                 'blog_id' => $site->blog_id,
                 'domain' => $site->domain,
             );
-        }, $available_sites);
+        }, $sites);
 
         $context = array(
             'site_template_map' => $site_template_map,
+            'selected' => get_the_ID() ? get_post_meta(get_the_ID(), 'template_site_id', true) : '',
         );
 
         echo $timber->compile('admin/admin-template-meta-box.twig', $context);

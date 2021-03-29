@@ -1,23 +1,15 @@
-<h2>
-	<strong>Your Website Dispensary Products Reports</strong>
-</h2>
+<h2><strong>Your Website Dispensary Products Reports</strong></h2>
 <div class="product-report-nav">
-	<div class="tabsingle br_left tab-active" target="product" style="cursor:pointer;">
-		<i class="fa fa-list-ul" aria-hidden="true"></i>
-		&nbsp; Products
-	</div>
-	<div class="tabsingle br_left" target="order" style="cursor:pointer;">
-		<i class="fa fa-table" aria-hidden="true"></i>
-		&nbsp; Orders
-	</div>
+    <div class="tabsingle br_left tab-active" target="product" style="cursor:pointer;"> <i class="fa fa-list-ul" aria-hidden="true"></i> &nbsp; Products </div>
+    <div class="tabsingle br_left" target="order" style="cursor:pointer;"> <i class="fa fa-table" aria-hidden="true"></i> &nbsp; Orders </div>
 </div>
 <div class="product-report-content">
-	<div id="div-product" class="targetdiv">
-		<div class="report-view-loading">
-			<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
-		</div>
-		<div id="product-content" class="product-content" style="display: none;">
-			{% for product in imported_products %}
+    <div id="div-product" class="targetdiv">
+        <div class="report-view-loading">
+            <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+        </div>
+        <div id="product-content" class="product-content" style="display: none;">
+            {% for product in imported_products %}
 				<div class="product-cart-item" product-sku="{{ product.sku }}">
 					<div class="product-cart-item-details">
 						<div class="product-cart-item-image">
@@ -25,7 +17,7 @@
 							<img src="{{ product.image }}">
 						</div>
 						<div class="product-cart-desc">
-							<div class="sku--rating">
+						    <div class="sku--rating">
 								<div class="sku">SKU:
 									{{ product.sku }}</div>
 							</div>
@@ -34,70 +26,45 @@
 								{{ product.original_price }}
 								| Enlisting Price : $
 								{{ product.price }}</div>
-							<div class="stocks">Stocks Available:
-								<span class="stocks-availability">{{ product.stock_quantity }}</span>
-							</div>
+							<div class="stocks">Stocks Available: <span class="stocks-availability">{{ product.stock_quantity }}</span></div>
 						</div>
 					</div>
 					<div class="product-cart-item-action">
 						<div class="listing-action">
-							<button type="button" class="stock-email-notif" data-sku="{{ product.sku }}">Notify QRx Dispensary For Stock Reflenish</button>
+							<button type="button" class="stock-email-notif" id="stock-email-notif" data-sku="{{ product.sku }}">Notify QRx Dispensary For Stock Reflenish</button>
 						</div>
 					</div>
 				</div>
 			{% endfor %}
-		</div>
-	</div>
-	<div id="div-order" class="targetdiv" style="display:none;">
-		<div class="report-view-loading">
-			<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
-		</div>
-		<div id="order-content" class="order-content" style="display: none;">
-			<div class="orders-container">
-				{% for orders in ordered_products %}
-					{% for order in orders %}
-						<div class="ind-order-container">
-							<div class="ioc-order-status">
-								<span class="ioc-text ioc-os-status">
-									<strong>Status:
-									</strong>
-									<span class="ioc-os-status-notif">{{order.status}}</span>
-								</span><br/>
-								<span class="ioc-text ioc-os-fl_name">
-									<strong>Customer Name:
-									</strong>
-									{{order.billing.first_name}}
-									{{order.billing.last_name}}</span><br/>
-								<span class="ioc-text ioc-os-date_created">
-									<strong>Order Date/Time:
-									</strong>
-									{{order.date_created}}</span><br/>
-								<span class="ioc-text ioc-os-total">
-									<strong>Total Order:
-									</strong>
-									$
-									{{order.total}}</span><br/>
-								<span class="ioc-text ioc-os-pmt">
-									<strong>Payment Mode:
-									</strong>
-									{{order.payment_method}}
-									-
-									{{order.transaction_id}}</span>
-							</div>
-							<div class="ioc-product-orders">
-								<h5>
-									<strong>Product(s):</strong>
-								</h5>
-								{% for product in order.line_items %}
-									<span class="ioc-text ioc-po-status">{{product.name}}
-										(<strong>{{product.quantity}}</strong>) - $
-										{{product.total}}</span><br/>
-								{% endfor %}
-							</div>
-						</div>
-					{% endfor %}
-				{% endfor %}
-			</div>
-		</div>
-	</div>
+        </div>
+    </div>       
+    <div id="div-order" class="targetdiv" style="display:none;">
+        <div class="report-view-loading">
+            <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+        </div>
+        <div id="order-content" class="order-content" style="display: none;">
+            <div calss="order-date-select">
+                
+            </div>
+            <div class="orders-container">
+                {% for order in ordered_products %}
+                    <div class="ind-order-container">
+                        <div class="ioc-order-status">
+                            <span class="ioc-text ioc-os-status"><strong>Status: </strong> <span class="ioc-os-status-notif">{{order.order_status}}</span></span><br/>
+                            <span class="ioc-text ioc-os-fl_name"><strong>Customer Name: </strong> {{order.order_biling_first_name}} {{order.order_biling_last_name}}</span><br/>
+                            <span class="ioc-text ioc-os-date_created"><strong>Order Date/Time: </strong> {{order.order_created_date}} {{order.order_created_time}} </span><br/>
+                            <span class="ioc-text ioc-os-total"><strong>Total Order: </strong> $ {{order.order_total}}</span><br/>
+                            <span class="ioc-text ioc-os-pmt"><strong>Payment Mode: </strong> {{order.order_payment_method}} - {{order.order_transaction_id}}</span>
+                        </div>
+                        <div class="ioc-product-orders">
+                            <h5><strong>Product(s):</strong></h5>
+                            {% for product in order.order_products %}
+                                <span class="ioc-text ioc-po-status">{{product.name}} (<strong>{{product.quantity}}</strong>) - $ {{product.total}}</span><br/>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,8 +1,29 @@
 jQuery(document).ready(function ($) {
+  /*added*/
+  $("input.thwcfe-input-field").on("click", function () {
+    $("span.description").removeAttr("style");
+  });
+  $("input.thwcfe-input-field").on("focus", function () {
+    $("span.description").removeAttr("style");
+  });
+  $("input.thwcfe-input-field").on("focusout", function () {
+    $("span.description").removeAttr("style");
+  });
+  $("span.description").removeAttr("style");
+  $("abbr.required").each(function (index) {
+    $(this).hover(function () {
+      $(this).attr("title", "This field is required");
+    });
+  });
+  //$(".woocommerce-order").filter('p').first().remove();
+  /*end added*/
   $("#_wc_memberships_profile_field_template_selected_field").prepend(`
-  <div class="template-preivew=container">
-      <p><strong>Template Preview</strong></p>
-      <img id="templatePreview" src="https://dummyimage.com/300x300/ddd/000.png&text=Preview">
+  <div class="template-preivew-container">
+      <p class="template-preivew-p"><strong>Template Preview</strong></p>
+      <span>You may change your template later. However, we recommend you decide on the final template now as changes will put your website on-hold while processing. 
+      See all templates <a href="https://templates.qrxdispensary.com" target="_blank">here</a>.</span>
+      <br/>
+      <a id="templatePreviewLink" href="#"><img id="templatePreview" src="https://dummyimage.com/300x300/ddd/000.png&text=Preview"></a>
   </div>
 `);
 
@@ -34,6 +55,11 @@ jQuery(document).ready(function ($) {
       selecteTemplate.thumbnail ||
         "https://dummyimage.com/300x300/ddd/000.png&text=Preview"
     );
+    $("#templatePreviewLink").attr({
+      href: "https://templates.qrxdispensary.com/" + selecteTemplate.post_name,
+      target: "_blank",
+      title: "Click To Preview The " + selecteTemplate.name,
+    });
   });
 
   const subdomainInput = $(

@@ -173,14 +173,12 @@ function get_first_dispensary($user_id)
     return $site_id;
 }
 
-//Added
 function get_users_ordered_products()
 {
     $ordered_products = [];
     $sites = get_blogs_of_user(get_current_user_id(), true);
     $site_id = 0;
     $site_url = '';
-    $orders;
 
     foreach ($sites as $site) {
         if ($site->userblog_id != 1) {
@@ -198,16 +196,25 @@ function get_users_ordered_products()
             'order' => 'DESC',
             'return' => 'ids',
         ));
+
         $orders = $query->get_orders();
+
         foreach ($orders as $order_id) {
             $order = wc_get_order($order_id);
-            foreach ($order->get_items() as $item_id => $item) {
-                $product_id = $item->get_product_id();
-                $product = $item->get_product();
-            }
-            $ordered_products[] = array(
-                $order_id => $order->get_data(),
-                //$product_id = $product,
+            //$ordered_products[] = array(
+            //    $order_id => $order->get_data(),
+            //);
+            $order_data = $order->get_data();
+            $ordered_products[$order_id] = array(
+                'order_status' => $order_data['status'],
+                'order_biling_first_name' => $order_data['billing']['first_name'],
+                'order_biling_last_name' => $order_data['billing']['last_name'],
+                'order_created_date' => $order_data['date_created']->date('Y-m-d'),
+                'order_created_time' => $order_data['date_created']->date('H:i:s'),
+                'order_total' => $order_data['total'],
+                'order_payment_method' => $order_data['payment_method'],
+                'order_transaction_id' => $order_data['transaction_id'],
+                'order_products' => $order_data['line_items'],
             );
         }
         restore_current_blog();
@@ -218,7 +225,6 @@ function get_users_ordered_products()
     return $ordered_products;
 }
 
-//End Added
 
 function get_customers_store_managers()
 {

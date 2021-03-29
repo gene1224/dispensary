@@ -1,7 +1,26 @@
 .wc_payment_methods.payment_methods,
-#woocommerce-info,
-#order_review_heading {
+#woocommerce-info {
   display: none;
+}
+#order_review_heading {
+  display: block;
+}
+.woocommerce-page.woocommerce-checkout form #order_review_heading,
+.woocommerce.woocommerce-checkout form #order_review_heading {
+  border: none;
+  font-weight: 700;
+  padding: 15px 0;
+}
+.woocommerce form.woocommerce-checkout span.description {
+  display: block !important;
+  font-size: 13px;
+}
+.template-preivew-container p.template-preivew-p {
+  margin-bottom: 0px;
+}
+.template-preivew-container span {
+  font-size: 13px;
+  margin-bottom: 5px;
 }
 .template-image {
   margin: 0 auto 20px;
@@ -64,7 +83,20 @@ label[for="account_username"]:before {
 }
 
 /*ADDED*/
-#formCheckoutSubmitFormBottom .woocommerce-privacy-policy-text{
-    display: none;
+#formCheckoutSubmitFormBottom .woocommerce-privacy-policy-text {
+  display: none;
+}
+#formCheckoutSubmitFormBottom {
+  margin-top: 25px;
+}
+#formCheckoutSubmitFormBottom label {
+  line-height: 2;
+  font-weight: 700;
+  font-size: 13.5px;
+  font-size: 0.9rem;
+}
+#formCheckoutSubmitFormBottom table.shop_table td,
+#formCheckoutSubmitFormBottom table.shop_table td {
+  padding: 10px 10px 10px 10px;
 }
 /*END ADDED*/
