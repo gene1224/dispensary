@@ -1,7 +1,7 @@
 <div class="row-prop">
     <div class="column-one-prop">
         <h1 class="cop-h1-prop">
-            {{ view == 'home' ? 'Manage Products' : '' }}
+            {{ view == 'home' ? 'Available Products' : '' }}
             {{ view == 'cart' ? 'Listed Products' : '' }}
             {{ view == 'imported' ? 'Enlisted Products' : '' }}
         </h1>
@@ -10,10 +10,8 @@
             <span class="ctp-plan">{{ membership }}</span>
             {% if membership == 'QRX Dispensary Premium Plan' %}
                
-            {% elseif membership == 'QRX Dispensary Pro Plan' %}
-                <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade to Premium Plan</a></span> )</span>
             {% else %}
-                <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccount" class="changePlanMyAccount"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade here to get more products</a></span> )</span>
+               <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" onclick="changePlan()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Click To Upgrade</a></span> )</span>
             {% endif %}
         </div>
         <div class="ctp-product-prop">
@@ -35,7 +33,7 @@
     </div>
     <div class="column-two-prop">
         <div class="cop-revenue">
-            <i class="fa fa-info-circle" aria-hidden="true"></i> <a href="#" onclick="viewRevenueInfo()">About AllStuff420 <br/> Product Revenue</a>
+            <i class="fa fa-info-circle" aria-hidden="true"></i> <a href="#" onclick="viewRevenueInfo()">About Your Product Revenue</a>
         </div>
     </div>
 </div>

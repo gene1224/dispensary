@@ -1,4 +1,4 @@
-<h2><strong>Your Website Dispensary Products Reports</strong></h2>
+<h2><strong>Your Website Dispensary Product Report</strong></h2>
 <div class="product-report-nav">
     <div class="tabsingle br_left tab-active" target="product" style="cursor:pointer;"> <i class="fa fa-list-ul" aria-hidden="true"></i> &nbsp; Products </div>
     <div class="tabsingle br_left" target="order" style="cursor:pointer;"> <i class="fa fa-table" aria-hidden="true"></i> &nbsp; Orders </div>
@@ -26,6 +26,10 @@
 								{{ product.original_price }}
 								| Enlisting Price : $
 								{{ product.price }}</div>
+							{% set original_price = product.original_price|trim %}
+                            {% set enlisting_price = product.price|trim %}
+                            {% set transaction_fee = (enlisting_price - original_price) * 0.10 |trim %}
+							<div class="per_revenue">Revenue Per Product: <span class="revenue_value">$ {{ (enlisting_price - original_price) - transaction_fee }}</span></div>
 							<div class="stocks">Stocks Available: <span class="stocks-availability">{{ product.stock_quantity }}</span></div>
 						</div>
 					</div>
@@ -47,7 +51,39 @@
                 
             </div>
             <div class="orders-container">
-                {% for order in ordered_products %}
+                <div class="order-content">
+                    <div class="orders-net-sales">
+                        <div class="oc-heading"><h5>Net Sale</h5></div>
+                        <div class="oc-data">$ {{ordered_total_sales}}</div>
+                    </div>
+                    {% set countProcess = 0 %}
+                    {% set countCompted = 0 %}
+                    {% for order in ordered_products %}
+                        {% if order.order_status == "processing" %}
+                            {% set countProcess = countProcess + 1 %}
+                        {% elseif order.order_status == 'completed' %}
+                            {% set countCompted = countCompted + 1 %}
+                        {% else %}
+                        
+                        {% endif %}
+                    {% endfor %}
+                    <div class="orders-pending">
+                        <div class="oc-heading"><h5>Awaiting Process Orders</h5></div>
+                        <div class="oc-data">
+                            {{countProcess}}
+                        </div>
+                    </div>
+                    <div class="orders-completed">
+                        <div class="oc-heading"><h5>Completed Orders</h5></div>
+                        <div class="oc-data">
+                            {{countCompted}}
+                        </div>
+                    </div>
+                </div>
+                <div class="report-view-link">
+                    <a href="https://ghermeister.qrxdispensary.com/store-manager/reports/" target="_blank"><button>See Your Full Report Of Your Site</button></a>
+                </div>
+                <!--{% for order in ordered_products %}
                     <div class="ind-order-container">
                         <div class="ioc-order-status">
                             <span class="ioc-text ioc-os-status"><strong>Status: </strong> <span class="ioc-os-status-notif">{{order.order_status}}</span></span><br/>
@@ -63,7 +99,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                {% endfor %}
+                {% endfor %}-->
             </div>
         </div>
     </div>
