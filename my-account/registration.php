@@ -24,8 +24,6 @@ function schedule_site_duplication($order_id)
         return;
     }
     
-    
-
     if (get_user_meta(get_current_user_id(), 'site_created', true) || get_user_meta(get_current_user_id(), 'site_clone_started', true)) {
         return;
     }
@@ -344,18 +342,18 @@ function add_recurring_postage_fees( $cart ) {
 }
 add_filter( 'woocommerce_cart_calculate_fees', 'add_recurring_postage_fees', 10, 1 );
 
-add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
-function wc_renaming_checkout_total($translated) {
+// add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
+// function wc_renaming_checkout_total($translated) {
 
-    if( is_checkout ) {
-        $text = array(
-            'Your order' => 'Subscription Overview',
-            'Product' => 'Plan',
-        );
-        $translated = str_ireplace(  array_keys($text),  $text,  $translated );
-    }
-    return $translated;
-}
+//     if( is_checkout ) {
+//         $text = array(
+//             'Your order' => 'Subscription Overview',
+//             'Product' => 'Plan',
+//         );
+//         $translated = str_ireplace(  array_keys($text),  $text,  $translated );
+//     }
+//     return $translated;
+// }
 
 add_filter( 'woocommerce_order_button_html', 'change_checkout_button_text' );
  
@@ -381,3 +379,15 @@ function change_checkout_button_text( $button_text ) {
    
 }
 //End Added
+
+
+// add_action('woocommerce_thankyou', 'upgrade_email', 10, 1);
+add_action('wp_ajax_nopriv_mailtest', 'upgrade_email');
+
+function upgrade_email($order_id)
+{
+    if (!get_current_user_id()) {
+        return;
+    }
+
+}
