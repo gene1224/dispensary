@@ -1,0 +1,10 @@
+#newUser .user-form-group {
+  display: block;
+}
+#newUser .user-form-group label,
+#newUser .user-form-group input {
+  display: block;
+}
+#newUser .user-form-group input {
+  width: 300px;
+}

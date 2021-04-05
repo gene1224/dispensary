@@ -198,12 +198,8 @@ function get_users_ordered_products()
         ));
 
         $orders = $query->get_orders();
-
         foreach ($orders as $order_id) {
             $order = wc_get_order($order_id);
-            //$ordered_products[] = array(
-            //    $order_id => $order->get_data(),
-            //);
             $order_data = $order->get_data();
             $ordered_products[$order_id] = array(
                 'order_status' => $order_data['status'],
@@ -225,6 +221,42 @@ function get_users_ordered_products()
     return $ordered_products;
 }
 
+function get_users_total_sales()
+{
+    $sites = get_blogs_of_user(get_current_user_id(), true);
+    $site_id = 0;
+    $order_total_sales = 0;
+
+    foreach ($sites as $site) {
+        if ($site->userblog_id != 1) {
+            $site_id = $site->userblog_id;
+            break;
+        }
+    }
+
+    if ($site_id != 0) {
+        switch_to_blog($site_id);
+        $query = new WC_Order_Query(array(
+            'limit' => -1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'return' => 'ids',
+            'status' => 'completed',
+        ));
+
+        $orders = $query->get_orders();
+        foreach ($orders as $order_id) {
+            $order = wc_get_order($order_id);
+            $order_data = $order->get_data();
+            $order_total_sales += $order_data['total'];
+        }
+        restore_current_blog();
+    } else {
+        $order_total_sales = 0;
+    }
+
+    return $order_total_sales;
+}
 
 function get_customers_store_managers()
 {

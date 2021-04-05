@@ -81,6 +81,44 @@ function viewRevenueInfo() {
     confirmButtonText: "Done",
   });
 }
+
+function addProductInfo() {
+  const planHTML = () => `
+        <div style="text-align: justify;">
+        1. Browse the exciting AllStuff420 products. You can use the search filters if you are looking for specific products.<br/><br/>
+        2. Once you found the products you want to add, press “Enlist Product”.<br/><br/>
+        3. When you are done adding all the products you wish to enlist, go to “VIEW PRODUCTS ADDED”.<br/><br/>
+        4. Add your preferred price for the product to ensure your revenue. <br/><br/>
+        5. Once you are done with the pricing, press “Enlist products to dispensary”<br/><br/>
+        </div>
+    `;
+  Swal.fire({
+    title: "How To Add Products",
+    icon: "info",
+    html: planHTML(),
+    showCloseButton: true,
+    focusConfirm: false,
+    confirmButtonText: "Done",
+  });
+}
+
+function addOwnProductInfo() {
+  const planHTML = () => `
+        <div style="text-align: justify;">
+        Once you’re online dispensary is fully set-up, you can directly import your own products. 
+        <br/><br/>
+        In the meantime, should you wish to opt out from importing products from AllStuff420 you can skip the process and proceed to <a href="/my-account/template-editor/">editing your website account</a>.  
+        </div>
+    `;
+  Swal.fire({
+    title: "Add My Own Product",
+    icon: "info",
+    html: planHTML(),
+    showCloseButton: true,
+    focusConfirm: false,
+    confirmButtonText: "Done",
+  });
+}
 //END ADDED
 
 const objectToArray = (object) => {

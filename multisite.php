@@ -1,36 +1,22 @@
 <?php
 
-function redirect_non_admin_user()
-{
-    if (current_user_can('administrator')) {
-
-    } elseif (current_user_can('qrxds_new_basic')) {
-        wp_redirect(site_url() . "/frontend-manager");exit;
-    } elseif (current_user_can('qrxds_pro')) {
-        wp_redirect(site_url() . "/frontend-manager");exit;
-    } elseif (current_user_can('qrxds_premium')) {
-        wp_redirect(site_url() . "/frontend-manager");exit;
-    } else {
-        wp_redirect(site_url());exit;
-    }
-}
-
 function change_currency($currency)
 {
     $currency = 'USD';
 
     return $currency;
 }
+
 add_filter('woocommerce_currency', 'change_currency', 200);
-
-// add_action( 'admin_init', 'redirect_non_admin_user' );
-
 add_action('wp_head', 'multisite_style');
 add_action('wp_footer', 'multisite_js', 100);
 function multisite_style()
 {
     ?>
     <style>
+        body.yith-frontend-manager-restricted #yith_wcfm-main-content .yith_wcfm-main-content-wrap {
+            padding:0;
+        }
         #yith_wcfm-header{
             background: #2f73ba;
         }

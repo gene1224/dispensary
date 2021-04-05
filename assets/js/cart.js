@@ -32,10 +32,10 @@ const productItemHTML = (product, index) => {
                 </div>
             </div>
             <div class="name">${product.name}</div>
-            <div class="price">Original Price : $ ${Number(
+            <div class="price">Product Price : $ ${Number(
               product.price
             ).toFixed(2)}</div>
-            <div class="categories">Categories: ${categories}</div>
+            <div class="categories">Category: ${categories}</div>
             <div class="tags">Tags: ${tags}</div>
             <!--<div class="source-site">
                 Source: <a href="https://allstuff420.com">All Stuff 420</a>
@@ -44,7 +44,7 @@ const productItemHTML = (product, index) => {
     </div>
     <div class="product-cart-item-action">
         <div class="new-listing-price">
-        <label>New Listing Price</label>
+        <label>LISTING PRICE ON YOUR SITE</label>
         <p class="srp">SRP: $ ${srp.toFixed(2)}</p>
             <input 
               type="number"

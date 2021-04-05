@@ -23,13 +23,13 @@ function schedule_site_duplication($order_id)
     if (!get_current_user_id()) {
         return;
     }
-    
+
     if (get_user_meta(get_current_user_id(), 'site_created', true) || get_user_meta(get_current_user_id(), 'site_clone_started', true)) {
         return;
     }
-    
-    update_user_meta(get_current_user_id(), 'template_selector', get_post_meta($order_id, 'template_selector',true) ?: 123);
-    
+
+    update_user_meta(get_current_user_id(), 'template_selector', get_post_meta($order_id, 'template_selector', true) ?: 123);
+
     wp_schedule_single_event(time(), 'duplicate_site', array(get_current_user_id()));
 }
 
@@ -178,7 +178,7 @@ function create_site_function()
     if (!isset($_REQUEST['user_id'])) {
         die();
     }
-    echo 'HELO'.get_user_meta( $_REQUEST['user_id'], 'site_clone_started',true).'|';
+    echo 'HELO' . get_user_meta($_REQUEST['user_id'], 'site_clone_started', true) . '|';
     wp_schedule_single_event(time(), 'duplicate_site', array($_REQUEST['user_id']));
     echo "STARTING to create site for " . $_REQUEST['user_id'];
     die();
@@ -189,18 +189,18 @@ add_action('site_duplicate_finihsed', 'send_site_confirmation_emails', 1, 1);
 add_action('wp_ajax_send_confirmation', 'send_site_confirmation_emails');
 function send_site_confirmation_emails($blog_id = 0)
 {
-    if($blog_id == 0 && !isset($_GET['blog_id'])) {
+    if ($blog_id == 0 && !isset($_GET['blog_id'])) {
         return;
     }
-    
-    $blog_id = isset($_GET['blog_id']) ?  $_GET['blog_id'] : $blog_id;
-    error_log("MAILER START TO BLOG".$blog_id);
+
+    $blog_id = isset($_GET['blog_id']) ? $_GET['blog_id'] : $blog_id;
+    error_log("MAILER START TO BLOG" . $blog_id);
     global $timber;
 
     $user_id = 0;
 
     $blog_details = get_blog_details($blog_id);
-    
+
     $args = array(
         'meta_query' => array(
             array(
@@ -212,20 +212,19 @@ function send_site_confirmation_emails($blog_id = 0)
     );
 
     $users = get_users($args);
-    
+
     if ($users) {
         foreach ($users as $user) {
             $user_id = $user->data->ID;
         }
     }
-    
-    error_log('SENDING TO'.$user_id);
+
+    error_log('SENDING TO' . $user_id);
     if ($user_id == 0) {
         return;
     }
 
     add_user_to_blog($blog_id, $user_id, 'administrator');
-    
 
     $user = get_userdata($user_id);
 
@@ -239,21 +238,20 @@ function send_site_confirmation_emails($blog_id = 0)
     $email_message = $timber->compile('emails/site-created.twig', $context);
 
     wp_mail($user->user_email, "Site creation complete", $email_message, $headers);
-    
-    error_log("EMAIL SENT to ".$user_id);
-    
+
+    error_log("EMAIL SENT to " . $user_id);
+
     update_user_meta($user_id, 'site_created', true);
-    
+
     update_user_meta($user_id, 'dispensary_blog_id', $blog_id);
-    
+
     switch_to_blog($blog_id);
-    
-    update_user_option( $user_id, 'show_admin_bar_front', 'false');
-    
+
+    update_user_option($user_id, 'show_admin_bar_front', 'false');
+
     $blogname = get_user_meta($user_id, '_wc_memberships_profile_field_dispensary_name', true) ?: 'dispensary-' . $user_id;
     // update_option('blogname', $blogname);
     restore_current_blog();
-    
 
 }
 
@@ -316,17 +314,18 @@ function wc_billing_field_strings($translated_text, $text, $domain)
 }
 add_filter('gettext', 'wc_billing_field_strings', 20, 3);
 
+add_action('woocommerce_checkout_update_order_meta', 'custom_checkout_field_update_order_meta');
 
-add_action( 'woocommerce_checkout_update_order_meta', 'custom_checkout_field_update_order_meta' );
-
-function custom_checkout_field_update_order_meta( $order_id ) {
-    if ( ! empty( $_POST['template_selector'] ) ) {
-        update_post_meta( $order_id, 'template_selector', sanitize_text_field( $_POST['template_selector'] ) );
+function custom_checkout_field_update_order_meta($order_id)
+{
+    if (!empty($_POST['template_selector'])) {
+        update_post_meta($order_id, 'template_selector', sanitize_text_field($_POST['template_selector']));
     }
 }
 
 //Added
-function submit_form_checkout(){
+function submit_form_checkout()
+{
     echo "<div id='formCheckoutSubmitFormBottom' class='formCheckoutSubmitFormBottom'>";
     echo '<label>Subscription Overview</label>';
     do_action('woocommerce_checkout_order_review');
@@ -334,30 +333,33 @@ function submit_form_checkout(){
 }
 add_filter('woocommerce_after_checkout_billing_form', 'submit_form_checkout', 99, 99);
 
-function add_recurring_postage_fees( $cart ) {
-    if ( ! empty( $cart->recurring_cart_key ) ) {
-        remove_action( 'woocommerce_cart_totals_after_order_total', array( 'WC_Subscriptions_Cart', 'display_recurring_totals' ), 10 );
-        remove_action( 'woocommerce_review_order_after_order_total', array( 'WC_Subscriptions_Cart', 'display_recurring_totals' ), 10 );
+function add_recurring_postage_fees($cart)
+{
+    if (!empty($cart->recurring_cart_key)) {
+        remove_action('woocommerce_cart_totals_after_order_total', array('WC_Subscriptions_Cart', 'display_recurring_totals'), 10);
+        remove_action('woocommerce_review_order_after_order_total', array('WC_Subscriptions_Cart', 'display_recurring_totals'), 10);
     }
 }
-add_filter( 'woocommerce_cart_calculate_fees', 'add_recurring_postage_fees', 10, 1 );
+add_filter('woocommerce_cart_calculate_fees', 'add_recurring_postage_fees', 10, 1);
 
-// add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
-// function wc_renaming_checkout_total($translated) {
+add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
+function wc_renaming_checkout_total($translated)
+{
 
-//     if( is_checkout ) {
-//         $text = array(
-//             'Your order' => 'Subscription Overview',
-//             'Product' => 'Plan',
-//         );
-//         $translated = str_ireplace(  array_keys($text),  $text,  $translated );
-//     }
-//     return $translated;
-// }
+    if (is_checkout) {
+        $text = array(
+            'Your order' => 'Subscription Overview',
+            'Product' => 'Plan',
+        );
+        $translated = str_ireplace(array_keys($text), $text, $translated);
+    }
+    return $translated;
+}
 
-add_filter( 'woocommerce_order_button_html', 'change_checkout_button_text' );
- 
-function change_checkout_button_text( $button_text ) {
+add_filter('woocommerce_order_button_html', 'change_checkout_button_text');
+
+function change_checkout_button_text($button_text)
+{
     $product = false;
     $subscription = false;
 
@@ -366,28 +368,49 @@ function change_checkout_button_text( $button_text ) {
         $subscription = $cart_item["data"];
     }
     $product_name = $product->get_name();
-    
-    if($product_name == "QRx Dispensary Basic Plan"){
+
+    if ($product_name == "QRx Dispensary Basic Plan") {
         return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select FREE Plan</button>';
-    }elseif($product_name == "QRx Dispensary Pro Plan"){
+    } elseif ($product_name == "QRx Dispensary Pro Plan") {
         return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select PRO Plan</button>';
-    }elseif($product_name == "QRx Dispensary Premium Plan"){
+    } elseif ($product_name == "QRx Dispensary Premium Plan") {
         return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select PREMIUM Plan</button>';
-    }else{
+    } else {
         return '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Select Plan" data-value="Select Plan">Select Plan</button>';
     }
-   
+
 }
-//End Added
 
-
-// add_action('woocommerce_thankyou', 'upgrade_email', 10, 1);
-add_action('wp_ajax_nopriv_mailtest', 'upgrade_email');
+add_action('woocommerce_thankyou', 'upgrade_email', 10, 1);
+add_action('wp_ajax_mailtest', 'upgrade_email');
 
 function upgrade_email($order_id)
 {
+    global $timber;
     if (!get_current_user_id()) {
         return;
     }
 
+    $order = wc_get_order($order_id);
+    $product_names = [];
+
+    foreach ($order->get_items() as $item_key => $item) {
+        $product_names[] = $item->get_name();
+    }
+
+    $context = array(
+        'display_name' => wp_get_current_user()->data->display_name,
+        'product' => join(",", $product_names),
+        'total' => $order->get_total(),
+    );
+
+    if (!wc_memberships_is_user_active_member($user_id, 3104)) {
+        // echo $timber->compile('emails/upgrade.twig',  $context);
+        $messageg = $timber->compile('emails/upgrade.twig', $context);
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        wp_mail(wp_get_current_user()->data->user_email, $subject, $message, $headers);
+    }
+
 }
+
+//End Added

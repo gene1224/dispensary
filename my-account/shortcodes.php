@@ -16,8 +16,9 @@ function product_import_shortcode_scripts()
     wp_register_script('jquery_ui_js', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js', array('jquery'), '1.0.1');
     wp_register_style('website_analytics_css', plugins_url('../assets/css/website-analytics.css', __FILE__), [], '1.0.1', 'all');
     wp_register_style('jquery_ui_css', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css', [], '1.0.1', 'all');
-    wp_register_script('dashboard_js', plugins_url('../assets/js/dashboard.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils'), '1.0.1');
+    wp_register_script('dashboard_js', plugins_url('../assets/js/dashboard.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx'), '1.0.1');
     wp_register_style('dashboard_css', plugins_url('../assets/css/dashboard.css', __FILE__), [], '1.0.1', 'all');
+    wp_register_script('chart_js', 'https://www.jsdelivr.com/package/npm/chart.js?path=dist', array('jquery'), '1.0.1');
 
 }
 add_action('wp_enqueue_scripts', 'product_import_shortcode_scripts');
@@ -29,7 +30,8 @@ function dashboard_display()
 
     $imported_products = get_users_imported_products();
     $ordered_products = get_users_ordered_products();
-    $sites = array(
+    $ordered_total_sales = get_users_total_sales();
+    $site_product = array(
         array(
             'url' => 'https://allstuff420.com',
             'api_key' => base64_encode('ck_2eff2c6b9cc435818aad646e1c7676d65af7f168:cs_2fd13443cf704e5c1ca201cbe786043505b8baaa'),
@@ -76,8 +78,9 @@ function dashboard_display()
         'website_visitors_total' => $website_visitors_total,
         'imported_products' => $imported_products,
         'ordered_products' => $ordered_products,
+        'ordered_total_sales' => $ordered_total_sales,
         'notifySent' => $notifySent,
-        'sites' => $sites,
+        'site_product' => $site_product,
         'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
         'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
         'cart_count' => count($listing_cart) ?: 0,
@@ -87,17 +90,27 @@ function dashboard_display()
         'membership' => $membership_plan_name,
     );
 
+    try {
+        $listing_cart = array_values($listing_cart);
+    } catch (\Throwable $th) {
+        $listing_cart = [];
+    }
+
     $js_objects = array(
         'url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('ajax-nonce'),
         'website_visitors_total' => $website_visitors_total,
+        'site_product' => $site_product,
         'imported_products' => $imported_products,
         'ordered_products' => $ordered_products,
+        'ordered_total_sales' => $ordered_total_sales,
         'notifySent' => $notifySent,
-        'default_site' => $sites[0]['url'],
-        'default_api_key' => $sites[0]['api_key'],
+        'default_site' => $site_product[0]['url'],
+        'default_api_key' => $site_product[0]['api_key'],
         'max_products' => $max_product,
         'listing_cart' => $listing_cart ?: [],
+        'cart_count' => count($listing_cart) ?: 0,
+        'imported_products_count' => count($imported_products) ?: 0,
     );
 
     wp_enqueue_script('sweetalert');
@@ -105,6 +118,7 @@ function dashboard_display()
     wp_enqueue_script('dashboard_js');
     wp_enqueue_style('jquery_ui_css');
     wp_enqueue_style('dashboard_css');
+    wp_enqueue_style('product_import_css');
     wp_localize_script('dashboard_js', 'wp_ajax', $js_objects);
     echo $timber->compile('dashboard.twig', $context);
 }
@@ -212,6 +226,9 @@ function website_analytics_display()
 
     $imported_products = get_users_imported_products();
     $ordered_products = get_users_ordered_products();
+    $ordered_total_sales = get_users_total_sales();
+
+    $memberships = wc_memberships_get_user_memberships($parent_id == 0 ? get_current_user_id() : $parent_id);
 
     $site_id = 0;
     $site_url = '';
@@ -281,6 +298,11 @@ function website_analytics_display()
     $result_pages_week = $wpdb->get_results("SELECT * FROM $table_pages WHERE date BETWEEN '$dateWeekFrom' AND '$dateWeekTo'", OBJECT);
     $result_pages_month = $wpdb->get_results("SELECT * FROM $table_pages WHERE date BETWEEN '$dateMonthFrom' AND '$dateMonthTo'", OBJECT);
     $result_pages_year = $wpdb->get_results("SELECT * FROM $table_pages WHERE date BETWEEN '$dateYearFrom' AND '$dateYearTo'", OBJECT);
+
+    $membership_plan_name = '';
+    foreach ($memberships as $membership) {
+        $membership_plan_name = $membership->plan->name;
+    }
 
     //for Today Visits
     foreach ($result_visits as $visit_today) {
@@ -386,6 +408,8 @@ function website_analytics_display()
         'imported_products' => $imported_products,
         'ordered_products' => $ordered_products,
         'notifySent' => $notifySent,
+        'membership' => $membership_plan_name,
+        'ordered_total_sales' => $ordered_total_sales,
     );
 
     $js_objects = array(
@@ -409,11 +433,14 @@ function website_analytics_display()
         'imported_products' => $imported_products,
         'ordered_products' => $ordered_products,
         'notifySent' => $notifySent,
+        'membership' => $membership_plan_name,
+        'ordered_total_sales' => $ordered_total_sales,
     );
 
     wp_enqueue_script('website_analytics_js');
     wp_enqueue_script('product_report_js');
     wp_enqueue_script('jquery_ui_js');
+    wp_enqueue_script('chart_js');
     wp_enqueue_style('website_analytics_css');
     wp_enqueue_style('jquery_ui_css');
     wp_localize_script('website_analytics_js', 'wp_ajax', $js_objects);
