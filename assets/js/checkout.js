@@ -21,9 +21,9 @@ jQuery(document).ready(function ($) {
   <div class="template-preivew-container">
       <p class="template-preivew-p"><strong>Template Preview</strong></p>
       <span>You may change your template later. However, we recommend you decide on the final template now as changes will put your website on-hold while processing. 
-      See all templates <a href="https://templates.qrxdispensary.com" target="_blank">here</a>.</span>
+      See all templates <a href="/template-gallery/" target="_blank">here</a>.</span>
       <br/>
-      <a id="templatePreviewLink" href="#"><img id="templatePreview" src="https://dummyimage.com/300x300/ddd/000.png&text=Preview"></a>
+      <a id="templatePreviewLink" href="#"><img id="templatePreview" src="" style="display:none;"></a>
   </div>
 `);
 
@@ -55,6 +55,7 @@ jQuery(document).ready(function ($) {
       selecteTemplate.thumbnail ||
         "https://dummyimage.com/300x300/ddd/000.png&text=Preview"
     );
+    $("#templatePreview").show();
     $("#templatePreviewLink").attr({
       href: "https://templates.qrxdispensary.com/" + selecteTemplate.post_name,
       target: "_blank",
