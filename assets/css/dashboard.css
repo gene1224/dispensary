@@ -1,15 +1,9 @@
 .qrxds-dashboard-content .qrxds-first-row {
-  display: flex;
+  display: block;
   flex-wrap: wrap;
   justify-content: space-between;
   width: 100%;
 }
-
-.qrxds-dashboard-content .qrxds-first-row .qrxds-subscription-overview-content {
-  width: 60%;
-  padding: 0px 19px;
-}
-
 .qrxds-dashboard-content
   .qrxds-first-row
   .qrxds-subscription-overview-content
@@ -39,7 +33,6 @@
   font-weight: 600;
 }
 
-
 .qrxds-dashboard-content
   .qrxds-first-row
   .qrxds-subscription-overview-content
@@ -56,12 +49,6 @@
   span.ctp-total-products-value {
   font-size: 14px;
   font-weight: 700;
-}
-
-.qrxds-dashboard-content .qrxds-first-row .qrxds-website-analytics-content {
-  width: 40%;
-  padding: 0px 19px;
-  text-align: center;
 }
 
 .qrxds-dashboard-content

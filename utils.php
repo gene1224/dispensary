@@ -302,6 +302,8 @@ function calculate_visitor_total($site_id)
     return $website_visitors_total;
 }
 
+
+//ADD RANGES MONTH/YEAR/WEEK
 function get_page_view_count($site_id)
 {
     global $wpdb;
@@ -313,6 +315,7 @@ function get_page_view_count($site_id)
     return $wpdb->get_results($page_views_sql, ARRAY_A);
 }
 
+//ADD RANGES MONTH/YEAR/WEEK
 function get_visitor_counts($site_id)
 {
     global $wpdb;

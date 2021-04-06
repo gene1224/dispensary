@@ -2,22 +2,26 @@
     <div class="qrxds-first-row">
         <div class="qrxds-subscription-overview-content">
             <h3 class="qrxds-dashboard-heading">Subscription Overview</h3>
-            <div class="ctp-upgrade-prop">
-                <span class="ctp-current-plan">Current Plan : </span>
-                <span class="ctp-plan">{{ membership }}</span>
-                {% if membership == 'QRX Dispensary Premium Plan' %}
-                   
-                {% elseif membership == 'QRX Dispensary Pro Plan' %}
-                    <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade to Premium Plan</a></span> )</span>
-                {% else %}
-                    <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccount" class="changePlanMyAccount"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade Plan</a></span> )</span>
-                {% endif %}
-            </div>
-            <div class="ctp-total-products">
-                <span class="ctp-total-products-allowed">TOTAL PRODUCTS ALLOWED</span>
-                <br/>
-                <span class="ctp-total-products-value">{{ max_products }}</span>
-            </div>
+            <table>
+                <tr>
+                    <td>Current Plan</td>
+                    <td>
+                        <span class="ctp-plan">{{ membership }}</span>
+                        <br>
+                        {% if membership == 'QRx Dispensary Premium Plan' %}
+
+                        {% elseif membership == 'QRx Dispensary Pro Plan' %}
+                            <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade to Premium Plan</a></span> )</span>
+                        {% else %}
+                            <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccount" class="changePlanMyAccount"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade Plan</a></span> )</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total Products Allowed</td>
+                    <td>{{ max_products }}</td>
+                </tr>
+            </table>
         </div>
         <div class="qrxds-website-analytics-content">
             <h3 class="qrxds-dashboard-heading">Website Analytics</h3>
