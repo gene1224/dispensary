@@ -49,7 +49,7 @@ class DispensaryDashboard
 
         $this->ordered_total_sales = get_users_total_sales();
 
-        $this->website_visitors_total = get_weeks_visitors($this->site_id);
+        $this->website_visitors_total = calculate_visitor_total($this->site_id);
 
         $this->context = array(
             'website_visitors_total' => $this->website_visitors_total,
@@ -124,7 +124,7 @@ class DispensaryDashboard
         $this->js_context['visitor_data'] = get_visitor_counts($this->site_id);
 
         $this->js_context['pageview_data'] = get_page_view_count($this->site_id);
-        
+
         wp_localize_script('dashboard_js', 'wp_ajax', $this->js_context);
 
         echo $timber->compile('dashboard.twig', $this->context);
