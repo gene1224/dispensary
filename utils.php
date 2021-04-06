@@ -294,6 +294,8 @@ function calculate_visitor_total($site_id)
     $website_visitors_total = 0;
 
     $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
+    
+    echo $table_visitors;
 
     $result_visitors = $wpdb->get_results("SELECT * FROM $table_visitors", OBJECT);
 
