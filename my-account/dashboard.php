@@ -59,8 +59,6 @@ class DispensaryDashboard
             'site_product' => $site_product,
             'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
             'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
-            'cart_count' => 0, // DELETE
-            'imported_products_count' => 0, //DELETE
             'max_products' => $this->max_product,
             'membership' => $this->membership_plan_name,
         );
@@ -83,8 +81,6 @@ class DispensaryDashboard
             'default_api_key' => $site_product[0]['api_key'],
             'max_products' => $max_product,
             'listing_cart' => $this->$listing_cart ?: [],
-            'cart_count' => 0, // DELETE
-            'imported_products_count' => 0, // DELETE
         );
 
     }
