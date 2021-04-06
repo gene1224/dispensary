@@ -42,7 +42,7 @@ if (!isset($timber)) {
         $views = array($timber::$locations);
     }
     $views[] = WP_PLUGIN_DIR . '/dispensary-template-customizer/templates';
-    $views[] = WP_PLUGIN_DIR . '/dispensary-payments/templates';
+    $views[] = WP_PLUGIN_DIR . '/dispensary-main/templates';
     $timber::$locations = $views;
 }
 

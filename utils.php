@@ -169,54 +169,41 @@ function get_first_dispensary($user_id)
             break;
         }
     }
-
     return $site_id;
 }
 
-function get_users_ordered_products()
+function get_dispensary_orders($site_id = 0)
 {
-    $ordered_products = [];
-    $sites = get_blogs_of_user(get_current_user_id(), true);
-    $site_id = 0;
-    $site_url = '';
-
-    foreach ($sites as $site) {
-        if ($site->userblog_id != 1) {
-            $site_id = $site->userblog_id;
-            $site_url = $site->siteurl;
-            break;
-        }
+    if ($site_id == 0) {
+        return array();
     }
 
-    if (isset($site_id)) {
-        switch_to_blog($site_id);
-        $query = new WC_Order_Query(array(
-            'limit' => -1,
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'return' => 'ids',
-        ));
+    switch_to_blog($site_id);
 
-        $orders = $query->get_orders();
-        foreach ($orders as $order_id) {
-            $order = wc_get_order($order_id);
-            $order_data = $order->get_data();
-            $ordered_products[$order_id] = array(
-                'order_status' => $order_data['status'],
-                'order_biling_first_name' => $order_data['billing']['first_name'],
-                'order_biling_last_name' => $order_data['billing']['last_name'],
-                'order_created_date' => $order_data['date_created']->date('Y-m-d'),
-                'order_created_time' => $order_data['date_created']->date('H:i:s'),
-                'order_total' => $order_data['total'],
-                'order_payment_method' => $order_data['payment_method'],
-                'order_transaction_id' => $order_data['transaction_id'],
-                'order_products' => $order_data['line_items'],
-            );
-        }
-        restore_current_blog();
-    } else {
-        $ordered_products[] = array();
+    $query = new WC_Order_Query(array(
+        'limit' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'return' => 'ids',
+    ));
+
+    foreach ($query->get_orders() as $order_id) {
+        $order = wc_get_order($order_id);
+        $order_data = $order->get_data();
+        $ordered_products[$order_id] = array(
+            'order_status' => $order_data['status'],
+            'order_biling_first_name' => $order_data['billing']['first_name'],
+            'order_biling_last_name' => $order_data['billing']['last_name'],
+            'order_created_date' => $order_data['date_created']->date('Y-m-d'),
+            'order_created_time' => $order_data['date_created']->date('H:i:s'),
+            'order_total' => $order_data['total'],
+            'order_payment_method' => $order_data['payment_method'],
+            'order_transaction_id' => $order_data['transaction_id'],
+            'order_products' => $order_data['line_items'],
+        );
     }
+
+    restore_current_blog();
 
     return $ordered_products;
 }
@@ -269,4 +256,41 @@ function get_customers_store_managers()
         'meta_key' => 'created_on_my_account',
         'meta_value' => true,
     ));
+}
+
+function get_source_sites()
+{
+    return array(
+        array(
+            'url' => 'https://allstuff420.com',
+            'api_key' => base64_encode('ck_2eff2c6b9cc435818aad646e1c7676d65af7f168:cs_2fd13443cf704e5c1ca201cbe786043505b8baaa'),
+        ),
+    );
+}
+
+function get_user_site_id($user_id)
+{
+    $site_id = get_user_meta($user_id, 'dispensary_blog_id', true);
+
+    if (!$site_id) {
+        $site_id = get_first_dispensary($user_id);
+    }
+
+    return $site_id;
+}
+
+function calculate_visitor_total()
+{
+    global $wpdb;
+    
+    $website_visitors_total = 0;
+
+    $table_visitors = $wpdb->base_prefix . $this->site_id . '_statistics_visitor';
+
+    $result_visitors = $wpdb->get_results("SELECT * FROM $table_visitors", OBJECT);
+
+    foreach ($result_visitors as $visitor_total) {
+        $website_visitors_total += count($visitor_total->last_counter);
+    }
+    return $website_visitors_total;
 }
