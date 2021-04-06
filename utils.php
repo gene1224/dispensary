@@ -119,15 +119,17 @@ function microseconds_to_seconds($duration)
 
 function get_users_imported_products()
 {
+    
     $imported_products = [];
 
     $user_id = get_current_user_id();
 
     $parent_id = get_user_meta(get_current_user_id(), 'parent_id', true);
-
+    
     if ($parent_id) {
         $user_id = $parent_id;
     }
+    
 
     foreach (get_blogs_of_user($user_id, true) as $users_site) {
 
@@ -162,6 +164,7 @@ function get_users_imported_products()
 
         restore_current_blog();
     }
+    
     return $imported_products;
 }
 
