@@ -41,18 +41,8 @@ class DispensaryDashboard
 
         $this->website_visitors_total = calculate_visitor_total($this->site_id);
 
-        foreach (wc_memberships_get_user_memberships($this->user_id) as $membership) {
-            $product_limit = get_post_meta($membership->plan_id, 'dispensary_product_limit', true) ?: 0;
-            if ($max_product < $product_limit) {
-                $this->max_product = $product_limit;
-                $this->membership_plan_name = $membership->plan->name;
-            }
-        }
-
-        $this->init();
-
+        add_shortcode('dashboard_views', [$this, 'views']);
     }
-
 
     /**
      * INIT initialize context and load the shortcode.
@@ -97,8 +87,6 @@ class DispensaryDashboard
             'imported_products_count' => 0, // DELETE
         );
 
-        add_shortcode('dashboard_views', [$this, 'views']);
-
     }
 
     public function load_assets()
@@ -114,6 +102,16 @@ class DispensaryDashboard
     public function views()
     {
         global $timber;
+
+        foreach (wc_memberships_get_user_memberships($this->user_id) as $membership) {
+            $product_limit = get_post_meta($membership->plan_id, 'dispensary_product_limit', true) ?: 0;
+            if ($max_product < $product_limit) {
+                $this->max_product = $product_limit;
+                $this->membership_plan_name = $membership->plan->name;
+            }
+        }
+
+        $this->init(); // POPULATES THE CONTEXTS
 
         wp_localize_script('dashboard_js', 'wp_ajax', $this->js_context);
 
