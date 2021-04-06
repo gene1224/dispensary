@@ -29,6 +29,16 @@ class DispensaryDashboard
 
     public function __construct()
     {
+        add_shortcode('dashboard_views', [$this, 'views']);
+    }
+
+    /**
+     * INIT initialize context and load the shortcode data.
+     *
+     * @return void
+     */
+    private function init()
+    {
         $this->user_id = get_user_meta(get_current_user_id(), 'created_by_user_id', true) ?: get_current_user_id();
 
         $this->site_id = get_user_site_id($this->user_id);
@@ -41,16 +51,6 @@ class DispensaryDashboard
 
         $this->website_visitors_total = calculate_visitor_total($this->site_id);
 
-        add_shortcode('dashboard_views', [$this, 'views']);
-    }
-
-    /**
-     * INIT initialize context and load the shortcode.
-     *
-     * @return void
-     */
-    private function init()
-    {
         $this->context = array(
             'website_visitors_total' => $this->website_visitors_total,
             'imported_products' => $this->imported_products,
@@ -85,6 +85,11 @@ class DispensaryDashboard
 
     }
 
+    /**
+     * Assets loader
+     *
+     * @return void
+     */
     public function load_assets()
     {
         wp_enqueue_script('sweetalert');
@@ -95,6 +100,11 @@ class DispensaryDashboard
         wp_enqueue_style('product_import_css');
     }
 
+    /**
+     * Shortcode Display Function
+     *
+     * @return void
+     */
     public function views()
     {
         global $timber;
