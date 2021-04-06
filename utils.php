@@ -119,17 +119,16 @@ function microseconds_to_seconds($duration)
 
 function get_users_imported_products()
 {
-    
+
     $imported_products = [];
 
     $user_id = get_current_user_id();
 
     $parent_id = get_user_meta(get_current_user_id(), 'parent_id', true);
-    
+
     if ($parent_id) {
         $user_id = $parent_id;
     }
-    
 
     foreach (get_blogs_of_user($user_id, true) as $users_site) {
 
@@ -164,7 +163,7 @@ function get_users_imported_products()
 
         restore_current_blog();
     }
-    
+
     return $imported_products;
 }
 
@@ -303,4 +302,23 @@ function calculate_visitor_total($site_id)
         $website_visitors_total += count($visitor_total->last_counter);
     }
     return $website_visitors_total;
+}
+
+function get_page_view_count($site_id)
+{
+
+    $page_views_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_pages';
+
+    $page_views_sql = "SELECT cast(`last_counter` as date) as date_visited, count(ID) as count FROM `" . $page_views_table . "` GROUP BY cast(`last_counter` as date) ORDER BY `date_visited` DESC LIMIT 7";
+
+    return $wpdb->get_results($page_views_sql, ARRAY_A);
+}
+
+function get_visitor_counts($site_id)
+{
+    $visitors_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
+
+    $visitors_sql = "SELECT cast(`date` as date) as date_visited, SUM(`count`) as count FROM `" . $visitors_table . "` GROUP BY cast(`date` as date) ORDER BY `date_visited` DESC LIMIT 7";
+
+    return $wpdb->get_results($visitors_sql, ARRAY_A);
 }
