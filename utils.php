@@ -306,6 +306,7 @@ function calculate_visitor_total($site_id)
 
 function get_page_view_count($site_id)
 {
+    global $wpdb;
 
     $page_views_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_pages';
 
@@ -316,6 +317,8 @@ function get_page_view_count($site_id)
 
 function get_visitor_counts($site_id)
 {
+    global $wpdb;
+    
     $visitors_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
 
     $visitors_sql = "SELECT cast(`date` as date) as date_visited, SUM(`count`) as count FROM `" . $visitors_table . "` GROUP BY cast(`date` as date) ORDER BY `date_visited` DESC LIMIT 7";
