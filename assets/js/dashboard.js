@@ -87,13 +87,40 @@ const selectOptionsHTML = (categories) => {
 };
 
 jQuery(document).ready(function ($) {
-  //REFRACTOR ON TWIG
-  if (wp_ajax.max_products == 100) {
-  } else if (wp_ajax.max_products == 50) {
+  const visitor_graph = document.getElementById("visitChart");
+
+  const weeks_dates = () => {
+    var result = [];
+    for (var i = 0; i < 7; i++) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      result.push(d.toISOString().slice(0, 10));
+    }
+
+    return result;
+  };
+
+  let _myLineChart = new Chart(visitor_graph, {
+    type: "line",
+    data: {
+      labels: weeks_dates(),
+      datasets: [
+        {
+          label: "Visitor Count",
+          data: weeks_dates().map((date) =>
+            wp_ajax.visitor_data.find((data) => date == data.date_visited)
+          ),
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+        },
+      ],
+    },
+  });
+
+  if (wp_ajax.max_products == 50) {
     $("#membership_pro").hide();
     $("span.or_span").hide();
-  } else if (wp_ajax.max_products == 20) {
-  } else {
   }
   $("#popmake-6637 .go-free a").on("click", function () {
     $("#popmake-6637").popmake("close");

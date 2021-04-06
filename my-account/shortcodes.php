@@ -16,14 +16,12 @@ function product_import_shortcode_scripts()
     wp_register_script('jquery_ui_js', 'https://code.jquery.com/ui/1.12.1/jquery-ui.js', array('jquery'), '1.0.1');
     wp_register_style('website_analytics_css', plugins_url('../assets/css/website-analytics.css', __FILE__), [], '1.0.1', 'all');
     wp_register_style('jquery_ui_css', '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css', [], '1.0.1', 'all');
-    wp_register_script('dashboard_js', plugins_url('../assets/js/dashboard.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx'), '1.0.1');
+    wp_register_script('dashboard_js', plugins_url('../assets/js/dashboard.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx', 'chart_js'), '1.0.1');
     wp_register_style('dashboard_css', plugins_url('../assets/css/dashboard.css', __FILE__), [], '1.0.1', 'all');
     wp_register_script('chart_js', 'https://www.jsdelivr.com/package/npm/chart.js?path=dist', array('jquery'), '1.0.1');
 
 }
 add_action('wp_enqueue_scripts', 'product_import_shortcode_scripts');
-
-
 
 function product_import_display()
 {

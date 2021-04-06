@@ -1,62 +1,91 @@
 <div class="qrxds-dashboard-content">
-    <div class="qrxds-first-row">
-        <div class="qrxds-subscription-overview-content">
-            <h3 class="qrxds-dashboard-heading">Subscription Overview</h3>
-            <table>
-                <tr>
-                    <td>Current Plan</td>
-                    <td>
-                        <span class="ctp-plan">{{ membership }}</span>
-                        {% if membership == 'QRx Dispensary Premium Plan' %}
+	<div class="qrxds-first-row">
+		<div class="qrxds-subscription-overview-content">
+			<h3 class="qrxds-dashboard-heading">Subscription Overview</h3>
+			<table>
+				<tr>
+					<td>Current Plan</td>
+					<td>
+						<span class="ctp-plan">{{ membership }}</span>
+						{% if membership == 'QRx Dispensary Premium Plan' %}
 
-                        {% elseif membership == 'QRx Dispensary Pro Plan' %}
-                            <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade to Premium Plan</a></span> )</span>
-                        {% else %}
-                            <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccount" class="changePlanMyAccount"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade Plan</a></span> )</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>Total Products Allowed</td>
-                    <td>{{ max_products }}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="qrxds-website-analytics-content">
-            <h3 class="qrxds-dashboard-heading">Website Analytics</h3>
-            <table>
-                <tr>
-                    <th>Website Visitors</th>
-                    <th>Total Sales</th>
-                </tr>
-                <tr>
-                    <td>{{website_visitors_total}}</td>
-                    <td>$ {{ordered_total_sales}}</td>
-                </tr>
-            </table>
-            <span class="qrxds-dashboard-awa"><a href="/my-account/website-analytics/"><i class="fa fa-cog fa-1" aria-hidden="true"></i> Advanced Website Analytics</a></span>
-        </div>
-    </div>
-    <div class="qrxds-second-row">
-        <div class="qrxds-products-content">
-            <h3 class="qrxds-dashboard-heading">Products</h3>
-            <table class="product-info-table">
-                <tr>
-                    <th># OF PRODUCTS ADDED</th>
-                    <th>REMAINING PRODUCTS ALLOWED</th>
-                </tr>
-                <tr>
-                    <td><span id="added_products_count">{{ cart_count + imported_products_count }}</span></td>
-                    <td><span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span></td>
-                </tr>
-            </table>
-            <h4>Add Bestseller To Your Store</h4>
-            <div class="qrxds-products-list-content">
-                <div id="product-importer-grid" class="product-importer-grid">
-                    <div id="custom-spin-loader" class="custom-spin-loader"></div>
-                </div>
-            </div>
-            <a href="/my-account/manage-products/"><button class="btn-manage-product">Manage All Products</button></a>
-        </div>
-    </div>
+							{% elseif membership == 'QRx Dispensary Pro Plan' %}
+								<span class="ctp-choose-plan-span">(
+									<span class="ctp-choose-plan">
+										<a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro">
+											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+											Upgrade to Premium Plan</a>
+									</span>
+									)</span>
+							{% else %}
+								<span class="ctp-choose-plan-span">(
+									<span class="ctp-choose-plan">
+										<a href="#" id="changePlanMyAccount" class="changePlanMyAccount">
+											<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+											Upgrade Plan</a>
+									</span>
+									)</span>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<td>Total Products Allowed</td>
+					<td>{{ max_products }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="qrxds-website-analytics-content">
+			<h3 class="qrxds-dashboard-heading">Website Analytics</h3>
+			<div class="dashboard-graphs">
+				<div class="visitChart">
+					<canvas id="visitChart"></canvas>
+				</div>
+			</div>
+
+			<table>
+				<tr>
+					<th>Website Visitors</th>
+					<th>Total Sales</th>
+				</tr>
+				<tr>
+					<td>{{website_visitors_total}}</td>
+					<td>$
+						{{ordered_total_sales}}</td>
+				</tr>
+			</table>
+			<span class="qrxds-dashboard-awa">
+				<a href="/my-account/website-analytics/">
+					<i class="fa fa-cog fa-1" aria-hidden="true"></i>
+					Advanced Website Analytics</a>
+			</span>
+		</div>
+	</div>
+	<div class="qrxds-second-row">
+		<div class="qrxds-products-content">
+			<h3 class="qrxds-dashboard-heading">Products</h3>
+			<table class="product-info-table">
+				<tr>
+					<th># OF PRODUCTS ADDED</th>
+					<th>REMAINING PRODUCTS ALLOWED</th>
+				</tr>
+				<tr>
+					<td>
+						<span id="added_products_count">{{ cart_count + imported_products_count }}</span>
+					</td>
+					<td>
+						<span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span>
+					</td>
+				</tr>
+			</table>
+			<h4>Add Bestseller To Your Store</h4>
+			<div class="qrxds-products-list-content">
+				<div id="product-importer-grid" class="product-importer-grid">
+					<div id="custom-spin-loader" class="custom-spin-loader"></div>
+				</div>
+			</div>
+			<a href="/my-account/manage-products/">
+				<button class="btn-manage-product">Manage All Products</button>
+			</a>
+		</div>
+	</div>
 </div>
