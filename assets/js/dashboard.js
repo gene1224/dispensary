@@ -97,7 +97,7 @@ jQuery(document).ready(function ($) {
       result.push(d.toISOString().slice(0, 10));
     }
 
-    return result;
+    return result.reverse();
   };
 
   let _myLineChart = new Chart(visitor_graph, {
@@ -107,9 +107,12 @@ jQuery(document).ready(function ($) {
       datasets: [
         {
           label: "Visitor Count",
-          data: weeks_dates().map((date) =>
-            wp_ajax.visitor_data.find((data) => date == data.date_visited)
-          ),
+          data: weeks_dates().map((date) => {
+            const visit = wp_ajax.visitor_data.find(
+              (data) => date == data.date_visited
+            );
+            return visit ? visit.count : 0;
+          }),
           fill: false,
           borderColor: "rgb(75, 192, 192)",
           tension: 0.1,
