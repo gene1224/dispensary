@@ -121,7 +121,13 @@ function get_users_imported_products()
 {
     $imported_products = [];
 
-    $user_id = get_user_meta(get_current_user_id(), '$parent_id', true) ?: get_current_user_id();
+    $user_id = get_current_user_id();
+
+    $parent_id = get_user_meta(get_current_user_id(), 'parent_id', true);
+
+    if ($parent_id) {
+        $user_id = $parent_id;
+    }
 
     foreach (get_blogs_of_user($user_id, true) as $users_site) {
 
@@ -129,7 +135,6 @@ function get_users_imported_products()
 
         $products = wc_get_products(array(
             'source_product_id' => true,
-
         ));
 
         foreach ($products as $key => $product) {
