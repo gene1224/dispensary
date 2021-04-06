@@ -342,11 +342,11 @@ function add_recurring_postage_fees($cart)
 }
 add_filter('woocommerce_cart_calculate_fees', 'add_recurring_postage_fees', 10, 1);
 
-add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
+// add_filter('gettext', 'wc_renaming_checkout_total', 20, 3);
 function wc_renaming_checkout_total($translated)
 {
 
-    if (is_checkout) {
+    if (is_checkout()) {
         $text = array(
             'Your order' => 'Subscription Overview',
             'Product' => 'Plan',
