@@ -87,39 +87,7 @@ const selectOptionsHTML = (categories) => {
 };
 
 jQuery(document).ready(function ($) {
-  const visitor_graph = document.getElementById("visitChart");
-
-  const weeks_dates = () => {
-    var result = [];
-    for (var i = 0; i < 7; i++) {
-      var d = new Date();
-      d.setDate(d.getDate() - i);
-      result.push(d.toISOString().slice(0, 10));
-    }
-
-    return result.reverse();
-  };
-
-  let _myLineChart = new Chart(visitor_graph, {
-    type: "line",
-    data: {
-      labels: weeks_dates(),
-      datasets: [
-        {
-          label: "Visitor Count",
-          data: weeks_dates().map((date) => {
-            const visit = wp_ajax.visitor_data.find(
-              (data) => date == data.date_visited
-            );
-            return visit ? visit.count : 0;
-          }),
-          fill: false,
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
-        },
-      ],
-    },
-  });
+  createCharts();
 
   if (wp_ajax.max_products == 50) {
     $("#membership_pro").hide();
@@ -358,6 +326,76 @@ function addToCart(btn, id, sku, remove = false) {
       try {
         storageSave("listing_cart", JSON.parse(response));
       } catch (error) {}
+    },
+  });
+}
+
+function createCharts() {
+  const visitor_graph = document.getElementById("visitChart");
+
+  const weeks_dates = () => {
+    var result = [];
+    for (var i = 0; i < 7; i++) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      result.push(d.toISOString().slice(0, 10));
+    }
+
+    return result.reverse();
+  };
+
+  let visitorLineChart = new Chart(visitor_graph, {
+    type: "line",
+    data: {
+      labels: weeks_dates(),
+      datasets: [
+        {
+          label: "Visitor Count",
+          data: weeks_dates().map((date) => {
+            const visit = wp_ajax.visitor_data.find(
+              (data) => date == data.date_visited
+            );
+            return visit ? visit.count : 0;
+          }),
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+        },
+
+        {
+          label: "Page Views",
+          data: weeks_dates().map((date) => {
+            const visit = wp_ajax.pageview_data.find(
+              (data) => date == data.date_visited
+            );
+            return visit ? visit.count : 0;
+          }),
+          fill: false,
+          borderColor: "rgb(75, 2, 192)",
+          tension: 0.1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
+      stacked: false,
+      plugins: {
+        title: {
+          display: true,
+          text: "Your dispensary site performance",
+        },
+      },
+      scales: {
+        y: {
+          type: "linear",
+          display: true,
+          position: "left",
+        },
+      },
     },
   });
 }
