@@ -279,13 +279,13 @@ function get_user_site_id($user_id)
     return $site_id;
 }
 
-function calculate_visitor_total()
+function calculate_visitor_total($site_id)
 {
     global $wpdb;
-    
+
     $website_visitors_total = 0;
 
-    $table_visitors = $wpdb->base_prefix . $this->site_id . '_statistics_visitor';
+    $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
 
     $result_visitors = $wpdb->get_results("SELECT * FROM $table_visitors", OBJECT);
 

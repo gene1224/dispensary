@@ -39,7 +39,7 @@ class DispensaryDashboard
 
         $this->ordered_total_sales = get_users_total_sales();
 
-        $this->website_visitors_total = calculate_visitor_total();
+        $this->website_visitors_total = calculate_visitor_total($this->site_id);
 
         foreach (wc_memberships_get_user_memberships($this->user_id) as $membership) {
             $product_limit = get_post_meta($membership->plan_id, 'dispensary_product_limit', true) ?: 0;
