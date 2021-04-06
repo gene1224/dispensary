@@ -113,6 +113,8 @@ class DispensaryDashboard
 
         $this->init(); // POPULATES THE CONTEXTS
 
+        $this->load_assets();
+
         wp_localize_script('dashboard_js', 'wp_ajax', $this->js_context);
 
         echo $timber->compile('dashboard.twig', $this->context);
