@@ -4,7 +4,11 @@
  */
 class DispensaryDashboard
 {
-
+    /**
+     * WP_User ID
+     *
+     * @var [int]
+     */
     private $user_id;
 
     private $site_id;
@@ -109,6 +113,8 @@ class DispensaryDashboard
     {
         global $timber;
 
+        $this->init(); // POPULATES THE CONTEXTS ALWAYS ON TOP
+
         foreach (wc_memberships_get_user_memberships($this->user_id) as $membership) {
             $product_limit = get_post_meta($membership->plan_id, 'dispensary_product_limit', true) ?: 0;
             if ($max_product < $product_limit) {
@@ -117,7 +123,7 @@ class DispensaryDashboard
             }
         }
 
-        $this->init(); // POPULATES THE CONTEXTS
+        $last_weeks_orders = get_recent_orders($this->user_id);
 
         $this->load_assets();
 

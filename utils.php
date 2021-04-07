@@ -275,6 +275,13 @@ function get_source_sites()
     );
 }
 
+
+/**
+ * get_user_site_id returns site id of user's dispensary
+ *
+ * @param [int] $user_id
+ * @return int
+ */
 function get_user_site_id($user_id)
 {
     $site_id = get_user_meta($user_id, 'dispensary_blog_id', true);
