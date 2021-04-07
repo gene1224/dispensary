@@ -84,6 +84,7 @@ class DispensaryDashboard
             'default_site' => get_source_sites()[0]['url'],
             'default_api_key' => get_source_sites()[0]['api_key'],
             'max_products' => $this->max_product,
+            'last_weeks_orders' => get_recent_orders($this->user_id),
             'listing_cart' => $this->$listing_cart ?: [],
         );
 
@@ -122,8 +123,6 @@ class DispensaryDashboard
                 $this->membership_plan_name = $membership->plan->name;
             }
         }
-
-        $last_weeks_orders = get_recent_orders($this->user_id);
 
         $this->load_assets();
 

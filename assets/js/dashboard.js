@@ -341,8 +341,7 @@ const weeks_dates = () => {
 };
 
 function createCharts() {
-  const visitChart = document.getElementById("visitChart");
-  const pageViewChart = document.getElementById("pageViewChart");
+  
 
   const pageViewData = {
     label: "Page Views",
@@ -354,7 +353,7 @@ function createCharts() {
     }),
     fill: false,
     borderColor: "rgb(75, 2, 192)",
-    tension: 0.1,
+    tension: 0.5,
   };
 
   const visitorData = {
@@ -367,9 +366,28 @@ function createCharts() {
     }),
     fill: false,
     borderColor: "rgb(75, 192, 192)",
-    tension: 0.1,
+    tension: 0.5,
   };
-
+  
+  const salesLastWeekData = {
+    label: "Sales",
+    data: weeks_dates().map((date) => {
+      const sales = wp_ajax.last_weeks_orders.find(
+        (data) => date == data.date
+      );
+      return sales ? sales.total : 0;
+    }),
+    fill: false,
+    borderColor: "rgb(34, 139, 34)",
+    tension: 0.5,
+  };
+  
+  
+    
+    const visitChart = document.getElementById("visitChart");
+  const pageViewChart = document.getElementById("pageViewChart");
+  const salesChart = document.getElementById("salesChart");
+  lineGraph(salesChart, salesLastWeekData, "This weeks sales");
   lineGraph(visitChart, visitorData, "This weeks visitors data");
   lineGraph(pageViewChart, pageViewData, "This weeks page view data");
 }
