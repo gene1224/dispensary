@@ -31,6 +31,9 @@ const productItemButton = (product, disable = false, cart = false) => {
 
 const productItemHTML = (product, importedProducts = []) => {
   const productExist = importedProducts.includes(product.id.toString());
+  if(productExist) {
+      return '';
+  }
   let cart_items = storageGet("listing_cart") || [];
 
   cart_items =
@@ -78,14 +81,6 @@ const productItemHTML = (product, importedProducts = []) => {
 </div>`;
 };
 
-const selectOptionsHTML = (categories) => {
-  return categories
-    .map(
-      (category) => `<option value="${category.id}">${category.name}</option>`
-    )
-    .join("");
-};
-
 jQuery(document).ready(function ($) {
   createCharts();
 
@@ -102,59 +97,17 @@ jQuery(document).ready(function ($) {
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);
   }
-  getTaxonomies = (type = "tags", queryString = "per_page=4") => {
-    const endpoint = type == "tags" ? tagEndpoint : categoryEndpoint;
-    $.ajax({
-      url: `${wp_ajax.default_site}${endpoint}?${queryString}`,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader(
-          "Authorization",
-          `Basic ${wp_ajax.default_api_key}`
-        );
-      },
-      type: "GET",
-      contentType: "application/json",
-      success: function (response) {
-        const selectionHTML = selectOptionsHTML(response);
-        if (type == "tags") {
-          $("#tagSelect").html(
-            `<option value="">Select Tag</option>${selectionHTML}`
-          );
-          $("#tagSelect").removeAttr("disabled");
-        } else if (type == "categories") {
-          $("#categorySelect").html(
-            `<option value="">Select Category</option>${selectionHTML}`
-          );
-          $("#categorySelect").removeAttr("disabled");
-        }
-      },
-    });
-  };
-  getTaxonomies();
-  getTaxonomies("categories");
-
+  
   const default_query_string = {
     orderby: "menu_order",
     order: "asc",
-    per_page: 12,
+    per_page: 20,
     stock_status: "instock",
   };
 
   let productFilter = default_query_string;
 
   let current_page = 1;
-
-  $("#gridNext").click(function () {
-    $("#product-importer-grid").html(gridLoaderHTML);
-    current_page += 1;
-    loadProducts(serializeObject(productFilter));
-  });
-  $("#gridPrev").click(function () {
-    if (current_page == 1) return;
-    $("#product-importer-grid").html(gridLoaderHTML);
-    current_page -= 1;
-    loadProducts(serializeObject(productFilter));
-  });
 
   const loadProducts = (
     queryString,
@@ -189,17 +142,14 @@ jQuery(document).ready(function ($) {
         const productHTMLs = products
           .map((product) => {
             return productItemHTML(product, selected_ids);
-          })
-          .join("");
-        // Added
-        if (productHTMLs == null || productHTMLs == "") {
-          $("#product-importer-grid").html(
-            "<h2 style='margin: 0; padding: 25px;'>No Products Found</h2>"
-          );
-          $(".grid-pagination").hide(); // Added
+          }).filter(el => el !== '').slice(0, 4);
+          
+          
+        if (productHTMLs.length == 0) {
+          $("#product-importer-grid").html("<h2>All Best Sellers is already imported</h2>");
         } else {
           $("#custom-spin-loader").hide();
-          $("#product-importer-grid").html(productHTMLs);
+          $("#product-importer-grid").html(productHTMLs.join(""));
           var cards = $("#product-importer-grid .product-item");
           for (var i = 0; i < cards.length; i++) {
             var target = Math.floor(Math.random() * cards.length - 1) + 1;
