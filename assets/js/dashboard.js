@@ -330,19 +330,19 @@ function addToCart(btn, id, sku, remove = false) {
   });
 }
 
+const weeks_dates = () => {
+  var result = [];
+  for (var i = 0; i < 7; i++) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    result.push(d.toISOString().slice(0, 10));
+  }
+  return result.reverse();
+};
+
 function createCharts() {
   const visitChart = document.getElementById("visitChart");
   const pageViewChart = document.getElementById("pageViewChart");
-
-  const weeks_dates = () => {
-    var result = [];
-    for (var i = 0; i < 7; i++) {
-      var d = new Date();
-      d.setDate(d.getDate() - i);
-      result.push(d.toISOString().slice(0, 10));
-    }
-    return result.reverse();
-  };
 
   const pageViewData = {
     label: "Page Views",
