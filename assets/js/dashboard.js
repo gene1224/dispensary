@@ -331,7 +331,8 @@ function addToCart(btn, id, sku, remove = false) {
 }
 
 function createCharts() {
-  const visitor_graph = document.getElementById("visitChart");
+  const visitChart = document.getElementById("visitChart");
+  const pageViewChart = document.getElementById("pageViewChart");
 
   const weeks_dates = () => {
     var result = [];
@@ -340,41 +341,45 @@ function createCharts() {
       d.setDate(d.getDate() - i);
       result.push(d.toISOString().slice(0, 10));
     }
-
     return result.reverse();
   };
 
-  let visitorLineChart = new Chart(visitor_graph, {
+  const pageViewData = {
+    label: "Page Views",
+    data: weeks_dates().map((date) => {
+      const visit = wp_ajax.pageview_data.find(
+        (data) => date == data.date_visited
+      );
+      return visit ? visit.count : 0;
+    }),
+    fill: false,
+    borderColor: "rgb(75, 2, 192)",
+    tension: 0.1,
+  };
+
+  const visitorData = {
+    label: "Visitor Count",
+    data: weeks_dates().map((date) => {
+      const visit = wp_ajax.visitor_data.find(
+        (data) => date == data.date_visited
+      );
+      return visit ? visit.count : 0;
+    }),
+    fill: false,
+    borderColor: "rgb(75, 192, 192)",
+    tension: 0.1,
+  };
+
+  lineGraph(visitChart, visitorData, "This weeks visitors data");
+  lineGraph(pageViewChart, pageViewData, "This weeks page view data");
+}
+
+function lineGraph(el, data, title = "") {
+  let visitorLineChart = new Chart(el, {
     type: "line",
     data: {
       labels: weeks_dates(),
-      datasets: [
-        {
-          label: "Visitor Count",
-          data: weeks_dates().map((date) => {
-            const visit = wp_ajax.visitor_data.find(
-              (data) => date == data.date_visited
-            );
-            return visit ? visit.count : 0;
-          }),
-          fill: false,
-          borderColor: "rgb(75, 192, 192)",
-          tension: 0.1,
-        },
-
-        {
-          label: "Page Views",
-          data: weeks_dates().map((date) => {
-            const visit = wp_ajax.pageview_data.find(
-              (data) => date == data.date_visited
-            );
-            return visit ? visit.count : 0;
-          }),
-          fill: false,
-          borderColor: "rgb(75, 2, 192)",
-          tension: 0.1,
-        },
-      ],
+      datasets: [data],
     },
     options: {
       responsive: true,
@@ -386,7 +391,7 @@ function createCharts() {
       plugins: {
         title: {
           display: true,
-          text: "Your dispensary site performance",
+          text: title,
         },
       },
       scales: {

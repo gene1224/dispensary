@@ -77,7 +77,7 @@ class DispensaryDashboard
             'imported_products' => $this->imported_products,
             'ordered_products' => get_dispensary_orders($this->site_id),
             'ordered_total_sales' => $this->ordered_total_sales,
-            'default_site' =>get_source_sites()[0]['url'],
+            'default_site' => get_source_sites()[0]['url'],
             'default_api_key' => get_source_sites()[0]['api_key'],
             'max_products' => $this->max_product,
             'listing_cart' => $this->$listing_cart ?: [],
