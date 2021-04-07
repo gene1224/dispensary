@@ -378,16 +378,12 @@ function lineGraph(el, data, title = "") {
   let visitorLineChart = new Chart(el, {
     type: "line",
     data: {
-      labels: weeks_dates(),
+      labels: weeks_dates().map(date => date.split("-").splice(-2).join("/")),
       datasets: [data],
     },
     options: {
       responsive: true,
-      interaction: {
-        mode: "index",
-        intersect: false,
-      },
-      stacked: false,
+      maintainAspectRatio:false,
       plugins: {
         title: {
           display: true,
@@ -395,11 +391,14 @@ function lineGraph(el, data, title = "") {
         },
       },
       scales: {
-        y: {
-          type: "linear",
-          display: true,
-          position: "left",
-        },
+        yAxes: [{
+            
+        ticks: {
+          beginAtZero: true,
+          maxTicksLimit: 5,
+          stepSize: 1,
+        }
+      }]
       },
     },
   });

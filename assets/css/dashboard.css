@@ -528,3 +528,14 @@ h3.qrxds-dashboard-heading {
     font-size: 12px;
   }
 }
+
+.dashboard-graphs {
+  display: flex;
+  justify-content:space-between;
+}
+.dashboard-graphs > div {
+  flex: 0 1 32%;
+}
+.dashboard-graphs > div canvas {
+  width: 100%;
+}
