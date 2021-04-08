@@ -32,7 +32,7 @@ class ManageProduct
 
         $this->imported_products = get_users_imported_products();
 
-        $this->listing_cart = get_user_meta(get_current_user_id(), 'listing_cart', true) ?: [];
+        $this->listing_cart = get_user_meta($this->user_id, 'listing_cart', true) ?: [];
 
         $this->context = array(
             'sites' => get_source_sites(),
