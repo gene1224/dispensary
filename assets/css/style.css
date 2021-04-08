@@ -719,7 +719,7 @@
   margin-bottom: 15px;
 }
 .row-prop .column-one-prop {
-  width: 75%;
+  flex: 0 1 70px;
 }
 .row-prop .column-one-prop h1.cop-h1-prop {
   font-size: 36px;
