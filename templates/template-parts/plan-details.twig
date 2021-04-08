@@ -1,41 +1,65 @@
 <div class="row-prop">
-    <div class="column-one-prop">
-        <h1 class="cop-h1-prop">
-            {{ view == 'home' ? 'Manage Products' : '' }}
-            {{ view == 'cart' ? 'Listed Products' : '' }}
-            {{ view == 'imported' ? 'Enlisted Products' : '' }}
-        </h1>
-        <div class="ctp-upgrade-prop">
-            <span class="ctp-current-plan">Current Plan : </span>
-            <span class="ctp-plan">{{ membership }}</span>
-            {% if membership == 'QRX Dispensary Premium Plan' %}
-               
-            {% elseif membership == 'QRX Dispensary Pro Plan' %}
-                <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade to Premium Plan</a></span> )</span>
-            {% else %}
-                <span class="ctp-choose-plan-span">( <span class="ctp-choose-plan"><a href="#" id="changePlanMyAccount" class="changePlanMyAccount"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Upgrade here to get more products</a></span> )</span>
-            {% endif %}
-        </div>
-        <div class="ctp-product-prop">
-            <div class="ctp-product-table">
-                <table>
-                    <tr class="ctp-pt-row-header">
-                        <th>TOTAL PRODUCTS ALLOWED</th>
-                        <th># OF PRODUCTS ADDED</th>
-                        <th>REMAINING PRODUCTS ALLOWED</th>
-                    </tr>
-                    <tr class="ctp-pt-row-data">
-                        <td>{{ max_products }}</td>
-                        <td><span id="added_products_count">{{ cart_count + imported_products_count }}</span></td>
-                        <td><span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="column-two-prop">
-        <div class="cop-revenue">
-            <i class="fa fa-info-circle" aria-hidden="true"></i> <a href="#" onclick="viewRevenueInfo()">About AllStuff420 <br/> Product Revenue</a>
-        </div>
-    </div>
+	<div class="column-one-prop">
+		<h1 class="cop-h1-prop">
+			{{ view == 'home' ? 'Manage Products' : '' }}
+			{{ view == 'cart' ? 'Listed Products' : '' }}
+			{{ view == 'imported' ? 'Enlisted Products' : '' }}
+		</h1>
+		<div class="ctp-upgrade-prop">
+			<span class="ctp-current-plan">Current Plan :
+			</span>
+			<span class="ctp-plan">{{ membership }}</span>
+			{% if membership == 'QRX Dispensary Premium Plan' %}
+
+				{% elseif membership == 'QRX Dispensary Pro Plan' %}
+					<span class="ctp-choose-plan-span">(
+						<span class="ctp-choose-plan">
+							<a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro">
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+								Upgrade to Premium Plan</a>
+						</span>
+						)</span>
+				{% else %}
+					<span class="ctp-choose-plan-span">(
+						<span class="ctp-choose-plan">
+							<a href="#" id="changePlanMyAccount" class="changePlanMyAccount">
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+								Upgrade here to get more products</a>
+						</span>
+						)</span>
+			{% endif %}
+		</div>
+		<div class="ctp-product-prop">
+			<div class="ctp-product-table">
+				<table>
+					<tr class="ctp-pt-row-header">
+						<th>TOTAL PRODUCTS ALLOWED</th>
+						<th># OF PRODUCTS ADDED</th>
+						<th>REMAINING PRODUCTS ALLOWED</th>
+					</tr>
+					<tr class="ctp-pt-row-data">
+						<td>{{ max_products }}</td>
+						<td>
+							<span id="added_products_count">{{ cart_count + imported_products_count }}</span>
+						</td>
+						<td>
+							<span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="column-two-prop">
+		<diV class="add-product-notif">
+			<i class="fa fa-info-circle" aria-hidden="true"></i>
+			<a href="#" onclick="addProductInfo()">How To Add Products</a>
+		</div>
+		<div class="cop-revenue">
+			<i class="fa fa-info-circle" aria-hidden="true"></i>
+			<a href="#" onclick="viewRevenueInfo()">About AllStuff420
+				<br/>
+				Product Revenue</a>
+		</div>
+	</div>
 </div>
