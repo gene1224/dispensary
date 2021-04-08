@@ -19,10 +19,6 @@ class DispensaryDashboard
 
     private $js_context = array();
 
-    private $max_product = 10;
-
-    private $membership_plan_name = '';
-
     private $listing_cart = [];
 
     private $imported_products = [];
@@ -54,7 +50,7 @@ class DispensaryDashboard
         $this->ordered_total_sales = get_users_total_sales();
 
         $this->website_visitors_total = calculate_visitor_total($this->site_id);
-
+        
         $this->context = array(
             'website_visitors_total' => $this->website_visitors_total,
             'imported_products' => $this->imported_products,
@@ -63,8 +59,8 @@ class DispensaryDashboard
             'site_product' => get_source_sites(),
             'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
             'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
-            'max_products' => $this->max_product,
-            'membership' => $this->membership_plan_name,
+            'max_products' => get_user_max_products($this->user_id),
+            'membership' => get_user_plan_name($this->user_id),
         );
 
         try {
@@ -115,14 +111,6 @@ class DispensaryDashboard
         global $timber;
 
         $this->init(); // POPULATES THE CONTEXTS ALWAYS ON TOP
-
-        foreach (wc_memberships_get_user_memberships($this->user_id) as $membership) {
-            $product_limit = get_post_meta($membership->plan_id, 'dispensary_product_limit', true) ?: 0;
-            if ($max_product < $product_limit) {
-                $this->max_product = $product_limit;
-                $this->membership_plan_name = $membership->plan->name;
-            }
-        }
 
         $this->load_assets();
 
