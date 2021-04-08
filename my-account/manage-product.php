@@ -39,7 +39,7 @@ class ManageProduct
             'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
             'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
             'imported_products' => $this->imported_products,
-            'max_products' => $this->max_product,
+            'max_products' => $this->max_products,
             'view' => $_REQUEST['view'] ?: 'home',
             'membership' => get_user_plan_name($this->user_id),
         );
@@ -56,7 +56,7 @@ class ManageProduct
             'default_site' => get_source_sites()[0]['url'],
             'default_api_key' => get_source_sites()[0]['api_key'],
             'imported_products' => $this->imported_products,
-            'max_products' => $this->max_product,
+            'max_products' => $this->max_products,
             'listing_cart' => $this->listing_cart ?: [],
         );
 
