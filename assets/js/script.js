@@ -161,18 +161,63 @@ jQuery(document).ready(function ($) {
 
   let current_page = 1;
 
-  $("#gridNext").click(function () {
-    $("#product-importer-grid").html(gridLoaderHTML);
-    current_page += 1;
-    loadProducts(serializeObject(productFilter));
+    const  updatePaginationButtons = (current_page, total_pages) => {
+        $(".grid-pagination button").show();
+        if(current_page == 1) {
+            $(".gridPrevTxt").hide();
+            $(".gridPrev").hide();
+            $(".gridDoublePrev").hide();
+        } else if(current_page == 2) { 
+            $(".gridDoublePrev").hide();
+        }
+        else if(total_pages - current_page == 1) { 
+            $(".gridDoubleNext").hide();
+        }
+        else if(total_pages - current_page == 0) { 
+            $(".gridDoubleNext").hide();
+            $(".gridNext").hide();
+            $(".gridNextTxt").hide();
+        }
+        
+        if(total_pages <= 3) {
+            $(".gridLast").hide();    
+        } 
+        $(".gridDoublePrev").text(current_page - 2);
+        $(".gridPrev").hide(current_page - 1);
+        $("#currentPage").text(current_page);
+        $(".gridNext").text(current_page + 1);
+        $(".gridDoubleNext").text(current_page + 2);
+        $(".gridLast").text(total_pages);    
+        
+    }
+    
+    const pager = (pages) => {
+        $("#product-importer-grid").html(gridLoaderHTML);
+        current_page = current_page + pages;
+        loadProducts(serializeObject(productFilter));    
+    }
+    
+    $(".gridNextTxt").click(function () {
+    pager(1);
   });
-  $("#gridPrev").click(function () {
+  $(".gridNext").click(function () {
+    pager(1);
+  });
+  $(".gridDoubleNext").click(function () {
+    pager(2);
+  });
+  $(".gridPrevTxt").click(function () {
     if (current_page == 1) return;
-    $("#product-importer-grid").html(gridLoaderHTML);
-    current_page -= 1;
-    loadProducts(serializeObject(productFilter));
+    pager(-1);
   });
-
+  $(".gridPrev").click(function () {
+    if (current_page == 1) return;
+    pager(-1);
+  });
+  $(".gridDoublePrev").click(function () {
+    if (current_page <= 2) return;
+    pager(-2);
+  });
   const loadProducts = (
     queryString,
     fromFilter = false,
@@ -202,7 +247,7 @@ jQuery(document).ready(function ($) {
           $("#product-importer-grid").html("<h2>No Products Found</h2>");
         }
 
-        $("#currentPage").text(current_page);
+        updatePaginationButtons(current_page, total_page);
         const productHTMLs = products
           .map((product) => {
             return productItemHTML(product, selected_ids);
