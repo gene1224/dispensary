@@ -103,5 +103,6 @@ class ManageProduct
                 break;
         }
     }
-
 }
+
+$manageProduct = new ManageProduct();
