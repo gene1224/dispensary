@@ -59,17 +59,13 @@ function changePlan() {
 //ADDED
 function viewRevenueInfo() {
   const planHTML = () => `
-        <div style="text-align: justify;">For the retail price, you can change the price for each item that you will enlist. 
-        The retail price will consist of the wholesale dispensary amount plus the minimum 10% mark-up price. 
-        The maximum mark-up percentage is only up to 50%.
-        <br/><br/>
-        For a sample computation of your revenue on your Dispensary, let's take this as an example. 
-        When a customer orders an item to your dispensary and pays that product, our system will automatically deduct the dispensary price under your retail price and will remove the 10% for the Transaction fee. 
-        So the remaining will be your revenue for that product.
-        <br/><br/>
-        For example, the Dispensary Price is $10.99, and the Retail Price is $15.99. 
-        <br/><br/>
-        When a customer orders an item and pays, the Dispensary Price will be deducted from the Retail Price as Enlisting Payment. Now, your remaining balance will be $5, and there will be a 10% deduction as a transaction fee. The revenue of the item on your account will now be $4.5. 
+        <div style="text-align: justify;">
+        When you enlist products from AllStuff420, you can decide on a mark-up price between 10-50% to ensure your profit. To improve your revenue, you don't have to pre-pay for the products you enlist - we simply deduct the product price + transaction fee once one of your customers order!
+        <br><br>
+        The product price is the price you will pay for the product + 10% in transaction fee, which is why the minimum mark-up is 10%. Any mark-up above 10% will be your profit.
+        <br><br>
+        EXAMPLE:
+        The Product Price is $10.99, and your SRP is $15.99. Once a customer orders the product, we will deduct $10.99 + $1 (10% transaction fee). The remaining $4.5 will be pure profit for you.
        </div>
     `;
   Swal.fire({
@@ -78,7 +74,7 @@ function viewRevenueInfo() {
     html: planHTML(),
     showCloseButton: true,
     focusConfirm: false,
-    confirmButtonText: "Done",
+    confirmButtonText: "OK",
   });
 }
 
