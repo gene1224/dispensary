@@ -78,10 +78,10 @@
 				</tr>
 				<tr>
 					<td>
-						<span id="added_products_count">{{ cart_count + imported_products_count }}</span>
+						<span id="added_products_count">{{ listing_cart | length + imported_products | length }}</span>
 					</td>
 					<td>
-						<span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span>
+						<span id="remaining_products_count">{{max_products - (listing_cart | length + imported_products | length) }}</span>
 					</td>
 				</tr>
 			</table>

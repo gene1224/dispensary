@@ -31,8 +31,8 @@ const productItemButton = (product, disable = false, cart = false) => {
 
 const productItemHTML = (product, importedProducts = []) => {
   const productExist = importedProducts.includes(product.id.toString());
-  if(productExist) {
-      return '';
+  if (productExist) {
+    return "";
   }
   let cart_items = storageGet("listing_cart") || [];
 
@@ -97,7 +97,7 @@ jQuery(document).ready(function ($) {
   if (wp_ajax.listing_cart) {
     storageSave("listing_cart", wp_ajax.listing_cart);
   }
-  
+
   const default_query_string = {
     orderby: "menu_order",
     order: "asc",
@@ -142,11 +142,14 @@ jQuery(document).ready(function ($) {
         const productHTMLs = products
           .map((product) => {
             return productItemHTML(product, selected_ids);
-          }).filter(el => el !== '').slice(0, 4);
-          
-          
+          })
+          .filter((el) => el !== "")
+          .slice(0, 4);
+
         if (productHTMLs.length == 0) {
-          $("#product-importer-grid").html("<h2>All Best Sellers is already imported</h2>");
+          $("#product-importer-grid").html(
+            "<h2>All Best Sellers is already imported</h2>"
+          );
         } else {
           $("#custom-spin-loader").hide();
           $("#product-importer-grid").html(productHTMLs.join(""));
@@ -291,8 +294,6 @@ const weeks_dates = () => {
 };
 
 function createCharts() {
-  
-
   const pageViewData = {
     label: "Page Views",
     data: weeks_dates().map((date) => {
@@ -318,23 +319,19 @@ function createCharts() {
     borderColor: "rgb(75, 192, 192)",
     tension: 0.5,
   };
-  
+
   const salesLastWeekData = {
     label: "Sales",
     data: weeks_dates().map((date) => {
-      const sales = wp_ajax.last_weeks_orders.find(
-        (data) => date == data.date
-      );
+      const sales = wp_ajax.last_weeks_orders.find((data) => date == data.date);
       return sales ? sales.total : 0;
     }),
     fill: false,
     borderColor: "rgb(34, 139, 34)",
     tension: 0.5,
   };
-  
-  
-    
-    const visitChart = document.getElementById("visitChart");
+
+  const visitChart = document.getElementById("visitChart");
   const pageViewChart = document.getElementById("pageViewChart");
   const salesChart = document.getElementById("salesChart");
   lineGraph(salesChart, salesLastWeekData, "This weeks sales");
@@ -346,12 +343,12 @@ function lineGraph(el, data, title = "") {
   let visitorLineChart = new Chart(el, {
     type: "line",
     data: {
-      labels: weeks_dates().map(date => date.split("-").splice(-2).join("/")),
+      labels: weeks_dates().map((date) => date.split("-").splice(-2).join("/")),
       datasets: [data],
     },
     options: {
       responsive: true,
-      maintainAspectRatio:false,
+      maintainAspectRatio: false,
       plugins: {
         title: {
           display: true,
@@ -359,14 +356,15 @@ function lineGraph(el, data, title = "") {
         },
       },
       scales: {
-        yAxes: [{
-            
-        ticks: {
-          beginAtZero: true,
-          maxTicksLimit: 5,
-          stepSize: 1,
-        }
-      }]
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              maxTicksLimit: 5,
+              stepSize: 1,
+            },
+          },
+        ],
       },
     },
   });

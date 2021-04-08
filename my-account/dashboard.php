@@ -27,6 +27,8 @@ class DispensaryDashboard
 
     private $website_visitors_total = 0;
 
+    private $max_products = 0;
+
     public function __construct()
     {
         add_shortcode('dashboard_views', [$this, 'views']);
@@ -50,7 +52,9 @@ class DispensaryDashboard
         $this->ordered_total_sales = get_users_total_sales();
 
         $this->website_visitors_total = calculate_visitor_total($this->site_id);
-        
+
+        $this->max_products = get_user_max_products($this->user_id);
+
         $this->context = array(
             'website_visitors_total' => $this->website_visitors_total,
             'imported_products' => $this->imported_products,
@@ -59,7 +63,7 @@ class DispensaryDashboard
             'site_product' => get_source_sites(),
             'gird_url' => explode('?', home_url($_SERVER["REQUEST_URI"]))[0],
             'cart_url' => home_url($_SERVER["REQUEST_URI"]) . "?view=cart",
-            'max_products' => get_user_max_products($this->user_id),
+            'max_products' => $this->max_products,
             'membership' => get_user_plan_name($this->user_id),
         );
 
