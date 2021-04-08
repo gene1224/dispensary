@@ -56,6 +56,7 @@ class ManageProduct
             'default_site' => get_source_sites()[0]['url'],
             'default_api_key' => get_source_sites()[0]['api_key'],
             'imported_products' => $this->imported_products,
+            'import_status' => 0,
             'max_products' => $this->max_products,
             'listing_cart' => $this->listing_cart ?: [],
         );
@@ -90,7 +91,7 @@ class ManageProduct
                 echo $timber->compile('imported-products.twig', $this->context);
                 break;
             case 'cart':
-                $this->context['page_heading'] = 'Listed Products';
+                $this->context['page_heading'] = 'Products for Enlisting';
                 $batch = check_imported_products(get_current_user_id());
                 $js_objects["import_status"] = count($batch["remaining_skus"]);
                 wp_localize_script('product_import_cart_js', 'wp_ajax', $this->js_context);
