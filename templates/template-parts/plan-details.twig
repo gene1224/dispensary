@@ -29,24 +29,13 @@
 						)</span>
 			{% endif %}
 		</div>
-		<div class="ctp-product-prop">
-			<div class="ctp-product-table">
-				<table>
-					<tr class="ctp-pt-row-header">
-						<th>TOTAL PRODUCTS ALLOWED</th>
-						<th># OF PRODUCTS ADDED</th>
-						<th>REMAINING PRODUCTS ALLOWED</th>
-					</tr>
-					<tr class="ctp-pt-row-data">
-						<td>{{ max_products }}</td>
-						<td>
-							<span id="added_products_count">{{ cart_count + imported_products_count }}</span>
-						</td>
-						<td>
-							<span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span>
-						</td>
-					</tr>
-				</table>
+		<div class="user-product-counts">
+			<div>TOTAL PRODUCTS ALLOWED<br>{{ max_products }}</div>
+			<div>
+				# OF PRODUCTS ADDED<br><span id="added_products_count">{{ cart_count + imported_products_count }}</span>
+			</div>
+			<div>
+				REMAINING PRODUCTS ALLOWED<br><span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span>
 			</div>
 		</div>
 	</div>

@@ -715,11 +715,19 @@
 .row-prop {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 15px;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
-.row-prop .column-one-prop {
-  flex: 0 1 70px;
+.row-prop > .column-one-prop {
+  flex: 1 0 auto;
+}
+
+.row-prop > .column-two-prop {
+  flex: 0 1 300px;
+}
+.row-prop > .column-two-prop > a {
+  display: block;
+  font-size: 14px;
 }
 .row-prop .column-one-prop h1.cop-h1-prop {
   font-size: 36px;
@@ -729,57 +737,17 @@
 
 .row-prop .column-one-prop .ctp-upgrade-prop span.ctp-current-plan {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
 }
 .row-prop .column-one-prop .ctp-upgrade-prop span.ctp-plan {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #0088eb;
   text-transform: uppercase;
 }
 .row-prop .column-one-prop .ctp-upgrade-prop span.ctp-choose-plan {
   font-size: 12px;
   font-weight: 600;
-}
-.row-prop .column-one-prop .ctp-product-prop {
-  display: flex;
-  flex-wrap: wrap;
-}
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-table {
-  width: 100%;
-}
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-table table,
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-table table td,
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-table table th {
-  border: none;
-  margin: 0;
-}
-.row-prop
-  .column-one-prop
-  .ctp-product-prop
-  .ctp-product-table
-  table
-  tr.ctp-pt-row-header
-  th {
-  font-size: 10px;
-  padding: 3px;
-}
-.row-prop
-  .column-one-prop
-  .ctp-product-prop
-  .ctp-product-table
-  table
-  tr.ctp-pt-row-data
-  td {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px;
-}
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-allowed,
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-added,
-.row-prop .column-one-prop .ctp-product-prop .ctp-product-remaining {
-  width: 33%;
 }
 .row-prop .column-two-prop {
   width: 25%;
@@ -839,24 +807,7 @@
   .row-prop .column-one-prop .ctp-upgrade-prop span.ctp-plan {
     font-size: 15px;
   }
-  .row-prop
-    .column-one-prop
-    .ctp-product-prop
-    .ctp-product-table
-    table
-    tr.ctp-pt-row-header
-    th {
-    font-size: 12px;
-  }
-  .row-prop
-    .column-one-prop
-    .ctp-product-prop
-    .ctp-product-table
-    table
-    tr.ctp-pt-row-data
-    td {
-    font-size: 14px;
-  }
+
   .row-prop .column-two-prop .cop-revenue {
     padding: 10px 0;
   }
