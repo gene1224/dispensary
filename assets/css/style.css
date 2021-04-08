@@ -165,7 +165,7 @@
   font-family: inherit;
   width: 100%;
   display: block;
-  padding: 5px 12px;
+  padding: 5px 12px 5px 5px;
   /* Added */
   border-radius: 25px;
   height: 35px;
