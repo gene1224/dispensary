@@ -45,7 +45,7 @@ class ManageProduct
         );
 
         try {
-            $this->listing_cart = array_values($listing_cart);
+            $this->listing_cart = array_values($this->listing_cart);
         } catch (\Throwable $th) {
             $this->listing_cart = [];
         }
