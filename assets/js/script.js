@@ -183,7 +183,7 @@ jQuery(document).ready(function ($) {
             $(".gridLast").hide();    
         } 
         $(".gridDoublePrev").text(current_page - 2);
-        $(".gridPrev").hide(current_page - 1);
+        $(".gridPrev").text(current_page - 1);
         $("#currentPage").text(current_page);
         $(".gridNext").text(current_page + 1);
         $(".gridDoubleNext").text(current_page + 2);
