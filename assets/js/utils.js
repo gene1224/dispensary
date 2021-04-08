@@ -86,9 +86,9 @@ function addProductInfo() {
   const planHTML = () => `
         <div style="text-align: justify;">
         1. Browse the exciting AllStuff420 products. You can use the search filters if you are looking for specific products.<br/><br/>
-        2. Once you found the products you want to add, press “Enlist Product”.<br/><br/>
+        2. Once you have found the products you want to add, press “Enlist Product”.<br/><br/>
         3. When you are done adding all the products you wish to enlist, go to “VIEW PRODUCTS ADDED”.<br/><br/>
-        4. Add your preferred price for the product to ensure your revenue. <br/><br/>
+        4. Add your preferred price for the product. We have suggested an SRP, but you may change this.<br/><br/>
         5. Once you are done with the pricing, press “Enlist products to dispensary”<br/><br/>
         </div>
     `;
@@ -98,7 +98,7 @@ function addProductInfo() {
     html: planHTML(),
     showCloseButton: true,
     focusConfirm: false,
-    confirmButtonText: "Done",
+    confirmButtonText: "OK",
   });
 }
 
