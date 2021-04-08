@@ -234,26 +234,6 @@ h3.qrxds-dashboard-heading {
   display: block;
 }
 
-.qrxds-dashboard-content
-  .qrxds-second-row
-  .qrxds-products-content
-  .qrxds-products-list-content {
-  /* display: flex;
-    flex-wrap: wrap;
-    line-height: 1.5;
-    justify-content: center;
-    padding: 20px 20px;
-    border: 1px solid rgb(128 128 128 / 29%);
-    padding-top: 15px;
-    background: rgba(128,128,128, 0.02);
-    box-shadow: 5px 5px 10px rgb(128 128 128 / 20%); */
-}
-.qrxds-dashboard-content
-  .qrxds-second-row
-  .qrxds-products-content
-  .qrxds-products-list-content
-  #product-importer-grid {
-}
 
 /* For Basic */
 #popmake-6627 {
