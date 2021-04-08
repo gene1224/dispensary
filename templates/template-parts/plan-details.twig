@@ -5,28 +5,22 @@
 			{{ view == 'cart' ? 'Listed Products' : '' }}
 			{{ view == 'imported' ? 'Enlisted Products' : '' }}
 		</h1>
-		<div class="ctp-upgrade-prop">
-			<span class="ctp-current-plan">Current Plan :
-			</span>
-			<span class="ctp-plan">{{ membership }}</span>
-			{% if membership == 'QRX Dispensary Premium Plan' %}
+		<div class="membership-plan-details">
+			Current Plan :<span class="plan-name">{{ membership }}</span>
+			{% if membership == 'QRx Dispensary Pro Plan' %}
+				<span class="ctp-choose-plan-span">(
 
-				{% elseif membership == 'QRX Dispensary Pro Plan' %}
-					<span class="ctp-choose-plan-span">(
-						<span class="ctp-choose-plan">
-							<a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro">
-								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-								Upgrade to Premium Plan</a>
-						</span>
-						)</span>
-				{% else %}
-					<span class="ctp-choose-plan-span">(
-						<span class="ctp-choose-plan">
-							<a href="#" id="changePlanMyAccount" class="changePlanMyAccount">
-								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-								Upgrade here to get more products</a>
-						</span>
-						)</span>
+					<a href="#" id="changePlanMyAccountPro" class="changePlanMyAccountPro">
+						<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+						Upgrade to Premium Plan</a>
+
+					)</span>
+			{% elseif membership == 'QRx Dispensary Premium Plan'  %}
+				<span class="ctp-choose-plan-span">(
+					<a href="#" id="changePlanMyAccount" class="changePlanMyAccount">
+						<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+						Upgrade here to get more products</a>
+					)</span>
 			{% endif %}
 		</div>
 		<div class="user-product-counts">

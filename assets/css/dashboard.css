@@ -4,34 +4,9 @@
   justify-content: space-between;
   width: 100%;
 }
-.qrxds-dashboard-content
-  .qrxds-first-row
-  .qrxds-subscription-overview-content
-  .ctp-upgrade-prop
-  span.ctp-current-plan {
-  font-size: 14px;
-  font-weight: 700;
-}
 
-.qrxds-dashboard-content
-  .qrxds-first-row
-  .qrxds-subscription-overview-content
-  .ctp-upgrade-prop
-  span.ctp-plan {
-  font-size: 14px;
-  font-weight: 600;
-  color: #0088eb;
-  text-transform: uppercase;
-}
 
-.qrxds-dashboard-content
-  .qrxds-first-row
-  .qrxds-subscription-overview-content
-  .ctp-upgrade-prop
-  span.ctp-choose-plan {
-  font-size: 12px;
-  font-weight: 600;
-}
+
 
 .qrxds-dashboard-content
   .qrxds-first-row

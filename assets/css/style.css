@@ -1,14 +1,11 @@
 @charset "UTF-8";
 .product-import-container {
-  /* margin: 20px auto !important; */
-  /* font-family: "Roboto", sans-serif; */
   margin: 0px auto !important;
   font-family: "Montserrat", sans-serif;
 }
 .product-importer-grid {
   margin: 0 !important;
   max-width: none !important;
-  /* font-family: "Roboto", sans-serif; */
   font-family: "Montserrat", sans-serif;
 }
 
@@ -25,10 +22,9 @@
   -webkit-transform: all 0.3s ease-in-out;
   -ms-transform: all 0.3s ease-in-out;
   transform: all 0.3s ease-in-out;
-  /* margin: 0 15px 15px; */
-  /* ADDED */
   margin: 15px 15px;
 }
+
 .product-importer-grid > .product-item .product-image {
   position: relative;
   width: 100%;
@@ -44,7 +40,6 @@
   padding: 6px 6px;
   background: red;
   color: #fff;
-  /* ADDED */
   font-weight: 700;
 }
 .product-importer-grid > .product-item .product-name {
@@ -713,20 +708,19 @@
   margin-top: 20px;
 }
 .row-prop {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 20px;
 }
 .row-prop > .column-one-prop {
   flex: 1 0 auto;
 }
 
-.row-prop > .column-two-prop {
-  flex: 0 1 300px;
+.user-product-counts {
+  display: flex;
+  width: auto;
+  justify-content: space-between;
 }
-.row-prop > .column-two-prop > a {
-  display: block;
+.user-product-counts > div {
+  font-weight: 500;
+  text-align: center;
   font-size: 14px;
 }
 .row-prop .column-one-prop h1.cop-h1-prop {
@@ -735,30 +729,6 @@
   margin: 0px;
 }
 
-.row-prop .column-one-prop .ctp-upgrade-prop span.ctp-current-plan {
-  font-size: 14px;
-  font-weight: 500;
-}
-.row-prop .column-one-prop .ctp-upgrade-prop span.ctp-plan {
-  font-size: 14px;
-  font-weight: 500;
-  color: #0088eb;
-  text-transform: uppercase;
-}
-.row-prop .column-one-prop .ctp-upgrade-prop span.ctp-choose-plan {
-  font-size: 12px;
-  font-weight: 600;
-}
-.row-prop .column-two-prop {
-  width: 25%;
-}
-.row-prop .column-two-prop .cop-revenue {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 700;
-}
-.row-prop .column-two-prop .ctp-upgrade-prop {
-}
 .woocommerce.wc-memberships-frontend-banner,
 .woocommerce.wc-memberships.admin-restricted-content-notice {
   display: none;
@@ -790,9 +760,7 @@
   .row-prop .column-one-prop {
     width: 100%;
   }
-  .row-prop .column-two-prop {
-    width: 100%;
-  }
+
   .grid-controls {
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -801,16 +769,7 @@
     flex: auto;
     width: 100%;
   }
-  .row-prop .column-one-prop .ctp-upgrade-prop span.ctp-current-plan {
-    font-size: 15px;
-  }
-  .row-prop .column-one-prop .ctp-upgrade-prop span.ctp-plan {
-    font-size: 15px;
-  }
 
-  .row-prop .column-two-prop .cop-revenue {
-    padding: 10px 0;
-  }
   .product-import-container .product-import-cart-list .product-cart-item {
     display: block;
   }
