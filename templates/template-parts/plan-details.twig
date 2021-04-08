@@ -1,10 +1,25 @@
 <div class="row-prop">
 	<div class="column-one-prop">
-		<h1 class="cop-h1-prop">
-			{{ view == 'home' ? 'Manage Products' : '' }}
-			{{ view == 'cart' ? 'Listed Products' : '' }}
-			{{ view == 'imported' ? 'Enlisted Products' : '' }}
-		</h1>
+		<div class="importer-heading">
+			<h1>
+				{% switch view %}
+					{% case 'cart' %}
+						{{ 'Listed Products' }}
+					{% case 'imported' %}
+						{{ 'Enlisted Products' }}
+					{% default %}
+						{{ 'Manage Products' }}
+				{% endswitch %}
+			</h1>
+			<div class="info-texts">
+				<a href="#" onclick="addProductInfo()">
+					<i class="fa fa-info-circle" aria-hidden="true"></i>
+					How To Add Products</a>
+				<a href="#" onclick="viewRevenueInfo()">
+					<i class="fa fa-info-circle" aria-hidden="true"></i>
+					About AllStuff420 Product Revenue</a>
+			</div>
+		</div>
 		<div class="membership-plan-details">
 			Current Plan :<span class="plan-name">{{ membership }}</span>
 			{% if membership == 'QRx Dispensary Pro Plan' %}
@@ -32,13 +47,5 @@
 				REMAINING PRODUCTS ALLOWED<br><span id="remaining_products_count">{{max_products - (cart_count + imported_products_count) }}</span>
 			</div>
 		</div>
-	</div>
-	<div class="column-two-prop">
-		<a href="#" onclick="addProductInfo()">
-			<i class="fa fa-info-circle" aria-hidden="true"></i>
-			How To Add Products</a>
-		<a href="#" onclick="viewRevenueInfo()">
-			<i class="fa fa-info-circle" aria-hidden="true"></i>
-			About AllStuff420 Product Revenue</a>
 	</div>
 </div>

@@ -723,11 +723,7 @@
   text-align: center;
   font-size: 14px;
 }
-.row-prop .column-one-prop h1.cop-h1-prop {
-  font-size: 36px;
-  font-weight: 500;
-  margin: 0px;
-}
+
 
 .woocommerce.wc-memberships-frontend-banner,
 .woocommerce.wc-memberships.admin-restricted-content-notice {
@@ -785,9 +781,6 @@
     margin: 10px 15%;
     text-align: center;
     width: 50%;
-  }
-  .row-prop .column-one-prop h1.cop-h1-prop {
-    font-size: 30px;
   }
 }
 
