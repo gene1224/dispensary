@@ -16,13 +16,7 @@
   display: flex;
   flex-wrap: wrap;
   line-height: 1.5;
-  /* Added */
   justify-content: center;
-  padding: 30px 20px 20px 20px;
-  border: 1px solid rgb(128 128 128 / 29%);
-  /* padding-top: 15px; */
-  background: rgba(128, 128, 128, 0.02);
-  box-shadow: 5px 5px 10px rgb(128 128 128 / 20%);
 }
 .product-importer-grid > .product-item {
   flex: 0 1 180px;
