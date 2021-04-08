@@ -76,11 +76,7 @@ class DispensaryDashboard
         $this->js_context = array(
             'url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ajax-nonce'),
-            'website_visitors_total' => $this->website_visitors_total,
-            'site_product' => get_source_sites(),
             'imported_products' => $this->imported_products,
-            'ordered_products' => get_dispensary_orders($this->site_id),
-            'ordered_total_sales' => $this->ordered_total_sales,
             'default_site' => get_source_sites()[0]['url'],
             'default_api_key' => get_source_sites()[0]['api_key'],
             'max_products' => $this->max_product,
@@ -115,6 +111,11 @@ class DispensaryDashboard
         global $timber;
 
         $this->init(); // POPULATES THE CONTEXTS ALWAYS ON TOP
+
+        if (!get_user_meta($this->user_id, 'site_created', true) && !get_user_meta($this->user_id, 'created_on_my_account', true)) {
+            echo $timber->compile('no-site.twig', $context);
+            return;
+        }
 
         $this->load_assets();
 
