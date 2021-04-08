@@ -17,25 +17,3 @@ function autologin_generator()
 
 add_action('init', 'autologin_generator');
 
-// function auto_login_reciever()
-// {
-
-//     if (!is_user_logged_in() && isset($_REQUEST['auto_login_code'])) {
-
-//         if (get_user_meta($_REQUEST['user_id'], 'auto_login', $_REQUEST['auto_login_code']) == $_REQUEST['auto_login_code']) {
-
-//             $user = get_user_by('id', $_REQUEST['user_id']);
-//             if (!$user) {
-//                 return;
-//             }
-
-//             wp_set_current_user($user->ID, $user->user_login);
-//             wp_set_auth_cookie($user->ID);
-//             do_action('wp_login', $user->user_login);
-//             wp_redirect(get_site_url() . "/frontend-manager");
-//         }
-//     } else if (is_user_logged_in() && isset($_REQUEST['auto_login_code'])) {
-//         wp_redirect(get_site_url() . "/frontend-manager");
-//     }
-// }
-// add_action('init', 'auto_login_reciever');
