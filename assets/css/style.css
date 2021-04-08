@@ -519,18 +519,14 @@
   border: 1px solid #555;
   background: #3db9911a;
   padding: 3px 18px;
-  /* border-radius: 20px; */
-  /* margin-right: 20px; */
   font-size: 13px;
   color: #000;
-  /* ADDED */
   font-weight: 700;
   width: 100%;
   text-align: center;
 }
 .page-controls a.view-product-info {
-  width: 5%;
-  padding: 3px 5px;
+  padding: 3px 20px;
 }
 /*ADDED*/
 
