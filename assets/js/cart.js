@@ -244,7 +244,7 @@ jQuery(document).ready(function ($) {
 
           Swal.fire(
             "Import Complete!",
-            "Products successfully added to your dispensary. Click OK to finish",
+            "Products successfully added to your dispensary. Click OK to finish.",
             "success"
           ).then((result) => {
             window.location =
