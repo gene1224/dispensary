@@ -84,11 +84,13 @@ class ManageProduct
 
         switch ($_REQUEST['view']) {
             case 'imported':
+                $this->context['page_heading'] = 'Enlisted Products';
                 wp_localize_script('product_import_done_js', 'wp_ajax', $this->js_context);
                 wp_enqueue_script('product_import_done_js');
                 echo $timber->compile('imported-products.twig', $this->context);
                 break;
             case 'cart':
+                $this->context['page_heading'] = 'Listed Products';
                 $batch = check_imported_products(get_current_user_id());
                 $js_objects["import_status"] = count($batch["remaining_skus"]);
                 wp_localize_script('product_import_cart_js', 'wp_ajax', $this->js_context);
@@ -96,6 +98,7 @@ class ManageProduct
                 echo $timber->compile('import-cart.twig', $this->context);
                 break;
             default:
+                $this->context['page_heading'] = 'Manage Products';
                 wp_localize_script('product_import_js', 'wp_ajax', $this->js_context);
                 wp_enqueue_script('product_import_js');
                 wp_enqueue_style('lightbox_css_qrx');

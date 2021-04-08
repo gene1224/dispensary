@@ -2,14 +2,7 @@
 	<div class="column-one-prop">
 		<div class="importer-heading">
 			<h1>
-				{% switch view %}
-					{% case 'cart' %}
-						{{ 'Listed Products' }}
-					{% case 'imported' %}
-						{{ 'Enlisted Products' }}
-					{% default %}
-						{{ 'Manage Products' }}
-				{% endswitch %}
+				{{ page_heading }}
 			</h1>
 			<div class="info-texts">
 				<a href="#" onclick="addProductInfo()">
