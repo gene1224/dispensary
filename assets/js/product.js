@@ -13,11 +13,7 @@ jQuery(document).ready(function ($) {
       html: `
         <p><small>SRP: $${(original_price + original_price * 0.5).toFixed(
           2
-        )} | Revenue: <span id="revenue_new">$ ${revenueCal(
-        price,
-        original_price
-      ).toFixed(2)}</span></p>
-        `,
+        )}</small></p>`,
       inputPlaceholder: "Enter New Price",
       input: "number",
       inputValue: price,
@@ -58,12 +54,6 @@ jQuery(document).ready(function ($) {
         });
       }
     });
-  });
-
-  $(document).on("change", 'input.swal2-input[type="number"]', function () {
-    jQuery("#revenue_new").text(
-      revenueCal(jQuery(this).val(), original_price).toFixed(2)
-    );
   });
 });
 
