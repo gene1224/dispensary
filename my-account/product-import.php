@@ -346,7 +346,9 @@ function update_product_price()
     $product = wc_get_product($product_id);
 
     $product->set_price($_REQUEST['price']);
-
+    
+    $product->set_regular_price($_REQUEST['price']);
+    
     $product->save();
 
     restore_current_blog();
