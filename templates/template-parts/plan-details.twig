@@ -37,7 +37,7 @@
 				# OF PRODUCTS ADDED<br><span id="added_products_count">{{ (listing_cart|length) + (imported_products|length) }}</span>
 			</div>
 			<div>
-				REMAINING PRODUCTS ALLOWED<br><span id="remaining_products_count">{{max_products - (listing_cart|length) + (imported_products|length)}}</span>
+				REMAINING PRODUCTS ALLOWED<br><span id="remaining_products_count">{{max_products - (listing_cart|length) - (imported_products|length)}}</span>
 			</div>
 		</div>
 	</div>
