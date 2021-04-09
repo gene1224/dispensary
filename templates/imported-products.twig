@@ -1,47 +1,37 @@
 <div class="product-import-container">
 	{% include 'template-parts/plan-details.twig' %}
 	{% include 'template-parts/page-controls.twig' %}
-
-
 	<form id="productImportForm">
 		<div class="enlist-actions">
 			<a href="{{gird_url}}">Add Products</a>
 		</div>
 		<div class="product-import-cart-list">
-
 			{% for product in imported_products %}
-
-
 				<div class="product-cart-item" product-sku="{{ product.sku }}">
 					<div class="product-cart-item-details">
 						<div class="product-cart-item-image">
-
 							<img src="{{ product.image }}">
 						</div>
 						<div class="product-cart-desc">
-						    <div class="sku--rating">
+							<div class="sku--rating">
 								<div class="sku">SKU:
 									{{ product.sku }}</div>
 							</div>
 							<div class="name">{{ product.name }}</div>
-							<div class="price">Original Price : $
-								{{ product.original_price }}
-								| Enlisting Price : $
-								{{ product.price }}</div>
-							<div class="price"></div>
 
-							<div class="categories">Categories:
+							<div class="product-price">Product Price : ${{ product.original_price | number_format(2, '.', ',')  }}</div>
+							<div class="enlist-price">Enlisting Price : ${{ product.price | number_format(2, '.', ',') }}</div>
+							<div class="revenue-per-prod">Revenue Per Product : ${{ (product.price - product.original_price) * 0.90 | number_format(2, '.', ',')  }}</div>
+
+							<div class="categories">CATEGORY:
 								{{ product.categories }}</div>
 							<div class="tags">Tags:
 								{{ product.tags }}</div>
-							<!--<div class="source-site">
-								Source:
-								<a href="https://allstuff420.com">All Stuff 420</a>
-							</div>-->
 						</div>
 					</div>
 					<div class="product-cart-item-action">
 						<div class="listing-action">
+							<button type="button" class="update-price" onclick="update(this, '{{ product.sku }}' , {{ product.price }})">Update Price</button>
 							<button type="button" class="remove-product" onclick="removeFromStore(this, '{{ product.sku }}')">Delete Listing</button>
 						</div>
 					</div>
@@ -49,10 +39,10 @@
 
 			{% endfor %}
 		</div>
-
-		<div id="cart-empty" style="display:none">
-			<h2>Your listing cart is currently empty. Please add products to import</h2>
-		</div>
-
+		{% if imported_products | length == 0 %}
+			<div id="cart-empty">
+				<h2>Your listing cart is currently empty. Please add products to import</h2>
+			</div>
+		{% endif %}
 	</form>
 </div>
