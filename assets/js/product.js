@@ -1,19 +1,22 @@
 jQuery(document).ready(function ($) {
   $(".update-price").click(function () {
     const product_name = $(this).attr("product-name");
-    const original_price = $(this).attr("original-price");
-    const price = $(this).attr("price");
+    const original_price = Number($(this).attr("original-price"));
+    const price = Number($(this).attr("price"));
     const sku = $(this).attr("sku");
-    const revenueCal = (p, op) => {
-      return (p - op) * 0.9;
-    };
-
+    const 
     Swal.fire({
       title: `Update ${product_name} Price`,
       html: `
         <p><small>SRP: $${(original_price + original_price * 0.5).toFixed(2)}</small></p>`,
       inputPlaceholder: "Enter New Price",
       input: "number",
+      onOpen: () => {
+        const input = Swal.getInput()
+        input.oninput = (x) => {
+          console.log(input)
+        }
+      },
       inputValue: price,
       showCancelButton: true,
       confirmButtonText: "Update Price",
