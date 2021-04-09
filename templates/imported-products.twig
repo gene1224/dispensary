@@ -15,9 +15,9 @@
 						<div class="product-cart-desc">
 							<div class="name">{{ product.name }}</div>
 							<div class="sku">SKU:{{ product.sku }}</div>
-							<div class="product-price">Product Price : ${{ product.original_price | number_format(2, '.', ',')  }}</div>
-							<div class="enlist-price">Enlisting Price : ${{ product.price | number_format(2, '.', ',') }}</div>
-							<div class="revenue-per-prod">Revenue Per Product : ${{ (product.price - product.original_price) * 0.90 | number_format(2, '.', ',')  }}</div>
+							<div class="product-price">Product Price : ${{ product.original_price|number_format(2, '.', ',')  }}</div>
+							<div class="enlist-price">Enlisting Price : ${{ product.price|number_format(2, '.', ',') }}</div>
+							<div class="revenue-per-prod">Revenue Per Product : ${{ ((product.price - product.original_price) * 0.90)|number_format(2, '.', ',')  }}</div>
 
 							<div class="categories">CATEGORY:
 								{{ product.categories }}</div>

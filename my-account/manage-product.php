@@ -26,7 +26,7 @@ class ManageProduct
 
     private function init()
     {
-        $this->user_id = get_user_meta(get_current_user_id(), 'created_by_user_id', true) ?: get_current_user_id();
+        $this->user_id = get_dispensary_user_id();
 
         $this->max_products = get_user_max_products($this->user_id);
 

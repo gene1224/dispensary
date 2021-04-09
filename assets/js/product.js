@@ -74,6 +74,8 @@ jQuery(document).ready(function ($) {
       if (result.isConfirmed) {
         Swal.fire({
           title: `Price successfuly updated`,
+        }).then((result) => {
+          location.reload();
         });
       }
     });
