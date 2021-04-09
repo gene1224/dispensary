@@ -11,9 +11,7 @@ jQuery(document).ready(function ($) {
     Swal.fire({
       title: `Update ${product_name} Price`,
       html: `
-        <p><small>SRP: $${(original_price + original_price * 0.5).toFixed(
-          2
-        )}</small></p>`,
+        <p><small>SRP: $${(original_price + original_price * 0.5).toFixed(2)}</small></p>`,
       inputPlaceholder: "Enter New Price",
       input: "number",
       inputValue: price,
