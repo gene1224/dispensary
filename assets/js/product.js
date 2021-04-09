@@ -4,7 +4,6 @@ jQuery(document).ready(function ($) {
     const original_price = Number($(this).attr("original-price"));
     const price = Number($(this).attr("price"));
     const sku = $(this).attr("sku");
-    const 
     Swal.fire({
       title: `Update ${product_name} Price`,
       html: `
