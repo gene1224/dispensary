@@ -8,21 +8,15 @@ jQuery(document).ready(function ($) {
       return (p - op) * 0.9;
     };
 
-    jQuery('input.swal2-input[type="number"]').change(function () {
-      jQuery("#revenue_new").text(
-        revenueCal(jQuery(this).val(), original_price).toFixed(2)
-      );
-    });
-
     Swal.fire({
       title: `Update ${product_name} Price`,
       html: `
-        <p><small>SRP: ${
-          original_price + original_price * 0.5
-        } | Revenue: <span id="revenue_new">${revenueCal(
+        <p><small>SRP: $${(original_price + original_price * 0.5).toFixed(
+          2
+        )} | Revenue: <span id="revenue_new">$ ${revenueCal(
         price,
         original_price
-      )}</span></p>
+      ).toFixed(2)}</span></p>
         `,
       inputPlaceholder: "Enter New Price",
       input: "number",
@@ -32,9 +26,12 @@ jQuery(document).ready(function ($) {
       showLoaderOnConfirm: true,
       preConfirm: (price) => {
         console.log(price);
-        if (price > 15) {
+        if (price > (original_price + original_price * 0.5).toFixed(2)) {
           return Swal.showValidationMessage(
-            `Price should not be higher than the SRP`
+            `Price should not be higher than the SRP: $${(
+              original_price +
+              original_price * 0.5
+            ).toFixed(2)}`
           );
         }
         return fetch(`${wp_ajax.url}?action=update_product_price`, {
@@ -61,6 +58,12 @@ jQuery(document).ready(function ($) {
         });
       }
     });
+  });
+
+  $(document).on("change", 'input.swal2-input[type="number"]', function () {
+    jQuery("#revenue_new").text(
+      revenueCal(jQuery(this).val(), original_price).toFixed(2)
+    );
   });
 });
 
