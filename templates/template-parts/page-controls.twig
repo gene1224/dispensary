@@ -1,6 +1,6 @@
 <div class="page-controls">
 	<a href="{{gird_url}}" class="view-products {{ view == 'home' ? 'active' : '' }}"><i class="fa fa-list-ul" aria-hidden="true"></i> &nbsp;Browse AllStuff420 Products</a>
 	<a target="_blank" href="https://qrxdispensary.com/?auto_login=1&new_product=1" class="view-product-info"><i class="fa fa-info-circle add-own-product-info" aria-hidden="true"></i> &nbsp;Add My Own Product</a>
-	<a href="?view=cart" class="view-products {{ view == 'cart' ? 'active' : '' }}"><i class="fa fa-plus-square" aria-hidden="true"></i> &nbsp;View Products Added (<span class="cart-count">{{ listing_cart | length }}</span>)</a>
-	<a href="?view=imported" class="view-products {{ view == 'imported' ? 'active' : '' }}"><i class="fa fa-table" aria-hidden="true"></i> &nbsp;View Imported Products (<span class="imported-count">{{imported_products | length }}</span>)</a>
+	<a href="?view=cart" class="view-products {{ view == 'cart' ? 'active' : '' }}"><i class="fa fa-plus-square" aria-hidden="true"></i> &nbsp;View Products Added (<span class="cart-count">{{ listing_cart|length }}</span>)</a>
+	<a href="?view=imported" class="view-products {{ view == 'imported' ? 'active' : '' }}"><i class="fa fa-table" aria-hidden="true"></i> &nbsp;View Imported Products (<span class="imported-count">{{imported_products|length }}</span>)</a>
 </div>
