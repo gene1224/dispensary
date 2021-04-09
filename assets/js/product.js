@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
       onOpen: () => {
         const input = Swal.getInput();
         input.oninput = () => {
-          const inputVal = input.value;
+          const inputVal = Number(input.value);
           if (inputVal > srp) {
             Swal.showValidationMessage(
               `Price should not be higher than the SRP: $${srp}`
@@ -47,10 +47,15 @@ jQuery(document).ready(function ($) {
           return Swal.showValidationMessage(
             `Price should not be higher than the SRP: $${srp}`
           );
+        } else if (price < original_price) {
+          return Swal.showValidationMessage(
+            `Price should not be loewr than the original price: $${original_price}`
+          );
         }
-        return fetch(`${wp_ajax.url}?action=update_product_price`, {
+
+        const requestUrl = `${wp_ajax.url}?action=update_product_price&sku=${sku}&price=${price}`;
+        return fetch(requestUrl, {
           method: "POST",
-          data: { sku: sku, price: price },
         })
           .then((response) => {
             console.log(response);
@@ -66,7 +71,7 @@ jQuery(document).ready(function ($) {
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       console.log(result);
-      if (result.updated) {
+      if (result.isConfirmed) {
         Swal.fire({
           title: `Price successfuly updated`,
         });
