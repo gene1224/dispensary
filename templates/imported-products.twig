@@ -25,7 +25,9 @@
 					</div>
 					<div class="product-cart-item-action">
 						<div class="listing-action">
-							<button type="button" class="update-price" onclick="update(this, '{{ product.sku }}' , {{ product.price }})">Update Price</button>
+							<button type="button" class="update-price" product-name="{{ product.name }}" sku="{{ product.sku }}" original-price="{{ product.original_price }}" price="{{ product.price }}">
+								Update Price
+							</button>
 							<button type="button" class="remove-product" onclick="removeFromStore(this, '{{ product.sku }}')">Delete Listing</button>
 						</div>
 					</div>

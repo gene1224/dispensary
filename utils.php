@@ -275,7 +275,6 @@ function get_source_sites()
     );
 }
 
-
 /**
  * get_user_site_id returns site id of user's dispensary
  *

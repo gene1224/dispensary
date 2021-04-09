@@ -358,7 +358,7 @@
 }
 
 .product-import-container .product-cart-item-action .new-listing-price {
-  flex: 1 0 auto;
+  flex: 0 1 200px;
 }
 
 .product-import-container .product-cart-item-action .new-listing-price label {

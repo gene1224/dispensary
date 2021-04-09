@@ -73,7 +73,6 @@ function empty_cart_list()
 };
 add_action('wp_ajax_empty_cart_list', 'empty_cart_list');
 
-
 //FUTURE ADD SITE ID SELECTION
 function remove_product_in_cart()
 {
@@ -160,7 +159,7 @@ add_action('wp_ajax_import_pulse', 'import_pulse');
 function import_batch($user_id, $site_id)
 {
     $per_batch = 10;
-    error_log("IMPORT BATCH RUNNING USER:".$user_id." SITE:".$site_id);
+    error_log("IMPORT BATCH RUNNING USER:" . $user_id . " SITE:" . $site_id);
     $import_data = check_imported_products($user_id);
 
     $rem_skus = $import_data['remaining_skus'];
@@ -184,7 +183,7 @@ add_action('wp_ajax_import_batch', 'import_batch');
 //FUTURE ADD SITE ID SELECTION
 function check_imported_products($user_id)
 {
-    $site_id = get_first_dispensary($user_id);
+    $site_id = get_user_site_id($user_id);
 
     $current_import = get_user_meta($user_id, 'current_import', true) ?: [];
 
@@ -233,7 +232,7 @@ function remove_product_from_store()
         return;
     }
 
-    $site_id = get_first_dispensary($user_id);
+    $site_id = get_user_site_id($user_id);
 
     switch_to_blog($site_id);
 
@@ -275,7 +274,7 @@ function import_email_function($products)
     $client_email_content = $timber->compile('emails/customer-report.twig', $context);
 
     $source_email_content = $timber->compile('emails/source-notice.twig', $context);
-    
+
     $admin_email_content = $timber->compile('emails/admin-notice.twig', $context);
 
     $headers = ['Content-Type: text/html; charset=UTF-8'];
@@ -283,7 +282,7 @@ function import_email_function($products)
     wp_mail($get_current_user->user_email, "Product Import Complete", $client_email_content, $headers);
     wp_mail('admin@qrxdispensary.com', "Product Import Report", $admin_email_content, $headers);
     wp_mail('allstuff420_notifier@qrxdispensary.com', "Product Import Report", $source_email_content, $headers);
-    
+
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Complete", $client_email_content, $headers);
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $admin_email_content, $headers);
     wp_mail('sampledjangomailer@gmail.com', "CC Product Import Report", $source_email_content, $headers);
@@ -320,9 +319,41 @@ function resend_notifications()
     $products_imported_done = wc_get_products(array(
         'skus' => $last_import_data['skus'],
     ));
-    
+
     do_action('product_import_finished', map_products_to_array($products_imported_done));
 
     restore_current_blog();
+    die();
+}
+
+add_action('wp_ajax_update_product_price', 'update_product_price');
+
+function update_product_price()
+{
+
+    $user_id = get_current_user_id();
+
+    if (!$user_id || !isset($_REQUEST['sku'])) {
+        return;
+    }
+
+    $site_id = get_user_site_id($user_id);
+
+    switch_to_blog($site_id);
+
+    $product_id = wc_get_product_id_by_sku($_REQUEST['sku']);
+
+    $product = wc_get_product($product_id);
+
+    $product->set_price($_REQUEST['price']);
+
+    $product->save();
+
+    restore_current_blog();
+
+    echo json_encode(
+        array('updated' => true)
+    );
+    
     die();
 }
