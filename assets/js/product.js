@@ -4,17 +4,38 @@ jQuery(document).ready(function ($) {
     const original_price = Number($(this).attr("original-price"));
     const price = Number($(this).attr("price"));
     const sku = $(this).attr("sku");
+    const srp = (original_price + original_price * 0.5).toFixed(2);
+
+    const revenueCalc = (o, p) => {
+      return ((p - o) * 0.9).toFixed(2);
+    };
+
     Swal.fire({
       title: `Update ${product_name} Price`,
       html: `
-        <p><small>SRP: $${(original_price + original_price * 0.5).toFixed(2)}</small></p>`,
+        <p><small>Product Price: ${original_price} | SRP: $${srp} | Revenue : <span id="new_revenue">${revenueCalc(
+        original_price,
+        price
+      )}</span></small></p>`,
       inputPlaceholder: "Enter New Price",
       input: "number",
       onOpen: () => {
-        const input = Swal.getInput()
-        input.oninput = (x) => {
-          console.log(input)
-        }
+        const input = Swal.getInput();
+        input.oninput = () => {
+          const inputVal = input.value;
+          if (inputVal > srp) {
+            Swal.showValidationMessage(
+              `Price should not be higher than the SRP: $${srp}`
+            );
+          } else if (inputVal < original_price) {
+            Swal.showValidationMessage(
+              `Price should not be loewr than the original price: $${original_price}`
+            );
+          } else {
+            $("#new_revenue").text(revenueCalc(original_price, inputVal));
+            input.value = inputVal.toFixed(2);
+          }
+        };
       },
       inputValue: price,
       showCancelButton: true,
@@ -24,10 +45,7 @@ jQuery(document).ready(function ($) {
         console.log(price);
         if (price > (original_price + original_price * 0.5).toFixed(2)) {
           return Swal.showValidationMessage(
-            `Price should not be higher than the SRP: $${(
-              original_price +
-              original_price * 0.5
-            ).toFixed(2)}`
+            `Price should not be higher than the SRP: $${srp}`
           );
         }
         return fetch(`${wp_ajax.url}?action=update_product_price`, {
