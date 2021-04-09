@@ -18,12 +18,14 @@ jQuery(document).ready(function ($) {
         price
       )}</span></small></p>`,
       inputPlaceholder: "Enter New Price",
-      input: "number",
+      input: "text",
       onOpen: () => {
         const input = Swal.getInput();
         input.oninput = () => {
           const inputVal = Number(input.value);
-          if (inputVal > srp) {
+          if (isNaN(inputVal)) {
+            input.value = srp;
+          } else if (inputVal > srp) {
             Swal.showValidationMessage(
               `Price should not be higher than the SRP: $${srp}`
             );
@@ -43,11 +45,16 @@ jQuery(document).ready(function ($) {
       showLoaderOnConfirm: true,
       preConfirm: (price) => {
         console.log(price);
-        if (price > (original_price + original_price * 0.5).toFixed(2)) {
+        if (isNaN(price)) {
+          return Swal.showValidationMessage(`Invalid Price`);
+        }
+        if (
+          Number(price) > (original_price + original_price * 0.5).toFixed(2)
+        ) {
           return Swal.showValidationMessage(
             `Price should not be higher than the SRP: $${srp}`
           );
-        } else if (price < original_price) {
+        } else if (Number(price) < original_price) {
           return Swal.showValidationMessage(
             `Price should not be loewr than the original price: $${original_price}`
           );
