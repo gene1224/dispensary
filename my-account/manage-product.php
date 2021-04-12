@@ -19,6 +19,8 @@ class ManageProduct
 
     public function __construct()
     {
+        add_action('wp_enqueue_scripts', [$this, 'init_styles']);
+        add_action('wp_enqueue_scripts', [$this, 'init_scripts']);
         add_shortcode('product_import_views', [$this, 'views']);
     }
 

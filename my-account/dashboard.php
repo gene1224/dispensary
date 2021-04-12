@@ -30,10 +30,15 @@ class DispensaryDashboard
     private $max_products = 0;
 
     public function __construct()
+    {   
+        add_action('wp_enqueue_scripts', [$this, 'init_styles']);
+        add_shortcode('dashboard_views', [$this, 'views']);
+    }
+
+    public function init_styles()
     {
         wp_register_script('dashboard_js', plugins_url('../assets/js/dashboard.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx', 'chart_js'), '1.0.1');
         wp_register_style('dashboard_css', plugins_url('../assets/css/dashboard.css', __FILE__), [], '1.0.1', 'all');
-        add_shortcode('dashboard_views', [$this, 'views']);
     }
 
     /**

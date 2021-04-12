@@ -43,16 +43,12 @@ class WebAnalytics
 
         $memberships = wc_memberships_get_user_memberships($parent_id == 0 ? get_current_user_id() : $parent_id);
 
-        $site_url = '';
-
         $sites = get_blogs_of_user(get_current_user_id(), true);
-
-        $notifySent = "";
 
         $context = array(
             'imported_products' => $this->imported_products,
             'ordered_products' => $ordered_products,
-            'notifySent' => $notifySent,
+            'notifySent' => '',
             'membership' => $this->membership_plan_name,
             'ordered_total_sales' => $ordered_total_sales,
         );
@@ -63,7 +59,7 @@ class WebAnalytics
 
             'imported_products' => $this->imported_products,
             'ordered_products' => $ordered_products,
-            'notifySent' => $notifySent,
+            'notifySent' => '',
             'membership' => $membership_plan_name,
             'ordered_total_sales' => $ordered_total_sales,
         );
