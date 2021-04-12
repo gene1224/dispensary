@@ -129,7 +129,7 @@ function get_visitor_data($site_id, $group = 'monthly', $year = 0000, $range = [
 }
 
 function test_data() {
-    print_r(get_visitor_data(1,));
+    print_r(get_visitor_data(201));
     die();
 }
 add_action('wp_ajax_test_data', 'test_data');
