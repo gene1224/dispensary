@@ -19,19 +19,19 @@ class ManageProduct
 
     public function __construct()
     {
-        add_action('wp_enqueue_scripts', [$this, 'init_styles']);
-        add_action('wp_enqueue_scripts', [$this, 'init_scripts']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_shortcode('product_import_views', [$this, 'views']);
     }
 
-    public function init_styles()
+    public function enqueue_styles()
     {
         wp_register_script('lightbox_js_qrx', 'https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js', array('jquery'), '2.5.1');
         wp_register_style('lightbox_css_qrx', 'https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.css', [], '1.0.0', 'all');
         wp_register_style('product_import_css', plugins_url('../assets/css/style.css', __FILE__), [], '1.0.0', 'all');
     }
 
-    public function init_scripts()
+    public function enqueue_scripts()
     {
         wp_register_script('product_import_js', plugins_url('../assets/js/script.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx'), '2.5.1');
         wp_register_script('product_import_done_js', plugins_url('../assets/js/product.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils'), '2.5.1');

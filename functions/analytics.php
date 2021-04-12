@@ -48,7 +48,7 @@ function get_recent_orders($user_id = 0)
     $site_id = get_user_site_id($user_id);
 
     switch_to_blog($site_id);
-    
+
     $query = new WC_Order_Query(array(
         'limit' => -1,
         'orderby' => 'date',
@@ -56,29 +56,29 @@ function get_recent_orders($user_id = 0)
         'status' => 'completed',
         'date_created' => date('Y-m-d', strtotime('-7 days')) . '...' . date('Y-m-d', strtotime('today')),
     ));
-    
-    $orders = $query->get_orders();
-    
-    $current_week_sales = [];
-    
-    foreach ($orders as $order) {
-        $date = date_format($order->get_date_created(), 'Y-m-d'); 
 
-        $found = array_filter($current_week_sales, function($sales) use ($date) {
+    $orders = $query->get_orders();
+
+    $current_week_sales = [];
+
+    foreach ($orders as $order) {
+        $date = date_format($order->get_date_created(), 'Y-m-d');
+
+        $found = array_filter($current_week_sales, function ($sales) use ($date) {
             return $sales['date'] == $date;
         });
 
         if (!$found) {
-            
+
             $current_week_sales[] = array(
-                'total' => number_format($order->get_total(),2),
+                'total' => number_format($order->get_total(), 2),
                 'date' => $date,
             );
         } else {
-            
-            $mapped_sales = array_map(function($sales) use ($date, $order) {
-                if($sales['date'] == $date) {
-                    
+
+            $mapped_sales = array_map(function ($sales) use ($date, $order) {
+                if ($sales['date'] == $date) {
+
                     return array(
                         'date' => $date,
                         'total' => number_format($sales['total'] + $order->get_total(), 2),
@@ -87,11 +87,49 @@ function get_recent_orders($user_id = 0)
                     return $sales;
                 }
             }, $current_week_sales);
-            
+
             $current_week_sales = $mapped_sales;
         }
     }
     restore_current_blog();
-    
+
     return $current_week_sales;
 }
+
+function get_visitor_data($site_id, $group = 'monthly', $year = 0000, $range = [], $length = '')
+{
+    global $wpdb;
+
+    $visitors_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
+
+    if ($year == 0000) {
+        $year = date("Y");
+    }
+
+    $groupBy = 'MONTH';
+
+    switch ($group) {
+        case 'monthly':
+            $groupBy = 'MONTH';
+            break;
+        case 'weekly':
+            $groupBy = 'WEEK';
+            break;
+        case 'daily':
+            $groupBy = 'DATE';
+            break;
+        default:
+            $groupBy = 'YEAR';
+            break;
+    }
+
+    $visitors_sql = "SELECT " . $groupBy . "(`last_counter`) as `visited`, COUNT(ID) as count FROM `" . $visitors_table . "` WHERE  YEAR(`last_counter`) = " . $year . " GROUP BY " . $groupBy . "(`last_counter`) ORDER BY `visited` ";
+
+    return $wpdb->get_results($visitors_sql, ARRAY_A);
+}
+
+function test_data() {
+    print_r(get_visitor_data(1,));
+    die();
+}
+add_action('wp_ajax_test_data', 'test_data');
