@@ -16,7 +16,7 @@ class WebAnalytics
         global $wpdb;
 
         $imported_products = get_users_imported_products();
-        $ordered_products = get_users_ordered_products();
+        $ordered_products = [];//get_users_ordered_products();
         $ordered_total_sales = get_users_total_sales();
 
         $memberships = wc_memberships_get_user_memberships($parent_id == 0 ? get_current_user_id() : $parent_id);
