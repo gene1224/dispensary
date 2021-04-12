@@ -31,6 +31,8 @@ class DispensaryDashboard
 
     public function __construct()
     {
+        wp_register_script('dashboard_js', plugins_url('../assets/js/dashboard.js', __FILE__), array('jquery', 'sweetalert', 'product_import_utils', 'lightbox_js_qrx', 'chart_js'), '1.0.1');
+        wp_register_style('dashboard_css', plugins_url('../assets/css/dashboard.css', __FILE__), [], '1.0.1', 'all');
         add_shortcode('dashboard_views', [$this, 'views']);
     }
 
@@ -79,7 +81,7 @@ class DispensaryDashboard
             'imported_products' => $this->imported_products,
             'default_site' => get_source_sites()[0]['url'],
             'default_api_key' => get_source_sites()[0]['api_key'],
-            'max_products' => $this->max_product,
+            'max_products' => $this->max_products,
             'last_weeks_orders' => get_recent_orders($this->user_id),
             'listing_cart' => $this->$listing_cart ?: [],
         );
