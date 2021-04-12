@@ -5,8 +5,6 @@ class ManageProduct
 
     private $user_id;
 
-    private $site_id;
-
     private $nonce_key = 'qrx_dispensary_import';
 
     private $max_products = 0;
