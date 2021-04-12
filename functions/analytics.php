@@ -96,21 +96,35 @@ function get_recent_orders($user_id = 0)
     return $current_week_sales;
 }
 
-function get_visitor_data($site_id, $group = 'monthly', $year = 0000, $range = [], $length = '')
+function get_visitor_data($site_id, $group = 'monthly', $args = [])
 {
     global $wpdb;
 
     $visitors_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
 
-    if ($year == 0000) {
-        $year = date("Y");
+    if (!isset($args['year']) && $args['year'] == 0000) {
+       $args['year'] = date("Y");
     }
 
     $groupBy = 'MONTH';
+    
+    $view_month = isset($args['view_month']) ? $args['view_month'] : false;
+    
+    $where_clause = "WHERE  YEAR(`last_counter`) = " . $args['year'];
+    
+    $view_year = isset($args['view_year']) ? $args['view_year'] : false;
+    
+    $group = $view_year ? 'monthly' : $group;
 
     switch ($group) {
         case 'monthly':
-            $groupBy = 'MONTH';
+            $groupBy = $view_month ? 'MONTH' : 'DATE';
+            
+            $month = $view_month && isset($args['month']) ?  $args['month'] : date('m');
+            if($view_month) {
+                $where_clause .= "AND MONTH(`last_counter`) = ".date('m');
+            }
+            
             break;
         case 'weekly':
             $groupBy = 'WEEK';
@@ -122,14 +136,18 @@ function get_visitor_data($site_id, $group = 'monthly', $year = 0000, $range = [
             $groupBy = 'YEAR';
             break;
     }
+    
+    
+    
 
-    $visitors_sql = "SELECT " . $groupBy . "(`last_counter`) as `visited`, COUNT(ID) as count FROM `" . $visitors_table . "` WHERE  YEAR(`last_counter`) = " . $year . " GROUP BY " . $groupBy . "(`last_counter`) ORDER BY `visited` ";
-
+    $visitors_sql = "SELECT " . $groupBy . "(`last_counter`) as `visited`, COUNT(ID) as count FROM `" . $visitors_table . "` " . $where_clause . " GROUP BY " . $groupBy . "(`last_counter`) ORDER BY `visited` ";
+    echo $visitors_sql;
     return $wpdb->get_results($visitors_sql, ARRAY_A);
 }
 
 function test_data() {
-    print_r(get_visitor_data(201));
+    echo '<pre>';
+    print_r(get_visitor_data(201,'monthly'));
     die();
 }
 add_action('wp_ajax_test_data', 'test_data');
