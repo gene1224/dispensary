@@ -38,20 +38,25 @@ class WebAnalytics
         $this->imported_products = get_users_imported_products();
 
         $this->membership_plan_name = get_user_plan_name($this->user_id);
-
-        $data = get_visitor_data(201, 'monthly', array('mode' => true));
-
+        
+        $date_args = array(
+            'start'=>date('Y-m-d', strtotime('-7 days')),
+            'end'=>date('Y-m-d', strtotime('today'))
+        );
+        
         $context = array(
             'url' => admin_url('admin-ajax.php') . "?action=fetch_data",
-            'visit_data' => get_visitor_data('daily', date('Y-m-d', strtotime('-7 days')), date('Y-m-d', strtotime('today'))),
-            'page_data' => get_page_data('daily', date('Y-m-d', strtotime('-7 days')), date('Y-m-d', strtotime('today'))),
+            'visit_data' => get_visitor_data('daily', $date_args),
+            'page_data' => get_page_data('daily', $date_args),
         );
-
+    
+        wp_enqueue_style('analytics_styles');
+        
         wp_localize_script('graph_js', 'wp_ajax', $context);
 
         wp_enqueue_script('graph_js');
 
-        wp_enqueue_style('dashboard_css');
+        
 
         echo $timber->compile('website-analytics/index.twig', $context);
 

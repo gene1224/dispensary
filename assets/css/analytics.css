@@ -49,5 +49,12 @@
 }
 
 #visitChart {
-  height: 250px;
+  height: 350px;
+}
+.visitChart {
+    margin-bottom:20px;
+}
+
+#pageChart {
+  height: 350px;
 }

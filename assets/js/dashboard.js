@@ -305,6 +305,7 @@ function createCharts() {
     fill: false,
     borderColor: "rgb(75, 2, 192)",
     tension: 0.5,
+    yAxisID: 'y',
   };
 
   const visitorData = {
@@ -318,6 +319,7 @@ function createCharts() {
     fill: false,
     borderColor: "rgb(75, 192, 192)",
     tension: 0.5,
+    yAxisID: 'y',
   };
 
   const salesLastWeekData = {
@@ -329,6 +331,7 @@ function createCharts() {
     fill: false,
     borderColor: "rgb(34, 139, 34)",
     tension: 0.5,
+     yAxisID: 'y',
   };
 
   const visitChart = document.getElementById("visitChart");
@@ -353,18 +356,30 @@ function lineGraph(el, data, title = "") {
         title: {
           display: true,
           text: title,
+           font: {
+                        size: 15,
+                        weight:'normal'
+                    }
         },
+        legend: {
+                labels: {
+                    maxWidth:30,
+                    // This more specific font property overrides the global property
+                    font: {
+                        size: 15
+                    }
+                }
+            }
       },
       scales: {
-        yAxes: [
-          {
+        y: {
             ticks: {
-              beginAtZero: true,
-              maxTicksLimit: 5,
-              stepSize: 1,
+                maxTicksLimit: 7
             },
-          },
-        ],
+            title:{  font: {
+                        size: 20
+                    }}
+        }
       },
     },
   });
