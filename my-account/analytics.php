@@ -21,7 +21,7 @@ class WebAnalytics
 
     public function enqueue_scripts()
     {
-        wp_register_script('graph_js', plugins_url('../assets/js/graphs.js', __FILE__), array('jquery', 'chart_js', 'sweetalert'), '2.5.1');
+        wp_register_script('graph_js', plugins_url('../assets/js/analytics.js', __FILE__), array('jquery', 'chart_js', 'sweetalert'), '2.5.1');
         wp_register_style('analytics_styles', plugins_url('../assets/css/analytics.css', __FILE__), [], '1.0.1', 'all');
     }
 
