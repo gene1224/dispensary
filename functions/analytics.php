@@ -100,7 +100,7 @@ function get_visitor_data($site_id, $group = 'monthly', $args = [])
 {
     global $wpdb;
 
-    $visitors_table = $table_visitors = $wpdb->base_prefix . $site_id . '_statistics_visitor';
+    $visitors_table = $table_visitors = $wpdb->base_prefix . 'statistics_visitor'; // ADD SITE ID
 
     if (!isset($args['year']) && $args['year'] == 0000) {
        $args['year'] = date("Y");
@@ -118,11 +118,11 @@ function get_visitor_data($site_id, $group = 'monthly', $args = [])
 
     switch ($group) {
         case 'monthly':
-            $groupBy = $view_month ? 'MONTH' : 'DATE';
+            $groupBy = $view_month ? 'DATE' : 'MONTH';
             
             $month = $view_month && isset($args['month']) ?  $args['month'] : date('m');
             if($view_month) {
-                $where_clause .= "AND MONTH(`last_counter`) = ".date('m');
+                $where_clause .= " AND MONTH(`last_counter`) = ".date('m');
             }
             
             break;
@@ -131,23 +131,101 @@ function get_visitor_data($site_id, $group = 'monthly', $args = [])
             break;
         case 'daily':
             $groupBy = 'DATE';
+            $where_clause = "WHERE `last_counter` BETWEEN '".$args['start']."' AND '".$args['end']."' ";
             break;
         default:
             $groupBy = 'YEAR';
             break;
     }
     
-    
-    
 
     $visitors_sql = "SELECT " . $groupBy . "(`last_counter`) as `visited`, COUNT(ID) as count FROM `" . $visitors_table . "` " . $where_clause . " GROUP BY " . $groupBy . "(`last_counter`) ORDER BY `visited` ";
-    echo $visitors_sql;
+    
     return $wpdb->get_results($visitors_sql, ARRAY_A);
 }
 
+
 function test_data() {
-    echo '<pre>';
-    print_r(get_visitor_data(201,'monthly'));
+    $mode = $_REQUEST['mode'];
+    
+    $data = [];
+    
+    $site_id = 0;
+    
+    $year = $_REQUEST['year'];
+        
+    $month = $_REQUEST['month'];
+    
+    $start = $_REQUEST['start'];
+        
+    $end = $_REQUEST['end'];
+    
+    
+    
+    if($mode == 'monthly') {
+        $raw_data = get_visitor_data(
+            201,'monthly', array('view_month'=>true, 'year'=> $year, 'month' => $month)
+        );
+        
+        $days_in_calendar = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        
+        foreach(range(1, $days_in_calendar) as $day) {
+            $record_of_the_day = array(
+                'label' => str_pad($month, 2, '0', STR_PAD_LEFT)."/".str_pad($day, 2, '0', STR_PAD_LEFT),
+                'count' => 0,
+            );
+            foreach($raw_data as $record) {
+                if((int) explode('-', $record['visited'])[2] == $day) {
+                    $record_of_the_day['count'] = (int) $record['count'];
+                }
+            }
+            $data[] = $record_of_the_day;
+        }
+    } else if($mode == 'yearly') {
+        $raw_data = get_visitor_data(
+            201,'monthly', array('view_year'=>true, 'year'=> $year)
+        );
+         foreach(range(1, 12) as $month) {
+                $record_of_the_month = array(
+                    'label' => str_pad($month, 2, '0', STR_PAD_LEFT)."/".str_pad($year, 2, '0', STR_PAD_LEFT),
+                    'count' => 0,
+                );
+               foreach($raw_data as $record) {
+                    if((int) $record['visited'] == $month) {
+                       $record_of_the_month['count'] = (int) $record['count'];
+                    }
+                }
+            $data[] = $record_of_the_month;
+         }
+    } else if($mode == 'date_range') {
+        $raw_data = get_visitor_data(
+            201,'daily', array('start'=>$start, 'end'=> $end)
+        );
+        
+        $start = new DateTime($start);
+        $interval = new DateInterval('P1D');
+        $end = new DateTime($end);
+
+        $period = new DatePeriod($start, $interval, $end);
+        
+        foreach ($period as $key => $value) {
+            $date = $value->format('Y-m-d');
+             $record_of_the_day = array(
+                    'label' => $date,
+                    'count' => 0,
+                );
+                
+            foreach($raw_data as $record) {
+                
+                if($record['visited'] == $date) {
+                   $record_of_the_day['count'] = (int) $record['count'];
+                }
+            }
+            $data[] = $record_of_the_day;
+        }
+    }
+    
+    echo json_encode($data);
     die();
 }
-add_action('wp_ajax_test_data', 'test_data');
+add_action('wp_ajax_fetch_data', 'test_data');

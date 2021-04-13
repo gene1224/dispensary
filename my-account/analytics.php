@@ -37,7 +37,18 @@ class WebAnalytics
         $this->imported_products = get_users_imported_products();
 
         $this->membership_plan_name = get_user_plan_name($this->user_id);
-
+        $data = get_visitor_data(201,'monthly', array('view_month'=>true));
+        $context = array(
+            'url' => admin_url('admin-ajax.php')."?action=fetch_data",
+            'visit_data' => get_visitor_data(201, 'monthly'),
+        );
+        
+        wp_localize_script('graph_js', 'wp_ajax', $context);
+        
+        wp_enqueue_script('graph_js');
+        
+        
+        
         echo $timber->compile('website-analytics/index.twig', $context);
 
     }
