@@ -1,0 +1,53 @@
+.graph-controls {
+  display: block;
+  margin: 20px 0;
+}
+
+.date-range,
+.graph-grouping {
+  display: flex;
+  margin-bottom: 10px;
+}
+.date-range > .graph-field,
+.graph-grouping > .graph-field {
+  flex: 0 1 200px;
+  margin-right: 15px;
+}
+.date-range > .graph-field label,
+.date-range > .graph-field select,
+.date-range > .graph-field input,
+.graph-grouping > .graph-field label,
+.graph-grouping > .graph-field select,
+.graph-grouping > .graph-field input {
+  display: block;
+  width: 100%;
+}
+.date-range > .graph-field select,
+.date-range > .graph-field input,
+.graph-grouping > .graph-field select,
+.graph-grouping > .graph-field input {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 0.5em;
+}
+
+.presets button {
+  padding: 0;
+  background: none;
+  color: #0274be;
+  text-align: left;
+  margin-right: 15px;
+}
+
+#submitData {
+  padding: 11.5px 20px;
+  margin-top: 26px;
+}
+
+.date-range-container {
+  display: none;
+}
+
+#visitChart {
+  height: 250px;
+}

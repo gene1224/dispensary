@@ -22,6 +22,7 @@ class WebAnalytics
     public function enqueue_scripts()
     {
         wp_register_script('graph_js', plugins_url('../assets/js/graphs.js', __FILE__), array('jquery', 'chart_js', 'sweetalert'), '2.5.1');
+        wp_register_style('analytics_styles', plugins_url('../assets/css/analytics.css', __FILE__), [], '1.0.1', 'all');
     }
 
     public function website_analytics_display()
@@ -37,18 +38,21 @@ class WebAnalytics
         $this->imported_products = get_users_imported_products();
 
         $this->membership_plan_name = get_user_plan_name($this->user_id);
-        $data = get_visitor_data(201,'monthly', array('view_month'=>true));
+
+        $data = get_visitor_data(201, 'monthly', array('mode' => true));
+
         $context = array(
-            'url' => admin_url('admin-ajax.php')."?action=fetch_data",
-            'visit_data' => get_visitor_data(201, 'monthly'),
+            'url' => admin_url('admin-ajax.php') . "?action=fetch_data",
+            'visit_data' => get_visitor_data('daily', date('Y-m-d', strtotime('-7 days')), date('Y-m-d', strtotime('today'))),
+            'page_data' => get_page_data('daily', date('Y-m-d', strtotime('-7 days')), date('Y-m-d', strtotime('today'))),
         );
-        
+
         wp_localize_script('graph_js', 'wp_ajax', $context);
-        
+
         wp_enqueue_script('graph_js');
-        
-        
-        
+
+        wp_enqueue_style('dashboard_css');
+
         echo $timber->compile('website-analytics/index.twig', $context);
 
     }
