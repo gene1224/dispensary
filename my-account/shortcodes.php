@@ -20,7 +20,7 @@ function website_analytics_display()
     global $wpdb;
 
     $imported_products = get_users_imported_products();
-    $ordered_products = get_users_ordered_products();
+    $ordered_products =  get_users_ordered_products();
     $ordered_total_sales = get_users_total_sales();
 
     $memberships = wc_memberships_get_user_memberships($parent_id == 0 ? get_current_user_id() : $parent_id);
@@ -322,7 +322,7 @@ function website_analytics_display()
         echo $timber->compile('website-analytics/website-analytics.twig', $context);
     }
 }
-//add_shortcode('website_analytics_views', 'website_analytics_display');
+add_shortcode('website_analytics_views_v1', 'website_analytics_display');
 
 //add_action('wp_ajax_get_custom_date', 'website_analytics_display');
 //add_action('wp_ajax_get_notify', 'website_analytics_display');

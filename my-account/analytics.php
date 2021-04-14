@@ -14,7 +14,7 @@ class WebAnalytics
 
     public function __construct()
     {
-        add_shortcode('website_analytics_views', [$this, 'website_analytics_display']);
+        add_shortcode('analytics_graphs', [$this, 'website_analytics_display']);
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
     }
@@ -52,7 +52,7 @@ class WebAnalytics
 
         wp_enqueue_style('analytics_styles');
 
-        wp_localize_script('graph_js', 'wp_ajax', $context);
+        wp_localize_script('graph_js', 'wp_analytics', $context);
 
         wp_enqueue_script('graph_js');
 
