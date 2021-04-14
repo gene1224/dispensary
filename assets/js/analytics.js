@@ -30,7 +30,6 @@ const current_month_query = `mode=monthly&year=${date_today.getFullYear()}&month
 }`;
 
 const graphData = (label, data) => {
-  charts.map(ch => ch.chart.destroy());
   return {
     label: label,
     data: data,
@@ -47,7 +46,7 @@ jQuery(document).ready(function ($) {
   const pageChart = document.getElementById("pageChart");
 
   $.ajax({
-    url: `${wp_ajax.url}&${last_week_query}`,
+    url: `${wp_analytics.url}&${last_week_query}`,
   }).done(function (data) {
     const visitorData = JSON.parse(data).visitor_data;
     const pageData = JSON.parse(data).page_data;
@@ -97,45 +96,48 @@ jQuery(document).ready(function ($) {
         month,
         mode: "monthly",
       };
-      graphName = `${months[month]} ${year} Visitors`;
+      graphName = `${months[month - 1]} ${year}`;
     } else if (groupBy == "yearly") {
       query = {
         year,
         mode: "yearly",
       };
-      graphName = `${year} Visitors`;
-    } else {
+      graphName = `${year}`;
+    } 
+    if(groupBy == 'date_range' || customQuery != '') {
       query = {
         start,
         end,
         mode: "date_range",
       };
-      graphName = `${start} to ${end} Visitors`;
+      graphName = customQuery == '' ? `${start} to ${end}`: "";
     }
 
     const params =
       customQuery != "" ? customQuery : new URLSearchParams(query).toString();
 
     $.ajax({
-      url: `${wp_ajax.url}&${params}`,
+      url: `${wp_analytics.url}&${params}`,
     }).done(function (data) {
+        charts['pageChart'].destroy();
+        charts['visitChart'].destroy();
       const visitorData = JSON.parse(data).visitor_data;
       const pageData = JSON.parse(data).page_data;
 
       const visitorGraphData = graphData(
-        "This weeks visitors",
+        `${graphName} Visitors`,
         visitorData.map((d) => d.count)
       );
 
       const pageGraphData = graphData(
-        "This weeks page views",
+        `${graphName} Page Views`,
         pageData.map((d) => d.count)
       );
 
       const visitor_labels =
-        groupBy == "yearly" ? months : visitorData.map((d) => d.label);
+        groupBy == "yearly" && customQuery == ''? months : visitorData.map((d) => d.label);
       const page_labels =
-        groupBy == "yearly" ? months : pageData.map((d) => d.label);
+        groupBy == "yearly" && customQuery == '' ? months : pageData.map((d) => d.label);
 
       lineGraph(visitChart, visitorGraphData, visitor_labels, "Visitors");
       lineGraph(pageChart, pageGraphData, page_labels, "Page Views");

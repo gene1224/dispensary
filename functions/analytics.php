@@ -321,3 +321,51 @@ function fetch_data_analytics()
 }
 
 add_action('wp_ajax_fetch_data', 'fetch_data_analytics');
+
+function get_users_ordered_products()
+{
+    $ordered_products = [];
+    $sites = get_blogs_of_user(get_current_user_id(), true);
+    $site_id = 0;
+    $site_url = '';
+
+    foreach ($sites as $site) {
+        if ($site->userblog_id != 1) {
+            $site_id = $site->userblog_id;
+            $site_url = $site->siteurl;
+            break;
+        }
+    }
+
+    if (isset($site_id)) {
+        switch_to_blog($site_id);
+        $query = new WC_Order_Query(array(
+            'limit' => -1,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'return' => 'ids',
+        ));
+
+        $orders = $query->get_orders();
+        foreach ($orders as $order_id) {
+            $order = wc_get_order($order_id);
+            $order_data = $order->get_data();
+            $ordered_products[$order_id] = array(
+                'order_status' => $order_data['status'],
+                'order_biling_first_name' => $order_data['billing']['first_name'],
+                'order_biling_last_name' => $order_data['billing']['last_name'],
+                'order_created_date' => $order_data['date_created']->date('Y-m-d'),
+                'order_created_time' => $order_data['date_created']->date('H:i:s'),
+                'order_total' => $order_data['total'],
+                'order_payment_method' => $order_data['payment_method'],
+                'order_transaction_id' => $order_data['transaction_id'],
+                'order_products' => $order_data['line_items'],
+            );
+        }
+        restore_current_blog();
+    } else {
+        $ordered_products[] = array();
+    }
+
+    return $ordered_products;
+}
