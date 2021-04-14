@@ -139,7 +139,29 @@ jQuery(document).ready(function ($) {
     });
   };
 
-  $("#submitData").click(() => {});
+  $(".graph-preset").click(function () {
+    const preset = $(this).attr("preset");
+
+    switch (preset) {
+      case "last_week_query":
+        loadData(last_week_query);
+        break;
+      case "last_two_weeks_query":
+        loadData(last_two_weeks_query);
+        break;
+      case "current_year_query":
+        loadData(current_year_query);
+        break;
+      case "current_month_query":
+        loadData(current_month_query);
+        break;
+      default:
+        break;
+    }
+  });
+  $("#submitData").click(() => {
+    loadData();
+  });
 });
 
 function lineGraph(el, data, labels, title = "") {

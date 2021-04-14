@@ -269,7 +269,7 @@ function fetch_data($type = 'visitor')
         }
     } else if ($mode == 'date_range') {
         if (isset($_REQUEST['last_week']) || isset($_REQUEST['last_two_weeks'])) {
-            $start = date('Y-m-d', strtotime('-7 days'));
+            $start = date('Y-m-d', strtotime(isset($_REQUEST['last_two_weeks']) ? '-14 days' : '-7 days'));
             $end = date('Y-m-d', strtotime('today'));
         }
 
