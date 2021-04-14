@@ -99,13 +99,13 @@ function get_recent_orders($user_id = 0)
 function get_visitor_data($group = 'monthly', $args = [])
 {
     global $wpdb;
-    
+
     $site_id = get_user_site_id(get_dispensary_user_id());
-    
+
     switch_to_blog($site_id);
-    
+
     $visitors_table = $table_visitors = $wpdb->prefix . 'statistics_visitor';
-    
+
     restore_current_blog();
 
     if (!isset($args['year']) && $args['year'] == 0000) {
@@ -145,20 +145,20 @@ function get_visitor_data($group = 'monthly', $args = [])
     }
 
     $visitors_sql = "SELECT " . $groupBy . "(`last_counter`) as `visited`, COUNT(ID) as count FROM `" . $visitors_table . "` " . $where_clause . " GROUP BY " . $groupBy . "(`last_counter`) ORDER BY `visited` ";
-    
+
     return $wpdb->get_results($visitors_sql, ARRAY_A);
 }
 
 function get_page_data($group = 'monthly', $args = [])
 {
     global $wpdb;
-    
+
     $site_id = get_user_site_id(get_dispensary_user_id());
-    
+
     switch_to_blog($site_id);
-    
+
     $page_views_table = $wpdb->prefix . 'statistics_pages';
-    
+
     restore_current_blog();
 
     if (!isset($args['year']) && $args['year'] == 0000) {
@@ -198,7 +198,7 @@ function get_page_data($group = 'monthly', $args = [])
     }
 
     $page_views_sql = "SELECT " . $groupBy . "(`date`) as visited, SUM(`count`) as count FROM `" . $page_views_table . "`  " . $where_clause . " GROUP BY " . $groupBy . "(`date`) ORDER BY `visited`";
-    
+
     return $wpdb->get_results($page_views_sql, ARRAY_A);
 }
 
@@ -268,11 +268,11 @@ function fetch_data($type = 'visitor')
             $data[] = $record_of_the_month;
         }
     } else if ($mode == 'date_range') {
-        if(isset($_REQUEST['last_week']) || isset($_REQUEST['last_two_weeks'])) {
+        if (isset($_REQUEST['last_week']) || isset($_REQUEST['last_two_weeks'])) {
             $start = date('Y-m-d', strtotime('-7 days'));
             $end = date('Y-m-d', strtotime('today'));
         }
-            
+
         if ($type == 'visitor') {
             $raw_data = get_visitor_data(
                 'daily', array('start' => $start, 'end' => $end)
