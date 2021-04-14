@@ -97,20 +97,20 @@ jQuery(document).ready(function ($) {
         month,
         mode: "monthly",
       };
-      graphName = `${months[month]} ${year} Visitors`;
+      graphName = `${months[month]} ${year}`;
     } else if (groupBy == "yearly") {
       query = {
         year,
         mode: "yearly",
       };
-      graphName = `${year} Visitors`;
+      graphName = `${year}`;
     } else {
       query = {
         start,
         end,
         mode: "date_range",
       };
-      graphName = `${start} to ${end} Visitors`;
+      graphName = `${start} to ${end}`;
     }
 
     const params =
@@ -123,12 +123,12 @@ jQuery(document).ready(function ($) {
       const pageData = JSON.parse(data).page_data;
 
       const visitorGraphData = graphData(
-        "This weeks visitors",
+        `${graphName} Visitors`,
         visitorData.map((d) => d.count)
       );
 
       const pageGraphData = graphData(
-        "This weeks page views",
+        `${graphName} Page Views`,
         pageData.map((d) => d.count)
       );
 

@@ -291,3 +291,12 @@ function get_user_site_id($user_id)
 
     return $site_id;
 }
+
+function get_google_fonts()
+{
+    $json_file = ABSPATH . 'wp-content/plugins/dispensary-main/assets/json/gfont.json';
+    $json = file_get_contents($json_file);
+    $fonts = json_decode($json, true);
+    print_r($fonts);
+}
+add_action("wp_ajax_test_font",'get_google_fonts' );
