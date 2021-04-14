@@ -1,5 +1,7 @@
 const monthNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
+var charts = [];
+
 const getDaysInMonth = function (month, year) {
   return new Date(year, month, 0).getDate();
 };
@@ -28,6 +30,7 @@ const current_month_query = `mode=monthly&year=${date_today.getFullYear()}&month
 }`;
 
 const graphData = (label, data) => {
+  charts.map(ch => ch.chart.destroy());
   return {
     label: label,
     data: data,
@@ -111,7 +114,7 @@ jQuery(document).ready(function ($) {
     }
 
     const params =
-      customQuery == "" ? customQuery : new URLSearchParams(query).toString();
+      customQuery != "" ? customQuery : new URLSearchParams(query).toString();
 
     $.ajax({
       url: `${wp_ajax.url}&${params}`,
@@ -165,7 +168,7 @@ jQuery(document).ready(function ($) {
 });
 
 function lineGraph(el, data, labels, title = "") {
-  let visitorLineChart = new Chart(el, {
+  charts[el.id] = new Chart(el, {
     type: "line",
     data: {
       labels: labels,
